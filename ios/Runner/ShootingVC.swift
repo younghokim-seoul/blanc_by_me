@@ -166,13 +166,11 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         cameraManager!.shouldRespondToOrientationChanges = false
 
         cameraManager!.cameraDevice = CameraDevice.front
-        cameraManager!.cameraOutputMode = CameraOutputMode.videoOnly
-
         cameraManager?.currentInterfaceOrientation = view.window?.windowScene?.interfaceOrientation ?? .landscapeRight
 
 //        cameraManager!.addPreviewLayerToView(vwBackground)
         //addPreviewLayerToView 비동기 처리
-        cameraManager?.addLayerPreviewToView(vwBackground, newCameraOutputMode: .videoOnly, completion: { [weak self] in
+        cameraManager?.addLayerPreviewToView(vwBackground, newCameraOutputMode: .stillImage, completion: { [weak self] in
             guard let this = self, let cameraManager = this.cameraManager else{
                 return
             }

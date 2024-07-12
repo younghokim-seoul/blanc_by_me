@@ -695,34 +695,32 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         sessionQueue.async {
             let stillImageOutput = self._getStillImageOutput()
             if let connection = stillImageOutput.connection(with: AVMediaType.video),
-                connection.isEnabled {
+               connection.isEnabled {
                 if self.cameraDevice == CameraDevice.front, connection.isVideoMirroringSupported,
-                    self.shouldFlipFrontCameraImage {
+                   self.shouldFlipFrontCameraImage {
                     connection.isVideoMirrored = true
                 }
-                if connection.isVideoOrientationSupported {
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if connection.isVideoOrientationSupported {
                         connection.videoOrientation = self._currentCaptureVideoOrientation()
                     }
+                    stillImageOutput.captureStillImageAsynchronously(from: connection, completionHandler: { [weak self] sample, error in
+
+                        if let error = error {
+                            self?._show(NSLocalizedString("Error", comment: ""), message: error.localizedDescription)
+                            imageCompletion(.failure(error))
+                            return
+                        }
+
+                        guard let sample = sample else { imageCompletion(.failure(CaptureError.noSampleBuffer)); return }
+                        if let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sample) {
+                            imageCompletion(CaptureResult(imageData))
+                        } else {
+                            imageCompletion(.failure(CaptureError.noImageData))
+                        }
+                    })
                 }
-
-                stillImageOutput.captureStillImageAsynchronously(from: connection, completionHandler: { [weak self] sample, error in
-
-                    if let error = error {
-                        self?._show(NSLocalizedString("Error", comment: ""), message: error.localizedDescription)
-                        imageCompletion(.failure(error))
-                        return
-                    }
-
-                    guard let sample = sample else { imageCompletion(.failure(CaptureError.noSampleBuffer)); return }
-                    if let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sample) {
-                        imageCompletion(CaptureResult(imageData))
-                    } else {
-                        imageCompletion(.failure(CaptureError.noImageData))
-                    }
-
-                })
-            } else {
+            }else {
                 imageCompletion(.failure(CaptureError.noVideoConnection))
             }
         }
