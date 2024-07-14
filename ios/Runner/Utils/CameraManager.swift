@@ -702,7 +702,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
                 }
                 DispatchQueue.main.async {
                     if connection.isVideoOrientationSupported {
-                        connection.videoOrientation = self._currentCaptureVideoOrientation()
+                        connection.videoOrientation = self._currentPreviewVideoOrientation()
                     }
                     stillImageOutput.captureStillImageAsynchronously(from: connection, completionHandler: { [weak self] sample, error in
 
