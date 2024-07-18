@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:blanc_f/dialog/dlg_app_update.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
 import 'package:blanc_f/global/local_service.dart';
@@ -13,10 +15,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:new_version_plus/new_version_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
+
   runApp(const MyApp());
 }
 
@@ -24,11 +29,9 @@ class NoCheckCertificateHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -91,10 +94,42 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   void startApp() async {
     gCameras = await availableCameras();
-    Future.delayed(Duration(seconds: 1), () {
-      getPermission();
+    Future.delayed(Duration(seconds: 1), () async {
+      final newVersion = NewVersionPlus(
+          iOSId: 'com.kyad.blanc',
+          androidId: 'com.ai.blanc',
+          androidPlayStoreCountry: "ko_KR",
+          iOSAppStoreCountry: "ko_KR");
+
+      final status = await newVersion.getVersionStatus();
+
+      final canUpdate = status?.canUpdate; // (true)
+      final localVersion = status?.localVersion; // (1.2.1)
+      final storeVersion = status?.storeVersion; // (1.2.3)
+      final appStoreLink = status?.appStoreLink; // (https://itunes.apple.com/us/app/google/id284815942?mt=8)
+
+      print(
+          'canUpdate : $canUpdate localVersion : $localVersion storeVersion : $storeVersion appStoreLink : $appStoreLink');
+
+      if (!mounted) return;
+
+      if (canUpdate == true) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+                child: AppUpdateDialog(
+                  onConfirm: () async {
+                    await launchUrlString(appStoreLink!);
+                  },
+                ),
+                onWillPop: () async => false));
+      } else {
+        getPermission();
+      }
     });
   }
 
@@ -109,7 +144,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void checkPermission() async {
-    Map<Permission, PermissionStatus> permissions = await [Permission.camera, Permission.photos, Permission.storage].request();
+    Map<Permission, PermissionStatus> permissions =
+        await [Permission.camera, Permission.photos, Permission.storage].request();
     print('per1 : $permissions');
 
     savePermission();
@@ -129,14 +165,14 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
-  void goNext(){
+  void goNext() {
     DateTime dt1 = DateTime.parse(reviewDate);
     DateTime dt2 = DateTime.now();
-    if(dt1.compareTo(dt2) == 0){
+    if (dt1.compareTo(dt2) == 0) {
       isReview = false;
-    } else if(dt1.compareTo(dt2) < 0){
+    } else if (dt1.compareTo(dt2) < 0) {
       isReview = false;
-    } else if(dt1.compareTo(dt2) > 0){
+    } else if (dt1.compareTo(dt2) > 0) {
       isReview = true;
     }
 
@@ -150,7 +186,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // Network functions
   //////////////////////////////////
   void reqLogin() {
-
     setState(() {
       _isLoading = true;
     });
@@ -160,7 +195,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _isLoading = false;
       });
       if (value.jwt != "") {
-
         gMyInfo = value.user;
         gJwt = value.jwt!;
         goHome();
@@ -174,7 +208,6 @@ class _MyHomePageState extends State<MyHomePage> {
       showToast(onError);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {

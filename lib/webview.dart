@@ -158,9 +158,7 @@ Page resource error:
               final appScheme = ConvertUrl(url);
               if (appScheme.isAppLink()) {
                 // 앱 스킴 URL인지 확인
-                appScheme.launchApp(
-                    mode: LaunchMode
-                        .externalApplication); // 앱 설치 상태에 따라 앱 실행 또는 마켓으로 이동
+                appScheme.launchApp(mode: LaunchMode.externalApplication); // 앱 설치 상태에 따라 앱 실행 또는 마켓으로 이동
                 return NavigationDecision.prevent;
               }
             } else if (Platform.isIOS) {

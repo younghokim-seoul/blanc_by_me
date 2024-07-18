@@ -31,12 +31,10 @@ class LoginPage extends BasePage {
 class LoginPageState extends BaseState<LoginPage> {
   bool _isLoading = false;
 
-  TextEditingController tecEmail = TextEditingController(text: "blancbyme3@ydencare.com"); //이메일
-  TextEditingController tecPwd = TextEditingController(text: "qmffkd88!@"); //패스워드
-
-
-  String strEmail = "blancbyme3@ydencare.com";
-  String strPass = "qmffkd88!@";
+  TextEditingController tecEmail = TextEditingController(); //이메일
+  TextEditingController tecPwd = TextEditingController(); //패스워드
+  String strEmail = "";
+  String strPass = "";
   final HttpService httpService = HttpService();
 
   @override

@@ -56,6 +56,8 @@ dependencies:
   webview_flutter: ^4.7.0
   file_picker: ^7.1.0
   tosspayments_widget_sdk_flutter: ^2.0.2
+  new_version_plus: ^0.0.9
+  gap: ^3.0.1
 
 
 dev_dependencies:
