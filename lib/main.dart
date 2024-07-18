@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void startApp() async {
     gCameras = await availableCameras();
     Future.delayed(Duration(seconds: 1), () async {
-      final newVersion = NewVersionPlus();
+      final newVersion = NewVersionPlus(iOSAppStoreCountry: "",androidPlayStoreCountry: "");
 
       final status = await newVersion.getVersionStatus();
 
@@ -128,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   void getPermission() async {
     LocalService.getPermission().then((value) {
       if (value == "") {
@@ -137,6 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
   }
+
 
   void checkPermission() async {
     Map<Permission, PermissionStatus> permissions =
