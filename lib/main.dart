@@ -98,11 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void startApp() async {
     gCameras = await availableCameras();
     Future.delayed(Duration(seconds: 1), () async {
-      final newVersion = NewVersionPlus(
-          iOSId: 'com.kyad.blanc',
-          androidId: 'com.ai.blanc',
-          androidPlayStoreCountry: "ko_KR",
-          iOSAppStoreCountry: "ko_KR");
+      final newVersion = NewVersionPlus();
 
       final status = await newVersion.getVersionStatus();
 
@@ -111,8 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final storeVersion = status?.storeVersion; // (1.2.3)
       final appStoreLink = status?.appStoreLink; // (https://itunes.apple.com/us/app/google/id284815942?mt=8)
 
-      print(
-          'canUpdate : $canUpdate localVersion : $localVersion storeVersion : $storeVersion appStoreLink : $appStoreLink');
+      print('canUpdate : $canUpdate localVersion : $localVersion storeVersion : $storeVersion appStoreLink : $appStoreLink');
 
       if (!mounted) return;
 
