@@ -13,9 +13,6 @@ class GuidePage extends StatelessWidget {
     ]);
 
     Future<bool> _onBackPressed(BuildContext context) async {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
       Navigator.of(context).pop();
       return true;
     }
@@ -23,28 +20,30 @@ class GuidePage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                "assets/bg.png",
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.fill,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  "assets/bg.png",
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.fill,
+                ),
               ),
-            ),
-            Positioned(
-              top: 15 / 2,
-              right: 15 / 2,
-              child: InkWell(
-                onTap: () {
-                  _onBackPressed(context);
-                },
-                child: SizedBox.square(dimension: 40),
+              Positioned(
+                top: 15 / 2,
+                right: 15 / 2,
+                child: InkWell(
+                  onTap: () {
+                    _onBackPressed(context);
+                  },
+                  child: SizedBox.square(dimension: 40),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
       )
     );
 

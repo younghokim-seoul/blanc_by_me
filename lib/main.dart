@@ -14,23 +14,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:new_version_plus/new_version_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  HttpOverrides.global = NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
+
 
   runApp(const MyApp());
-}
-
-class NoCheckCertificateHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -98,33 +90,34 @@ class _MyHomePageState extends State<MyHomePage> {
   void startApp() async {
     gCameras = await availableCameras();
     Future.delayed(Duration(seconds: 1), () async {
-      final newVersion = NewVersionPlus(iOSAppStoreCountry: "",androidPlayStoreCountry: "");
+      // final newVersion = NewVersionPlus(iOSAppStoreCountry: "",androidPlayStoreCountry: "");
+      //
+      // final status = await newVersion.getVersionStatus();
+      //
+      // final canUpdate = status?.canUpdate; // (true)
+      // final localVersion = status?.localVersion; // (1.2.1)
+      // final storeVersion = status?.storeVersion; // (1.2.3)
+      // final appStoreLink = status?.appStoreLink; // (https://itunes.apple.com/us/app/google/id284815942?mt=8)
 
-      final status = await newVersion.getVersionStatus();
+      // print('canUpdate : $canUpdate localVersion : $localVersion storeVersion : $storeVersion appStoreLink : $appStoreLink');
 
-      final canUpdate = status?.canUpdate; // (true)
-      final localVersion = status?.localVersion; // (1.2.1)
-      final storeVersion = status?.storeVersion; // (1.2.3)
-      final appStoreLink = status?.appStoreLink; // (https://itunes.apple.com/us/app/google/id284815942?mt=8)
+      // if (!mounted) return;
 
-      print('canUpdate : $canUpdate localVersion : $localVersion storeVersion : $storeVersion appStoreLink : $appStoreLink');
-
-      if (!mounted) return;
-
-      if (canUpdate == true) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => WillPopScope(
-                child: AppUpdateDialog(
-                  onConfirm: () async {
-                    await launchUrlString(appStoreLink!);
-                  },
-                ),
-                onWillPop: () async => false));
-      } else {
-        getPermission();
-      }
+      // if (canUpdate == true) {
+      //   showDialog(
+      //       context: context,
+      //       barrierDismissible: false,
+      //       builder: (_) => WillPopScope(
+      //           child: AppUpdateDialog(
+      //             onConfirm: () async {
+      //               await launchUrlString(appStoreLink!);
+      //             },
+      //           ),
+      //           onWillPop: () async => false));
+      // } else {
+      //   getPermission();
+      // }
+      getPermission();
     });
   }
 

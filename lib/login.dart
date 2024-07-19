@@ -35,6 +35,7 @@ class LoginPageState extends BaseState<LoginPage> {
   TextEditingController tecPwd = TextEditingController(); //패스워드
   String strEmail = "";
   String strPass = "";
+
   final HttpService httpService = HttpService();
 
   @override

@@ -272,8 +272,10 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                // var result = await showDialog(context: context, builder: (_) => MethodDialog());
-                await Navigator.push(context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+               var result =  await Navigator.push(context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.portraitUp,
+                ]);
               },
               child: Container(
                 width: 140,
