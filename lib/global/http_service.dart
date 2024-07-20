@@ -58,13 +58,14 @@ class HttpService {
 
     print("checkAppUpdate localVersion : $localVersion" " os : $os");
 
-    String _url = "$SERVER_URL/api/app-version?device=$os&version=$localVersion";
+    String _url = "$SERVER_URL/api/app-version?device=$os&version=${localVersion.version}";
 
     Map<String, String> headers = {
       'Authorization': API_TOKEN,
     };
 
     Uri uri = Uri.parse(_url);
+    print("checkAppUpdate uri : $uri");
     final response = await http.get(uri, headers: headers);
 
     return AppUpdateModel.fromJson(json.decode(response.body));

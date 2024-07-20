@@ -103,10 +103,11 @@ class _MyHomePageState extends State<MyHomePage> {
       final status = await newVersion.getVersionStatus();
 
       final appStoreLink = status?.appStoreLink;
+      final storeVersion = status?.storeVersion;
       final canUpdate = await isCanUpdate();
 
       print('appStoreLink : $appStoreLink');
-
+      print('storeVersion : $storeVersion');
       if (canUpdate == true) {
         if (!mounted) return;
         showDialog(
@@ -119,8 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 onWillPop: () async => false));
+      }else{
+        getPermission();
       }
-      getPermission();
     });
   }
 
