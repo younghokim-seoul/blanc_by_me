@@ -19,7 +19,7 @@ String getDevType() {
   String target = "";
   if (Platform.isAndroid) {
     target = "aos";
-  } else {
+  } else if(Platform.isIOS) {
     target = "ios";
   }
   return target;

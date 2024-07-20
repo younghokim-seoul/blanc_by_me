@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:blanc_f/dialog/dlg_app_update.dart';
 import 'package:blanc_f/global/global.dart';
@@ -20,7 +19,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
 
   runApp(const MyApp());
 }
@@ -86,41 +84,45 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<bool> isCanUpdate() async {
+    try {
+      final response = await httpService.checkAppUpdate();
+      print("resposne... " + response.toString());
+      return response.shoudAppUpdate;
+    } catch (e) {
+      return false;
+    }
+  }
 
   void startApp() async {
     gCameras = await availableCameras();
+
     Future.delayed(Duration(seconds: 1), () async {
-      // final newVersion = NewVersionPlus(iOSAppStoreCountry: "",androidPlayStoreCountry: "");
-      //
-      // final status = await newVersion.getVersionStatus();
-      //
-      // final canUpdate = status?.canUpdate; // (true)
-      // final localVersion = status?.localVersion; // (1.2.1)
-      // final storeVersion = status?.storeVersion; // (1.2.3)
-      // final appStoreLink = status?.appStoreLink; // (https://itunes.apple.com/us/app/google/id284815942?mt=8)
+      final newVersion = NewVersionPlus();
 
-      // print('canUpdate : $canUpdate localVersion : $localVersion storeVersion : $storeVersion appStoreLink : $appStoreLink');
+      final status = await newVersion.getVersionStatus();
 
-      // if (!mounted) return;
+      final appStoreLink = status?.appStoreLink;
+      final canUpdate = await isCanUpdate();
 
-      // if (canUpdate == true) {
-      //   showDialog(
-      //       context: context,
-      //       barrierDismissible: false,
-      //       builder: (_) => WillPopScope(
-      //           child: AppUpdateDialog(
-      //             onConfirm: () async {
-      //               await launchUrlString(appStoreLink!);
-      //             },
-      //           ),
-      //           onWillPop: () async => false));
-      // } else {
-      //   getPermission();
-      // }
+      print('appStoreLink : $appStoreLink');
+
+      if (canUpdate == true) {
+        if (!mounted) return;
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+                child: AppUpdateDialog(
+                  onConfirm: () async {
+                    await launchUrlString(appStoreLink!);
+                  },
+                ),
+                onWillPop: () async => false));
+      }
       getPermission();
     });
   }
-
 
   void getPermission() async {
     LocalService.getPermission().then((value) {
@@ -132,10 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
   void checkPermission() async {
-    Map<Permission, PermissionStatus> permissions =
-        await [Permission.camera, Permission.photos, Permission.storage].request();
+    Map<Permission, PermissionStatus> permissions = await [
+      Permission.camera,
+      Permission.photos,
+      Permission.storage
+    ].request();
     print('per1 : $permissions');
 
     savePermission();
@@ -148,11 +152,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void goHome() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   void goLogin() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   void goNext() {

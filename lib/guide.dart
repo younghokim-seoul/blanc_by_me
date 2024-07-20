@@ -1,4 +1,3 @@
-import 'package:blanc_f/base/page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,8 +19,7 @@ class GuidePage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
-        body: SafeArea(
-          child: Stack(
+        body: Stack(
             children: [
               Positioned.fill(
                 child: Image.asset(
@@ -43,7 +41,7 @@ class GuidePage extends StatelessWidget {
               ),
             ],
           ),
-        )
+
       )
     );
 

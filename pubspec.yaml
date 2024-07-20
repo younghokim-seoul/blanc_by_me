@@ -58,6 +58,7 @@ dependencies:
   tosspayments_widget_sdk_flutter: ^2.0.2
   new_version_plus: ^0.0.9
   gap: ^3.0.1
+  freezed_annotation: ^2.4.1
 
 
 dev_dependencies:
@@ -66,12 +67,10 @@ dev_dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  freezed: ^2.4.5
+  json_serializable: ^6.7.1
+  build_runner:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
