@@ -118,6 +118,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   onConfirm: () async {
                     await launchUrlString(appStoreLink!);
                   },
+                  onCancel: () {
+                    print("캔슬클릭");
+                    getPermission();
+                  },
                 ),
                 onWillPop: () async => false));
       }else{
