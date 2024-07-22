@@ -28,6 +28,11 @@
 	<string>블랑바이미</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>media library use</string>
 	<key>NSCalendarsUsageDescription</key>
