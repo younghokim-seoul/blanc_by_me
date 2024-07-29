@@ -10,6 +10,7 @@ import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/local_service.dart';
 import 'package:blanc_f/guide.dart';
 import 'package:blanc_f/login.dart';
+import 'package:blanc_f/my_page.dart';
 import 'package:blanc_f/shooting.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
@@ -378,10 +379,15 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                               const Padding(
                                 padding: EdgeInsets.only(left: 8),
                               ),
-                              Image.asset(
-                                "assets/arrow_right.png",
-                                width: 18,
-                                fit: BoxFit.fitWidth,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyPageWebView()));
+                                },
+                                child:   Image.asset(
+                                  "assets/arrow_right.png",
+                                  width: 18,
+                                  fit: BoxFit.fitWidth,
+                                ),
                               ),
                             ],
                           ),
