@@ -187,9 +187,22 @@ Page resource error:
 
   Future<bool> onGoBack() async {
     if (await _controller.canGoBack()) {
+      print("canGoBack");
+      final url = await _controller.currentUrl();
+      final splits = url?.replaceFirst(RegExp(r'://'), ' ').split(' ');
+
+      if(splits != null){
+        Uri uri = Uri.parse(splits[1]);
+        String newUrl =  uri.replace(query: '').toString();
+        if(newUrl.contains("login")){
+          Navigator.pop(context, "200");
+          return Future.value(true);
+        }
+      }
       _controller.goBack();
       return Future.value(false);
     } else {
+      print("pop success");
       Navigator.pop(context, "200");
       return Future.value(true);
     }
