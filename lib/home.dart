@@ -12,6 +12,7 @@ import 'package:blanc_f/guide.dart';
 import 'package:blanc_f/login.dart';
 import 'package:blanc_f/my_page.dart';
 import 'package:blanc_f/shooting.dart';
+import 'package:blanc_f/util/bounce.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
 import 'package:blanc_f/webview.dart';
@@ -107,11 +108,12 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
+
+                  Bounce(child: Image.asset(
                     "assets/Group 815312.png",
                     width: 92,
                     fit: BoxFit.fitWidth,
-                  ),
+                  ), duration: Duration(milliseconds: 200)),
                   const Text(
                     "사진 촬영하기",
                     style: TextStyle(

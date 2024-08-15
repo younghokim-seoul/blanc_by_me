@@ -99,34 +99,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Future.delayed(Duration(seconds: 1), () async {
       final newVersion = NewVersionPlus();
-
-      final status = await newVersion.getVersionStatus();
-
-      final appStoreLink = status?.appStoreLink;
-      final storeVersion = status?.storeVersion;
-      final canUpdate = await isCanUpdate();
-
-      print('appStoreLink : $appStoreLink');
-      print('storeVersion : $storeVersion');
-      if (canUpdate == true) {
-        if (!mounted) return;
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => WillPopScope(
-                child: AppUpdateDialog(
-                  onConfirm: () async {
-                    await launchUrlString(appStoreLink!);
-                  },
-                  onCancel: () {
-                    print("캔슬클릭");
-                    getPermission();
-                  },
-                ),
-                onWillPop: () async => false));
-      }else{
-        getPermission();
-      }
+      getPermission();
+      // final status = await newVersion.getVersionStatus();
+      //
+      // final appStoreLink = status?.appStoreLink;
+      // final storeVersion = status?.storeVersion;
+      // final canUpdate = await isCanUpdate();
+      //
+      // print('appStoreLink : $appStoreLink');
+      // print('storeVersion : $storeVersion');
+      // if (canUpdate == true) {
+      //   if (!mounted) return;
+      //   showDialog(
+      //       context: context,
+      //       barrierDismissible: false,
+      //       builder: (_) => WillPopScope(
+      //           child: AppUpdateDialog(
+      //             onConfirm: () async {
+      //               await launchUrlString(appStoreLink!);
+      //             },
+      //             onCancel: () {
+      //               print("캔슬클릭");
+      //               getPermission();
+      //             },
+      //           ),
+      //           onWillPop: () async => false));
+      // }else{
+      //   getPermission();
+      // }
     });
   }
 
