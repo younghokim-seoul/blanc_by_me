@@ -61,7 +61,9 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
   }
 
   Future<bool> _onBackPressed() async {
-    CommonDialog().showTwoBtnPopup(context, "앱을 종료하시겠습니까?", "네", "아니요").then((val) {
+    CommonDialog()
+        .showTwoBtnPopup(context, "앱을 종료하시겠습니까?", "네", "아니요")
+        .then((val) {
       if (val.toString() == "1") {
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       }
@@ -93,13 +95,20 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
               onTap: () async {
                 //촬영 페이지로 이동
                 print('촬영 페이지로 이동');
-                var result = await showDialog(context: context, builder: (_) => A4AlertDialog());
+                var result = await showDialog(
+                    context: context, builder: (_) => A4AlertDialog());
                 if (result == "100") {
                   if (Platform.isAndroid) {
-                    Navigator.push(context, SlideRightTransRoute(builder: (context) => ShootingPage(type: 1), settings: RouteSettings()));
+                    Navigator.push(
+                        context,
+                        SlideRightTransRoute(
+                            builder: (context) => ShootingPage(type: 1),
+                            settings: RouteSettings()));
                   } else {
-                    const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
-                    String res = await platformChannel.invokeMethod('lux', {"type": "1", "jwt": gJwt});
+                    const platformChannel =
+                        MethodChannel('blanc.flutter.methodchannel/iOS');
+                    String res = await platformChannel
+                        .invokeMethod('lux', {"type": "1", "jwt": gJwt});
                     showToast(res);
                   }
                 }
@@ -108,12 +117,13 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-
-                  Bounce(child: Image.asset(
-                    "assets/Group 815312.png",
-                    width: 92,
-                    fit: BoxFit.fitWidth,
-                  ), duration: Duration(milliseconds: 200)),
+                  Bounce(
+                      duration: const Duration(milliseconds: 200),
+                      child: Image.asset(
+                        "assets/Group 815312.png",
+                        width: 92,
+                        fit: BoxFit.fitWidth,
+                      )),
                   const Text(
                     "사진 촬영하기",
                     style: TextStyle(
@@ -156,33 +166,40 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             alignment: Alignment.bottomCenter,
             child: InkWell(
               onTap: () async {
-                //사진 촬영하는 방법 팝업 표시
-                var result = await showDialog(context: context, builder: (_) => MethodDialog());
+                Navigator.push(
+                  context,
+                  SlideRightTransRoute(
+                    builder: (context) => GuidePage(),
+                    settings: RouteSettings(),
+                  ),
+                );
               },
               child: Container(
-                width: 140,
-                height: 40,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
                     border: Border.all(
-                      width: 2, //
-                      color: Color(0xFF212D4E),
+                      width: 1, //
+                      color: Color(0xFFDDDDDD),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(999))),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
-                      "assets/info_b.png",
-                      width: 15,
+                      "assets/icon_play.png",
+                      width: 13,
                       fit: BoxFit.fitWidth,
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 8.0),
                     ),
                     const Text(
-                      "촬영 방법 안내",
+                      "촬영방법 동영상으로 보기",
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Pretendard",
@@ -216,10 +233,16 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 //촬영 페이지로 이동
                 print('촬영 페이지로 이동');
                 if (Platform.isAndroid) {
-                  Navigator.push(context, SlideRightTransRoute(builder: (context) => ShootingPage(type: 2), settings: RouteSettings()));
+                  Navigator.push(
+                      context,
+                      SlideRightTransRoute(
+                          builder: (context) => ShootingPage(type: 2),
+                          settings: RouteSettings()));
                 } else {
-                  const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
-                  String res = await platformChannel.invokeMethod('lux', {"type": "2", "jwt": gJwt});
+                  const platformChannel =
+                      MethodChannel('blanc.flutter.methodchannel/iOS');
+                  String res = await platformChannel
+                      .invokeMethod('lux', {"type": "2", "jwt": gJwt});
                   showToast(res);
                 }
               },
@@ -227,11 +250,13 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/Group 815312.png",
-                    width: 92,
-                    fit: BoxFit.fitWidth,
-                  ),
+                  Bounce(
+                      duration: const Duration(milliseconds: 200),
+                      child: Image.asset(
+                        "assets/Group 815312.png",
+                        width: 92,
+                        fit: BoxFit.fitWidth,
+                      )),
                   const Text(
                     "사진 촬영하기",
                     style: TextStyle(
@@ -274,36 +299,40 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             alignment: Alignment.bottomCenter,
             child: InkWell(
               onTap: () async {
-                //사진 촬영하는 방법 팝업 표시
-               var result =  await Navigator.push(context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
-                SystemChrome.setPreferredOrientations([
-                  DeviceOrientation.portraitUp,
-                ]);
+                Navigator.push(
+                  context,
+                  SlideRightTransRoute(
+                    builder: (context) => GuidePage(),
+                    settings: RouteSettings(),
+                  ),
+                );
               },
               child: Container(
-                width: 140,
-                height: 40,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
                     border: Border.all(
-                      width: 2, //
-                      color: Color(0xFF212D4E),
+                      width: 1, //
+                      color: Color(0xFFDDDDDD),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(999))),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
-                      "assets/info_b.png",
-                      width: 15,
+                      "assets/icon_play.png",
+                      width: 13,
                       fit: BoxFit.fitWidth,
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 8.0),
                     ),
                     const Text(
-                      "촬영 방법 안내",
+                      "촬영방법 동영상으로 보기",
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Pretendard",
@@ -365,7 +394,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: 24,
-                          margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
+                          margin: const EdgeInsets.only(
+                              top: 24, left: 16, right: 16),
                           child: Row(
                             children: [
                               Text(
@@ -383,9 +413,13 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyPageWebView()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyPageWebView()));
                                 },
-                                child:   Image.asset(
+                                child: Image.asset(
                                   "assets/arrow_right.png",
                                   width: 18,
                                   fit: BoxFit.fitWidth,
@@ -396,11 +430,17 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () {
-                            CommonDialog().showTwoBtnPopup(context, "정말 로그아웃 하시겠습니까?", "네", "아니요").then((val) {
+                            CommonDialog()
+                                .showTwoBtnPopup(
+                                    context, "정말 로그아웃 하시겠습니까?", "네", "아니요")
+                                .then((val) {
                               if (val.toString() == "1") {
                                 LocalService.setUserEmail("");
                                 LocalService.setUserPwd("");
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
                               }
                             });
                           },
@@ -415,7 +455,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                     width: 1, //
                                     color: Color(0xFF5BD2C4),
                                   ),
-                                  borderRadius: BorderRadius.all(Radius.circular(4))),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4))),
                               child: const Center(
                                 child: Text(
                                   "로그아웃",
@@ -433,11 +474,17 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () {
-                            CommonDialog().showTwoBtnPopup(context, "정말 회원탈퇴 하시겠습니까?", "네", "아니요").then((val) {
+                            CommonDialog()
+                                .showTwoBtnPopup(
+                                    context, "정말 회원탈퇴 하시겠습니까?", "네", "아니요")
+                                .then((val) {
                               if (val.toString() == "1") {
                                 LocalService.setUserEmail("");
                                 LocalService.setUserPwd("");
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
                               }
                             });
                           },
@@ -446,7 +493,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                margin: const EdgeInsets.only(top: 12, left: 16),
+                                margin:
+                                    const EdgeInsets.only(top: 12, left: 16),
                                 width: 73,
                                 height: 34,
                                 decoration: BoxDecoration(
@@ -454,7 +502,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                       width: 1, //
                                       color: Color(0xFF5BD2C4),
                                     ),
-                                    borderRadius: BorderRadius.all(Radius.circular(4))),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4))),
                                 child: const Center(
                                   child: Text(
                                     "회원탈퇴",
@@ -511,7 +560,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                       Expanded(child: Container()),
                                       InkWell(
                                         onTap: () {
-                                          _scaffoldKey.currentState!.openEndDrawer();
+                                          _scaffoldKey.currentState!
+                                              .openEndDrawer();
                                         },
                                         child: Image.asset(
                                           "assets/ic_menu.png",
@@ -526,29 +576,45 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 48, left: 16),
+                                  margin:
+                                      const EdgeInsets.only(top: 48, left: 16),
                                   child: const Text(
                                     'AI 치아미백뷰티플랫폼',
-                                    style: TextStyle(fontFamily: "Pretendard", color: PrimaryColor, fontSize: 14, fontWeight: FontWeight.w400),
+                                    style: TextStyle(
+                                        fontFamily: "Pretendard",
+                                        color: PrimaryColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+                                  margin: const EdgeInsets.only(
+                                      top: 8, left: 16, right: 16),
                                   child: const Text(
                                     '블랑바이미 전용 촬영앱입니다.',
-                                    style: TextStyle(fontFamily: "Pretendard", color: MAIN_TEXT, fontSize: 24, fontWeight: FontWeight.w700),
+                                    style: TextStyle(
+                                        fontFamily: "Pretendard",
+                                        color: MAIN_TEXT,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w700),
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                                  margin: const EdgeInsets.only(
+                                      top: 16, left: 16, right: 16),
                                   child: const Text(
                                     '사진을 촬영하면 스마트폰 갤러리에 저장됩니다.\n저장된 사진을 블랑바이미 사이트에 업로드해주세요.',
-                                    style: TextStyle(fontFamily: "Pretendard", color: Color(0xFF545454), fontSize: 12, fontWeight: FontWeight.w400),
+                                    style: TextStyle(
+                                        fontFamily: "Pretendard",
+                                        color: Color(0xFF545454),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
                                 Container(
                                   height: 50,
-                                  margin: const EdgeInsets.only(top: 26, left: 16, right: 16),
+                                  margin: const EdgeInsets.only(
+                                      top: 26, left: 16, right: 16),
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -557,22 +623,40 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                             changePage(1);
                                           },
                                           child: SizedBox(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.height,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .height,
                                             child: Stack(
                                               children: [
                                                 Center(
                                                   child: Text(
                                                     '블랑바이미카드로 촬영',
-                                                    style: TextStyle(fontFamily: "Pretendard", color: pageIndex == 1 ? Color(0xFF212d4e) : Color(0xFF545454), fontSize: 16, fontWeight: pageIndex == 1 ? FontWeight.w700 : FontWeight.w400),
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            "Pretendard",
+                                                        color: pageIndex == 1
+                                                            ? Color(0xFF212d4e)
+                                                            : Color(0xFF545454),
+                                                        fontSize: 16,
+                                                        fontWeight: pageIndex ==
+                                                                1
+                                                            ? FontWeight.w700
+                                                            : FontWeight.w400),
                                                   ),
                                                 ),
                                                 Visibility(
                                                   visible: pageIndex == 1,
                                                   child: Align(
-                                                    alignment: Alignment.bottomCenter,
+                                                    alignment:
+                                                        Alignment.bottomCenter,
                                                     child: Container(
-                                                      width: MediaQuery.of(context).size.width,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
                                                       height: 2,
                                                       color: Color(0xFF212d4e),
                                                     ),
@@ -589,22 +673,40 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                             changePage(0);
                                           },
                                           child: SizedBox(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.height,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .height,
                                             child: Stack(
                                               children: [
                                                 Center(
                                                   child: Text(
                                                     'A4 용지로 촬영',
-                                                    style: TextStyle(fontFamily: "Pretendard", color: pageIndex == 0 ? Color(0xFF212d4e) : Color(0xFF545454), fontSize: 16, fontWeight: pageIndex == 0 ? FontWeight.w700 : FontWeight.w400),
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            "Pretendard",
+                                                        color: pageIndex == 0
+                                                            ? Color(0xFF212d4e)
+                                                            : Color(0xFF545454),
+                                                        fontSize: 16,
+                                                        fontWeight: pageIndex ==
+                                                                0
+                                                            ? FontWeight.w700
+                                                            : FontWeight.w400),
                                                   ),
                                                 ),
                                                 Visibility(
                                                   visible: pageIndex == 0,
                                                   child: Align(
-                                                    alignment: Alignment.bottomCenter,
+                                                    alignment:
+                                                        Alignment.bottomCenter,
                                                     child: Container(
-                                                      width: MediaQuery.of(context).size.width,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
                                                       height: 2,
                                                       color: Color(0xFF212d4e),
                                                     ),

@@ -1,23 +1,48 @@
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class GuidePage extends StatelessWidget {
+class GuidePage extends StatefulWidget {
   const GuidePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<GuidePage> createState() => _GuidePageState();
+}
+
+class _GuidePageState extends State<GuidePage> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+    super.initState();
 
+    _controller = YoutubePlayerController(
+      initialVideoId: 'IBWWb_Xw7ZQ',
+      flags: const YoutubePlayerFlags(
+          autoPlay: true, hideControls: true, loop: true),
+    );
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
-        body: getDevType() == "aos"
-            ? SafeArea(child: _buildGuide(context))
-            : _buildGuide(context),
+        body: getDevType() == "aos" ? _buildGuide() : _buildGuide(),
       ),
     );
   }
@@ -27,28 +52,15 @@ class GuidePage extends StatelessWidget {
     return true;
   }
 
-  Widget _buildGuide(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Image.asset(
-            "assets/bg.png",
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.fill,
-          ),
+  Widget _buildGuide() {
+    return YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          aspectRatio: 16 / 9,
+          controller: _controller,
+          showVideoProgressIndicator: true,
         ),
-        Positioned(
-          top: 15 / 2,
-          right: 15 / 2,
-          child: InkWell(
-            onTap: () {
-              _onBackPressed(context);
-            },
-            child: SizedBox.square(dimension: 40),
-          ),
-        ),
-      ],
-    );
+        builder: (context, player) {
+          return player;
+        });
   }
 }

@@ -26,6 +26,7 @@ class BounceState extends State<Bounce> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    print('boundce dispose');
     bouncingController.dispose();
     super.dispose();
   }
@@ -40,7 +41,6 @@ class BounceState extends State<Bounce> with TickerProviderStateMixin {
     bouncingController.forward();
 
     bouncingController.addStatusListener((status) {
-      print("bouncingController status: $status");
       if (status == AnimationStatus.completed) {
         bouncingController.reverse();
         touchedFloor = !touchedFloor;
