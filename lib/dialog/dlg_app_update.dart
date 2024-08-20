@@ -33,7 +33,6 @@ class AppUpdateDialog extends StatelessWidget {
                 ),
               ],
             ),
-            const Gap(16),
             Image.asset(
               "assets/alert-circle.png",
               width: 44,
@@ -61,7 +60,6 @@ class AppUpdateDialog extends StatelessWidget {
             const Gap(32),
             Container(
               height: 48,
-              margin: const EdgeInsets.symmetric(horizontal: 32),
               child: GestureDetector(
                 onTap: () {
                   onConfirm.call();

@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:blanc_f/base.dart';
-import 'package:blanc_f/dialog/dlg_a4_alert.dart';
 import 'package:blanc_f/dialog/dlg_common.dart';
-import 'package:blanc_f/dialog/dlg_method.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/local_service.dart';
@@ -15,9 +13,9 @@ import 'package:blanc_f/shooting.dart';
 import 'package:blanc_f/util/bounce.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
-import 'package:blanc_f/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class HomePage extends BasePage {
@@ -33,31 +31,12 @@ class HomePage extends BasePage {
 
 class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
   bool _isLoading = false;
-  late TabController _controller;
   int pageIndex = 1;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   BuildContext getContext() {
     return context;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = TabController(length: 2, vsync: this);
-    _controller.addListener(() {
-      print("Selected Index: " + _controller.index.toString());
-      changePage(_controller.index);
-    });
-
-    changePage(1);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Future<bool> _onBackPressed() async {
@@ -67,137 +46,6 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
       }
     });
     return true;
-  }
-
-  void changePage(int index) {
-    pageIndex = index;
-    _controller.animateTo((pageIndex));
-    setState(() {});
-
-    if (index == 0) {
-    } else if (index == 1) {}
-  }
-
-  //A4 용지로 촬영
-  Widget Tab1View() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      color: HOME_BACK,
-      child: Stack(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: InkWell(
-              onTap: () async {
-                //촬영 페이지로 이동
-                print('촬영 페이지로 이동');
-                var result = await showDialog(context: context, builder: (_) => A4AlertDialog());
-                if (result == "100") {
-                  if (Platform.isAndroid) {
-                    Navigator.push(context, SlideRightTransRoute(builder: (context) => ShootingPage(type: 1), settings: RouteSettings()));
-                  } else {
-                    const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
-                    String res = await platformChannel.invokeMethod('lux', {"type": "1", "jwt": gJwt});
-                    showToast(res);
-                  }
-                }
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-
-                  Bounce(child: Image.asset(
-                    "assets/Group 815312.png",
-                    width: 92,
-                    fit: BoxFit.fitWidth,
-                  ), duration: Duration(milliseconds: 200)),
-                  const Text(
-                    "사진 촬영하기",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "Pretendard",
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF212529),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 15.0),
-                  ),
-                  const Text(
-                    "방법대로 촬영해주세요.",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: "Pretendard",
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF212529),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 15.0),
-                  ),
-                  const Text(
-                    "블랑바이미 솔루션 구매 전\n고객님은 ‘A4 용지로 촬영’을 선택해주시면 됩니다.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: "Pretendard",
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFFA9A9A9),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: InkWell(
-              onTap: () async {
-                //사진 촬영하는 방법 팝업 표시
-                var result = await showDialog(context: context, builder: (_) => MethodDialog());
-              },
-              child: Container(
-                width: 140,
-                height: 40,
-                margin: const EdgeInsets.only(bottom: 24),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2, //
-                      color: Color(0xFF212D4E),
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/info_b.png",
-                      width: 15,
-                      fit: BoxFit.fitWidth,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                    ),
-                    const Text(
-                      "촬영 방법 안내",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "Pretendard",
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF212529),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   //블랑바이미카드로 촬영
@@ -216,7 +64,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 //촬영 페이지로 이동
                 print('촬영 페이지로 이동');
                 if (Platform.isAndroid) {
-                  Navigator.push(context, SlideRightTransRoute(builder: (context) => ShootingPage(type: 2), settings: RouteSettings()));
+                  Navigator.push(context,
+                      SlideRightTransRoute(builder: (context) => ShootingPage(type: 2), settings: RouteSettings()));
                 } else {
                   const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
                   String res = await platformChannel.invokeMethod('lux', {"type": "2", "jwt": gJwt});
@@ -227,13 +76,16 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/Group 815312.png",
-                    width: 92,
-                    fit: BoxFit.fitWidth,
-                  ),
+                  Bounce(
+                      duration: const Duration(milliseconds: 200),
+                      child: Image.asset(
+                        "assets/Group 815312.png",
+                        width: 92,
+                        fit: BoxFit.fitWidth,
+                      )),
+                  const Gap(24),
                   const Text(
-                    "사진 촬영하기",
+                    "블랑바이미카드로 사진 촬영하기",
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: "Pretendard",
@@ -241,9 +93,7 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                       color: Color(0xFF212529),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 15.0),
-                  ),
+                  const Gap(8),
                   const Text(
                     "방법대로 촬영해주세요.",
                     style: TextStyle(
@@ -253,17 +103,47 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                       color: Color(0xFF212529),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 15.0),
-                  ),
-                  const Text(
-                    "블랑바이미 솔루션 구매 전\n고객님은 ‘A4 용지로 촬영’을 선택해주시면 됩니다.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: "Pretendard",
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFFA9A9A9),
+                  const Gap(24),
+                  InkWell(
+                    onTap: () async {
+                      //사진 촬영하는 방법 팝업 표시
+                      var result = await Navigator.push(
+                          context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1, //
+                            color: const Color(0xFFDDDDDD),
+                          ),
+                          color: Colors.white,
+                          borderRadius: const BorderRadius.all(Radius.circular(999))),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/info_b.png",
+                            width: 14,
+                            fit: BoxFit.fitWidth,
+                          ),
+                          const Gap(4),
+                          const Text(
+                            "촬영 방법 안내",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: "Pretendard",
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF212529),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -275,35 +155,34 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-               var result =  await Navigator.push(context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+                var result = await Navigator.push(
+                    context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
                 SystemChrome.setPreferredOrientations([
                   DeviceOrientation.portraitUp,
                 ]);
               },
               child: Container(
-                width: 140,
-                height: 40,
-                margin: const EdgeInsets.only(bottom: 24),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 decoration: BoxDecoration(
                     border: Border.all(
-                      width: 2, //
-                      color: Color(0xFF212D4E),
+                      width: 1, //
+                      color: const Color(0xFFDDDDDD),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(999))),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
-                      "assets/info_b.png",
-                      width: 15,
+                      "assets/icon_play.png",
+                      width: 12.83,
                       fit: BoxFit.fitWidth,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                    ),
+                    const Gap(4),
                     const Text(
-                      "촬영 방법 안내",
+                      "촬영방법 동영상으로 보기",
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Pretendard",
@@ -368,14 +247,16 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                           margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
                           child: Row(
                             children: [
-                              Text(
-                                "귀여운 ${gMyInfo!.username!}님, 안녕하세요!",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Pretendard",
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF212529),
+                              Flexible(
+                                child: Text(
+                                  "귀여운 ${gMyInfo!.username!}님, 안녕하세요!",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Pretendard",
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF212529),
+                                  ),
                                 ),
                               ),
                               const Padding(
@@ -385,7 +266,7 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => MyPageWebView()));
                                 },
-                                child:   Image.asset(
+                                child: Image.asset(
                                   "assets/arrow_right.png",
                                   width: 18,
                                   fit: BoxFit.fitWidth,
@@ -400,7 +281,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                               if (val.toString() == "1") {
                                 LocalService.setUserEmail("");
                                 LocalService.setUserPwd("");
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                Navigator.pushReplacement(
+                                    context, MaterialPageRoute(builder: (context) => LoginPage()));
                               }
                             });
                           },
@@ -437,7 +319,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                               if (val.toString() == "1") {
                                 LocalService.setUserEmail("");
                                 LocalService.setUserPwd("");
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                Navigator.pushReplacement(
+                                    context, MaterialPageRoute(builder: (context) => LoginPage()));
                               }
                             });
                           },
@@ -529,110 +412,38 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                   margin: const EdgeInsets.only(top: 48, left: 16),
                                   child: const Text(
                                     'AI 치아미백뷰티플랫폼',
-                                    style: TextStyle(fontFamily: "Pretendard", color: PrimaryColor, fontSize: 14, fontWeight: FontWeight.w400),
+                                    style: TextStyle(
+                                        fontFamily: "Pretendard",
+                                        color: PrimaryColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
+                                const Gap(8),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 8, left: 16, right: 16),
+                                  margin: const EdgeInsets.only(left: 16, right: 16),
                                   child: const Text(
-                                    '블랑바이미 전용 촬영앱입니다.',
-                                    style: TextStyle(fontFamily: "Pretendard", color: MAIN_TEXT, fontSize: 24, fontWeight: FontWeight.w700),
+                                    '블랑바이미\n전용 촬영앱입니다.',
+                                    style: TextStyle(
+                                        fontFamily: "Pretendard",
+                                        color: MAIN_TEXT,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w700),
                                   ),
                                 ),
                                 Container(
                                   margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
                                   child: const Text(
                                     '사진을 촬영하면 스마트폰 갤러리에 저장됩니다.\n저장된 사진을 블랑바이미 사이트에 업로드해주세요.',
-                                    style: TextStyle(fontFamily: "Pretendard", color: Color(0xFF545454), fontSize: 12, fontWeight: FontWeight.w400),
+                                    style: TextStyle(
+                                        fontFamily: "Pretendard",
+                                        color: Color(0xFF545454),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
-                                Container(
-                                  height: 50,
-                                  margin: const EdgeInsets.only(top: 26, left: 16, right: 16),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap: () {
-                                            changePage(1);
-                                          },
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.height,
-                                            child: Stack(
-                                              children: [
-                                                Center(
-                                                  child: Text(
-                                                    '블랑바이미카드로 촬영',
-                                                    style: TextStyle(fontFamily: "Pretendard", color: pageIndex == 1 ? Color(0xFF212d4e) : Color(0xFF545454), fontSize: 16, fontWeight: pageIndex == 1 ? FontWeight.w700 : FontWeight.w400),
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible: pageIndex == 1,
-                                                  child: Align(
-                                                    alignment: Alignment.bottomCenter,
-                                                    child: Container(
-                                                      width: MediaQuery.of(context).size.width,
-                                                      height: 2,
-                                                      color: Color(0xFF212d4e),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap: () {
-                                            changePage(0);
-                                          },
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.height,
-                                            child: Stack(
-                                              children: [
-                                                Center(
-                                                  child: Text(
-                                                    'A4 용지로 촬영',
-                                                    style: TextStyle(fontFamily: "Pretendard", color: pageIndex == 0 ? Color(0xFF212d4e) : Color(0xFF545454), fontSize: 16, fontWeight: pageIndex == 0 ? FontWeight.w700 : FontWeight.w400),
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible: pageIndex == 0,
-                                                  child: Align(
-                                                    alignment: Alignment.bottomCenter,
-                                                    child: Container(
-                                                      width: MediaQuery.of(context).size.width,
-                                                      height: 2,
-                                                      color: Color(0xFF212d4e),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                    child: DefaultTabController(
-                                  length: 5,
-                                  child: Scaffold(
-                                    body: TabBarView(
-                                      //physics: ClampingScrollPhysics(),
-                                      physics: NeverScrollableScrollPhysics(),
-                                      controller: _controller,
-                                      children: [
-                                        Tab1View(),
-                                        Tab2View(),
-                                      ],
-                                    ),
-                                  ),
-                                )),
+                                const Gap(32),
+                                Expanded(child: Tab2View()),
                                 //bottom bar
                               ],
                             ),

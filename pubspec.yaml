@@ -59,6 +59,7 @@ dependencies:
   new_version_plus: ^0.0.9
   gap: ^3.0.1
   freezed_annotation: ^2.4.1
+  youtube_player_flutter: ^9.0.3
 
 
 dev_dependencies:
