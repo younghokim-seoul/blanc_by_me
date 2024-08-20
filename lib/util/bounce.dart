@@ -16,7 +16,7 @@ class BounceState extends State<Bounce> with TickerProviderStateMixin {
   late AnimationController bouncingController;
   late Animation bouncingAnimation;
   late Animation shadowAnimation;
-  static const Duration shadowDuration = Duration(milliseconds: 1000);
+  static const Duration shadowDuration = Duration(milliseconds: 700);
 
   Duration get userDuration => widget.duration;
   bool touchedFloor = false;
@@ -29,6 +29,7 @@ class BounceState extends State<Bounce> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    print('boundce dispose');
     bouncingController.dispose();
     super.dispose();
   }
@@ -43,12 +44,12 @@ class BounceState extends State<Bounce> with TickerProviderStateMixin {
     bouncingAnimation = TweenSequence<Offset>(
       <TweenSequenceItem<Offset>>[
         TweenSequenceItem<Offset>(
-          tween: Tween(begin: const Offset(0, 0), end: Offset(0, -25))
+          tween: Tween(begin: Offset(0, 20), end: Offset(0, -10))
               .chain(CurveTween(curve: Curves.easeIn)),
           weight: 50.0,
         ),
         TweenSequenceItem<Offset>(
-          tween: Tween(begin: const Offset(0, -25), end: Offset(0, -50))
+          tween: Tween(begin: Offset(0, -10), end: Offset(0, -50))
               .chain(CurveTween(curve: Curves.easeOut)),
           weight: 50.0,
         ),

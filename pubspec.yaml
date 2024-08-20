@@ -73,10 +73,11 @@ dev_dependencies:
   json_serializable: ^6.7.1
   build_runner:
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter packages.
+dependency_overrides:
+  webview_flutter_android: 3.16.1
+
+
 flutter:
 
   # The following line ensures that the Material Icons font is

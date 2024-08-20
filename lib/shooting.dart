@@ -9,7 +9,7 @@ import 'package:blanc_f/dialog/dlg_method1.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
-import 'package:blanc_f/guide.dart';
+import 'package:blanc_f/image_guide.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
 import 'package:blanc_f/webview.dart';
@@ -464,7 +464,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                await Navigator.push(context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+                await Navigator.push(context, SlideRightTransRoute(builder: (context) => const ImageGuide(), settings: RouteSettings()));
               },
               child: Container(
                 width: 140,
@@ -654,7 +654,6 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('테스트');
     return PageLayout(
       onBack: _onBackPressed,
       isAvoidResize: false,

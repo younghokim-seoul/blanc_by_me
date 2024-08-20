@@ -6,13 +6,14 @@ import 'package:blanc_f/dialog/dlg_common.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/local_service.dart';
-import 'package:blanc_f/guide.dart';
+import 'package:blanc_f/image_guide.dart';
 import 'package:blanc_f/login.dart';
 import 'package:blanc_f/my_page.dart';
 import 'package:blanc_f/shooting.dart';
 import 'package:blanc_f/util/bounce.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
+import 'package:blanc_f/video_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -107,8 +108,7 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                   InkWell(
                     onTap: () async {
                       //사진 촬영하는 방법 팝업 표시
-                      var result = await Navigator.push(
-                          context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+                      var result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => ImageGuide(), settings: RouteSettings()));
                       SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]);
@@ -155,14 +155,14 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                var result = await Navigator.push(
-                    context, SlideRightTransRoute(builder: (context) => GuidePage(), settings: RouteSettings()));
+                var result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => const VideoGuidePage(), settings: RouteSettings()));
                 SystemChrome.setPreferredOrientations([
                   DeviceOrientation.portraitUp,
                 ]);
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
                     border: Border.all(
                       width: 1, //
