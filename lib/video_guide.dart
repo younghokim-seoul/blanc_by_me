@@ -52,14 +52,30 @@ class _VideoGuidePageState extends State<VideoGuidePage> {
   }
 
   Widget _buildGuide() {
-    return YoutubePlayerBuilder(
-        player: YoutubePlayer(
-          aspectRatio: 16 / 9,
-          controller: _controller,
-          showVideoProgressIndicator: true,
+    return Stack(
+      children: [
+        YoutubePlayerBuilder(
+            player: YoutubePlayer(
+              controller: _controller,
+              showVideoProgressIndicator: true,
+            ),
+            builder: (context, player) {
+              return player;
+            }),
+        Positioned(
+          top: 15 / 2,
+          right: 15 / 2,
+          child: InkWell(
+            onTap: () {
+              _onBackPressed(context);
+            },
+            child: SizedBox.square(
+              dimension: 40,
+              child: Image.asset('assets/ic_close.png'),
+            ),
+          ),
         ),
-        builder: (context, player) {
-          return player;
-        });
+      ],
+    );
   }
 }

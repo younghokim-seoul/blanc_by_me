@@ -49,7 +49,7 @@ class BounceState extends State<Bounce> with TickerProviderStateMixin {
           weight: 50.0,
         ),
         TweenSequenceItem<Offset>(
-          tween: Tween(begin: Offset(0, -10), end: Offset(0, -50))
+          tween: Tween(begin: Offset(0, -10), end: Offset(0, -35))
               .chain(CurveTween(curve: Curves.easeOut)),
           weight: 50.0,
         ),
