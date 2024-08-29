@@ -172,7 +172,7 @@ class LoginPageState extends BaseState<LoginPage> {
                                       ),
                                       const Center(
                                         child: Text(
-                                          "안녕하세요 :)\n블랑바이미(BLANCE BY ME) 입니다.",
+                                          "안녕하세요 :)\n블랑바이미 파트너스 입니다.",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 20,
