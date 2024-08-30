@@ -423,7 +423,7 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                 Container(
                                   margin: const EdgeInsets.only(left: 16, right: 16),
                                   child: const Text(
-                                    '블랑바이미\n전용 촬영앱입니다.',
+                                    '블랑바이미 파트너스\n전용 촬영앱입니다.',
                                     style: TextStyle(
                                         fontFamily: "Pretendard",
                                         color: MAIN_TEXT,

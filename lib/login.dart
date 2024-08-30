@@ -12,6 +12,7 @@ import 'package:blanc_f/models/login_res_model.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 /**
@@ -30,16 +31,16 @@ class LoginPage extends BasePage {
 
 class LoginPageState extends BaseState<LoginPage> {
   bool _isLoading = false;
-  //
-  TextEditingController tecEmail = TextEditingController(); //이메일
-  TextEditingController tecPwd = TextEditingController(); //패스워드
-  String strEmail = "";
-  String strPass = "";
 
-  // TextEditingController tecEmail = TextEditingController(text: "blancbyme3@ydencare.com"); //이메일
-  // TextEditingController tecPwd = TextEditingController(text: "qmffkd88!@"); //패스워드
-  // String strEmail = "blancbyme3@ydencare.com";
-  // String strPass = "qmffkd88!@";
+  // TextEditingController tecEmail = TextEditingController(); //이메일
+  // TextEditingController tecPwd = TextEditingController(); //패스워드
+  // String strEmail = "";
+  // String strPass = "";
+
+  TextEditingController tecEmail = TextEditingController(text: "blancbyme3@ydencare.com"); //이메일
+  TextEditingController tecPwd = TextEditingController(text: "qmffkd88!@"); //패스워드
+  String strEmail = "blancbyme3@ydencare.com";
+  String strPass = "qmffkd88!@";
 
   final HttpService httpService = HttpService();
 
@@ -167,9 +168,7 @@ class LoginPageState extends BaseState<LoginPage> {
                                           fit: BoxFit.fitWidth,
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 24),
-                                      ),
+                                      const Gap(24),
                                       const Center(
                                         child: Text(
                                           "안녕하세요 :)\n블랑바이미 파트너스 입니다.",
