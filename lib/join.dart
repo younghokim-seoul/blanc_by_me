@@ -16,6 +16,7 @@ import 'package:blanc_f/models/user_res_model.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -59,6 +60,7 @@ class JoinPageState extends BaseState<JoinPage> {
   String strPhone3 = "";
   String strTempPhone = "";
   bool isCheckAuth = false;
+
   // String strCode = "";
   String strAddress = "";
   String strAddressDetail = "";
@@ -121,7 +123,7 @@ class JoinPageState extends BaseState<JoinPage> {
     }
 
     var result = await showDialog(context: context, builder: (_) => DanalWebviewDialog(name: strName, phone: phone));
-    if (result != null ){
+    if (result != null) {
       Map myData = result;
       String status = myData["result"];
       if (status == "success") {
@@ -266,7 +268,7 @@ class JoinPageState extends BaseState<JoinPage> {
       setState(() {
         _isLoading = false;
       });
-      if (value.id!> 0) {
+      if (value.id! > 0) {
         reqPostCustomers(value.id!);
       } else {
         showToast("회원가입 실패했습니다.");
@@ -284,7 +286,8 @@ class JoinPageState extends BaseState<JoinPage> {
       _isLoading = true;
     });
     String phone = strPhone1 + strPhone2 + strPhone3;
-    Future<CustomersResModel> info = httpService.customers(_id.toString(), phone, strAddress, strAddressDetail, isMale ? "male" : "female", strBirthdayYear, strPostCode, impUid);
+    Future<CustomersResModel> info = httpService.customers(_id.toString(), phone, strAddress, strAddressDetail,
+        isMale ? "male" : "female", strBirthdayYear, strPostCode, impUid);
     info.then((CustomersResModel value) {
       setState(() {
         _isLoading = false;
@@ -388,7 +391,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                         padding: EdgeInsets.only(top: 24),
                                       ),
                                       const Text(
-                                        "기본정보를\n입력해주세요.",
+                                        "회원가입",
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontFamily: "Pretendard",
@@ -396,9 +399,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                           color: Color(0xFF212529),
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 40),
-                                      ),
+                                      const Gap(40),
                                       const Text(
                                         "이메일",
                                         textAlign: TextAlign.center,
@@ -432,7 +433,10 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     keyboardType: TextInputType.emailAddress,
                                                     style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                                     controller: tecEmail,
-                                                    decoration: InputDecoration(hintText: '이메일을 입력해주세요.', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
+                                                    decoration: InputDecoration(
+                                                        hintText: '이메일을 입력해주세요.',
+                                                        border: InputBorder.none,
+                                                        contentPadding: EdgeInsets.only(bottom: 5)),
                                                     onChanged: (text) {
                                                       strEmail = text;
                                                       setState(() {});
@@ -450,7 +454,11 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 width: 111,
                                                 height: MediaQuery.of(context).size.height,
                                                 alignment: Alignment.center,
-                                                decoration: BoxDecoration(color: isValidEmailFormat(strEmail) ? Color(0xFF5BD2C4) : Color(0xFFEFEFEF), borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                decoration: BoxDecoration(
+                                                    color: isValidEmailFormat(strEmail)
+                                                        ? Color(0xFF5BD2C4)
+                                                        : Color(0xFFEFEFEF),
+                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
                                                 child: Center(
                                                   child: Text(
                                                     "중복확인",
@@ -459,7 +467,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                                       fontSize: 18,
                                                       fontFamily: "Pretendard",
                                                       fontWeight: FontWeight.w600,
-                                                      color: isValidEmailFormat(strEmail) ? Colors.white : Color(0xFFA9A9A9),
+                                                      color: isValidEmailFormat(strEmail)
+                                                          ? Colors.white
+                                                          : Color(0xFFA9A9A9),
                                                     ),
                                                   ),
                                                 ),
@@ -499,7 +509,10 @@ class JoinPageState extends BaseState<JoinPage> {
                                             style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                             controller: tecPwd1,
                                             obscureText: true,
-                                            decoration: InputDecoration(hintText: '8~16자리 영문,숫자,특수문자 포함', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
+                                            decoration: InputDecoration(
+                                                hintText: '8~16자리 영문,숫자,특수문자 포함',
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strPass1 = text;
                                             },
@@ -537,7 +550,10 @@ class JoinPageState extends BaseState<JoinPage> {
                                             style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                             controller: tecPwd2,
                                             obscureText: true,
-                                            decoration: InputDecoration(hintText: '비밀번호를 다시 입력해주세요', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
+                                            decoration: InputDecoration(
+                                                hintText: '비밀번호를 다시 입력해주세요',
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strPass2 = text;
                                             },
@@ -548,7 +564,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                         padding: EdgeInsets.only(top: 24),
                                       ),
                                       const Text(
-                                        "이름",
+                                        "치과명",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 14,
@@ -575,7 +591,10 @@ class JoinPageState extends BaseState<JoinPage> {
                                             style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                             controller: tecName,
                                             enabled: !isCheckAuth,
-                                            decoration: InputDecoration(hintText: '이름을 입력해주세요', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
+                                            decoration: InputDecoration(
+                                                hintText: '치과명을 입력해주세요',
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strName = text;
                                             },
@@ -622,7 +641,11 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   textAlign: TextAlign.center,
                                                   enabled: !isCheckAuth,
                                                   keyboardType: TextInputType.number,
-                                                  decoration: InputDecoration(hintText: '010', border: InputBorder.none, counterText: "", contentPadding: EdgeInsets.only(bottom: 5)),
+                                                  decoration: InputDecoration(
+                                                      hintText: '010',
+                                                      border: InputBorder.none,
+                                                      counterText: "",
+                                                      contentPadding: EdgeInsets.only(bottom: 5)),
                                                   onChanged: (text) {
                                                     strPhone1 = text;
                                                     setState(() {});
@@ -667,7 +690,11 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   textAlign: TextAlign.center,
                                                   enabled: !isCheckAuth,
                                                   keyboardType: TextInputType.number,
-                                                  decoration: InputDecoration(hintText: '0000', border: InputBorder.none, counterText: "", contentPadding: EdgeInsets.only(bottom: 5)),
+                                                  decoration: InputDecoration(
+                                                      hintText: '0000',
+                                                      border: InputBorder.none,
+                                                      counterText: "",
+                                                      contentPadding: EdgeInsets.only(bottom: 5)),
                                                   onChanged: (text) {
                                                     strPhone2 = text;
                                                     setState(() {});
@@ -712,7 +739,11 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   textAlign: TextAlign.center,
                                                   enabled: !isCheckAuth,
                                                   keyboardType: TextInputType.number,
-                                                  decoration: InputDecoration(hintText: '0000', border: InputBorder.none, counterText: "", contentPadding: EdgeInsets.only(bottom: 5)),
+                                                  decoration: InputDecoration(
+                                                      hintText: '0000',
+                                                      border: InputBorder.none,
+                                                      counterText: "",
+                                                      contentPadding: EdgeInsets.only(bottom: 5)),
                                                   onChanged: (text) {
                                                     strPhone3 = text;
                                                     setState(() {});
@@ -732,7 +763,11 @@ class JoinPageState extends BaseState<JoinPage> {
                                           width: MediaQuery.of(context).size.width - 32,
                                           height: 56,
                                           alignment: Alignment.center,
-                                          decoration: BoxDecoration(color: (strPhone1 + strPhone2 + strPhone3).length == 11 ? Color(0xFF5BD2C4) : Color(0xFFEFEFEF), borderRadius: BorderRadius.all(Radius.circular(8))),
+                                          decoration: BoxDecoration(
+                                              color: (strPhone1 + strPhone2 + strPhone3).length == 11
+                                                  ? Color(0xFF5BD2C4)
+                                                  : Color(0xFFEFEFEF),
+                                              borderRadius: BorderRadius.all(Radius.circular(8))),
                                           child: Center(
                                             child: Text(
                                               "인증하기",
@@ -741,7 +776,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 fontSize: 18,
                                                 fontFamily: "Pretendard",
                                                 fontWeight: FontWeight.w600,
-                                                color: (strPhone1 + strPhone2 + strPhone3).length == 11 ? Colors.white : Color(0xFFA9A9A9),
+                                                color: (strPhone1 + strPhone2 + strPhone3).length == 11
+                                                    ? Colors.white
+                                                    : Color(0xFFA9A9A9),
                                               ),
                                             ),
                                           ),
@@ -845,7 +882,10 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                                     controller: tecAddress,
                                                     enabled: false,
-                                                    decoration: InputDecoration(hintText: '.', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
+                                                    decoration: InputDecoration(
+                                                        hintText: '.',
+                                                        border: InputBorder.none,
+                                                        contentPadding: EdgeInsets.only(bottom: 5)),
                                                     onChanged: (text) {
                                                       //
                                                     },
@@ -855,8 +895,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                             ),
                                             InkWell(
                                               onTap: () async {
-                                                var result = await showDialog(context: context, builder: (_) => FindAddrDialog());
-                                                if (result != null ){
+                                                var result = await showDialog(
+                                                    context: context, builder: (_) => FindAddrDialog());
+                                                if (result != null) {
                                                   Map myData = result;
                                                   String status = myData["result"];
                                                   if (status == "success") {
@@ -872,7 +913,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 width: 111,
                                                 height: MediaQuery.of(context).size.height,
                                                 alignment: Alignment.center,
-                                                decoration: const BoxDecoration(color: Color(0xFF5BD2C4), borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                decoration: const BoxDecoration(
+                                                    color: Color(0xFF5BD2C4),
+                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
                                                 child: const Center(
                                                   child: Text(
                                                     "주소검색",
@@ -904,32 +947,24 @@ class JoinPageState extends BaseState<JoinPage> {
                                         child: Container(
                                           padding: const EdgeInsets.only(left: 15, right: 15),
                                           child: TextField(
-                                            style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                             controller: tecAddressDetail,
-                                            decoration: InputDecoration(hintText: '상세주소를 입력해주세요', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
+                                            decoration: const InputDecoration(
+                                                hintText: '상세주소를 입력해주세요',
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strAddressDetail = text;
                                             },
                                           ),
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 80),
-                                      ),
+
+                                      const Gap(24),
+
+                                      //사업자 번호
                                       const Text(
-                                        "추가정보를\n입력해주세요.",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontFamily: "Pretendard",
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF212529),
-                                        ),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 27),
-                                      ),
-                                      const Text(
-                                        "성별",
+                                        "사업자 번호",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 14,
@@ -939,106 +974,81 @@ class JoinPageState extends BaseState<JoinPage> {
                                         ),
                                       ),
                                       Container(
-                                        width: MediaQuery.of(context).size.width - 32,
-                                        height: 112,
                                         margin: const EdgeInsets.only(top: 8),
+                                        width: MediaQuery.of(context).size.width - 32,
+                                        height: 56,
+                                        alignment: Alignment.center,
                                         child: Row(
                                           children: [
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  isMale = true;
-                                                });
-                                              },
+                                            Expanded(
                                               child: Container(
-                                                width: (MediaQuery.of(context).size.width - 32 - 8) / 2,
                                                 height: MediaQuery.of(context).size.height,
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
-                                                    color: isMale ? Color(0xFF5BD2C4).withOpacity(0.1) : Colors.white,
                                                     border: Border.all(
                                                       width: 1, //
-                                                      color: isMale ? Color(0xFF5BD2C4) : Color(0xFFDDDDDD),
+                                                      color: Color(0xFFDDDDDD),
                                                     ),
-                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      isMale ? "assets/man_on.png" : "assets/man.png",
-                                                      width: 48,
-                                                      fit: BoxFit.fitWidth,
-                                                    ),
-                                                    const Padding(
-                                                      padding: EdgeInsets.only(top: 16),
-                                                    ),
-                                                    Text(
-                                                      "남성",
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily: "Pretendard",
-                                                        fontWeight: FontWeight.w400,
-                                                        color: isMale ? Color(0xFF5BD2C4) : Color(0xFF000000),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                    borderRadius: const BorderRadius.all(Radius.circular(8))),
+                                                child: Container(
+                                                  padding: const EdgeInsets.only(left: 15, right: 15),
+                                                  child: TextField(
+                                                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                    controller: tecAddress,
+                                                    enabled: false,
+                                                    decoration: const InputDecoration(
+                                                        border: InputBorder.none,
+                                                        contentPadding: EdgeInsets.only(bottom: 5)),
+                                                    onChanged: (text) {
+                                                      //
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                             InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  isMale = false;
-                                                });
+                                              onTap: () async {
+                                                print('사업자번호 인증하기');
                                               },
                                               child: Container(
-                                                width: (MediaQuery.of(context).size.width - 32 - 8) / 2,
-                                                height: MediaQuery.of(context).size.height,
                                                 margin: const EdgeInsets.only(left: 8),
+                                                width: 111,
+                                                height: MediaQuery.of(context).size.height,
                                                 alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                    color: !isMale ? Color(0xFF5BD2C4).withOpacity(0.1) : Colors.white,
-                                                    border: Border.all(
-                                                      width: 1, //
-                                                      color: !isMale ? Color(0xFF5BD2C4) : Color(0xFFDDDDDD),
-                                                    ),
+                                                decoration: const BoxDecoration(
+                                                    color: Color(0xFF5BD2C4),
                                                     borderRadius: BorderRadius.all(Radius.circular(8))),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      !isMale ? "assets/woman_on.png" : "assets/woman.png",
-                                                      width: 48,
-                                                      fit: BoxFit.fitWidth,
+                                                child: const Center(
+                                                  child: Text(
+                                                    "인증하기",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontFamily: "Pretendard",
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.white,
                                                     ),
-                                                    const Padding(
-                                                      padding: EdgeInsets.only(top: 16),
-                                                    ),
-                                                    Text(
-                                                      "여성",
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily: "Pretendard",
-                                                        fontWeight: FontWeight.w400,
-                                                        color: !isMale ? Color(0xFF5BD2C4) : Color(0xFF000000),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 33),
-                                      ),
+                                      const Gap(8),
                                       const Text(
-                                        "연령",
+                                        "*숫자만 입력해주세요.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: "Pretendard",
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xFFC4C4C4),
+                                        ),
+                                      ),
+                                      const Gap(24),
+                                      const Text(
+                                        "요양기관번호",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 14,
@@ -1047,63 +1057,35 @@ class JoinPageState extends BaseState<JoinPage> {
                                           color: Color(0xFF212529),
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: () async {
-                                          String temp = "";
-                                          if (strBirthdayYear == "-1") {
-                                            temp = DateTime.now().year.toString();
-                                          } else {
-                                            temp = strBirthdayYear;
-                                          }
-                                          var result = await showDialog(context: context, builder: (_) => YearSelectDialog(year: temp));
-                                          if (result != "") {
-                                            setState(() {
-                                              strBirthdayYear = result;
-                                            });
-                                          }
-                                        },
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 8),
+                                        width: MediaQuery.of(context).size.width - 32,
+                                        height: 56,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: isCheckAuth ? Color(0xFFefefef) : Colors.white,
+                                            border: Border.all(
+                                              width: 1, //
+                                              color: Color(0xFFDDDDDD),
+                                            ),
+                                            borderRadius: BorderRadius.all(Radius.circular(8))),
                                         child: Container(
-                                          margin: const EdgeInsets.only(top: 8),
-                                          width: MediaQuery.of(context).size.width - 32,
-                                          height: 56,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                width: 1, //
-                                                color: Color(0xFFDDDDDD),
-                                              ),
-                                              borderRadius: BorderRadius.all(Radius.circular(8))),
-                                          child: Row(
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.only(left: 16),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  strBirthdayYear == "-1" ? "출생년도" : strBirthdayYear,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontFamily: "Pretendard",
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color(0xFF212529),
-                                                  ),
-                                                ),
-                                              ),
-                                              Image.asset(
-                                                "assets/arrow_down.png",
-                                                width: 24,
-                                                fit: BoxFit.fitWidth,
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(left: 16),
-                                              ),
-                                            ],
+                                          padding: const EdgeInsets.only(left: 15, right: 15),
+                                          child: TextField(
+                                            style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            controller: tecName,
+                                            enabled: !isCheckAuth,
+                                            decoration: InputDecoration(
+                                                hintText: '요양기관번호를 입력해주세요.',
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.only(bottom: 5)),
+                                            onChanged: (text) {
+                                              strName = text;
+                                            },
                                           ),
                                         ),
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 80),
-                                      ),
+                                      const Gap(64),
                                       const Text(
                                         "약관동의",
                                         style: TextStyle(
@@ -1362,7 +1344,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                           width: MediaQuery.of(context).size.width - 32,
                                           height: 56,
                                           alignment: Alignment.center,
-                                          decoration: const BoxDecoration(color: Color(0xFF212D4E), borderRadius: BorderRadius.all(Radius.circular(8))),
+                                          decoration: const BoxDecoration(
+                                              color: Color(0xFF212D4E),
+                                              borderRadius: BorderRadius.all(Radius.circular(8))),
                                           child: const Center(
                                             child: Text(
                                               "블랑바이미 시작하기",
