@@ -187,8 +187,8 @@ class HttpService {
     return ClinicInfoData.fromJson(json.decode(response.body));
   }
 
-  Future<CustomerRootData> fetchCustomerList({required int clinicId, required int offset, required int limit}) async {
-    String _url = "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=귀&pagination[start]=0&pagination[limit]=10";
+  Future<CustomerRootData> fetchCustomerList({required int clinicId, required int offset}) async {
+    String _url = "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=귀&pagination[start]=$offset&pagination[limit]=10";
     Map<String, String> headers = {
       'Authorization': "Bearer $gJwt",
     };

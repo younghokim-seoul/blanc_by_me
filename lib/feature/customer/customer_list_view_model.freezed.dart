@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CustomerListViewModelState {
-  List<String> get list => throw _privateConstructorUsedError;
+  List<CustomerData> get list => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isEndOfList => throw _privateConstructorUsedError;
   bool get isClinicId => throw _privateConstructorUsedError;
@@ -34,7 +34,10 @@ abstract class $CustomerListViewModelStateCopyWith<$Res> {
           CustomerListViewModelState>;
   @useResult
   $Res call(
-      {List<String> list, bool isLoading, bool isEndOfList, bool isClinicId});
+      {List<CustomerData> list,
+      bool isLoading,
+      bool isEndOfList,
+      bool isClinicId});
 }
 
 /// @nodoc
@@ -60,7 +63,7 @@ class _$CustomerListViewModelStateCopyWithImpl<$Res,
       list: null == list
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<CustomerData>,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -87,7 +90,10 @@ abstract class _$$CustomerListViewModelStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<String> list, bool isLoading, bool isEndOfList, bool isClinicId});
+      {List<CustomerData> list,
+      bool isLoading,
+      bool isEndOfList,
+      bool isClinicId});
 }
 
 /// @nodoc
@@ -112,7 +118,7 @@ class __$$CustomerListViewModelStateImplCopyWithImpl<$Res>
       list: null == list
           ? _value._list
           : list // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<CustomerData>,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -133,15 +139,15 @@ class __$$CustomerListViewModelStateImplCopyWithImpl<$Res>
 
 class _$CustomerListViewModelStateImpl implements _CustomerListViewModelState {
   _$CustomerListViewModelStateImpl(
-      {required final List<String> list,
+      {required final List<CustomerData> list,
       required this.isLoading,
       required this.isEndOfList,
       required this.isClinicId})
       : _list = list;
 
-  final List<String> _list;
+  final List<CustomerData> _list;
   @override
-  List<String> get list {
+  List<CustomerData> get list {
     if (_list is EqualUnmodifiableListView) return _list;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_list);
@@ -192,13 +198,13 @@ class _$CustomerListViewModelStateImpl implements _CustomerListViewModelState {
 abstract class _CustomerListViewModelState
     implements CustomerListViewModelState {
   factory _CustomerListViewModelState(
-      {required final List<String> list,
+      {required final List<CustomerData> list,
       required final bool isLoading,
       required final bool isEndOfList,
       required final bool isClinicId}) = _$CustomerListViewModelStateImpl;
 
   @override
-  List<String> get list;
+  List<CustomerData> get list;
   @override
   bool get isLoading;
   @override

@@ -8,4 +8,6 @@ class CustomerIdReange with _$CustomerIdReange {
     required int start,
     required int end,
   }) = _CustomerIdReange;
+
+  factory CustomerIdReange.empty() => const CustomerIdReange(start: -1, end: -1);
 }

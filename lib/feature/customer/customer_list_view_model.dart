@@ -9,7 +9,7 @@ part 'customer_list_view_model.freezed.dart';
 @freezed
 class CustomerListViewModelState with _$CustomerListViewModelState {
   factory CustomerListViewModelState({
-    required List<CustomerRootData> list,
+    required List<CustomerData> list,
     required bool isLoading,
     required bool isEndOfList,
     required bool isClinicId,
@@ -34,11 +34,13 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
 
   late int clinicId;
 
-  final customerIdRange = const CustomerIdReange(start: 0, end: -1);
+  var customerIdRange = const CustomerIdReange(start: 1, end: 10);
 
   Future<void> _init() async {
     final response = await httpServer.fetchClinicData();
     final clinicData = response.clinicOwner?.clinicData;
+
+
 
     if(clinicData != null) {
       clinicId = clinicData.id;
@@ -52,18 +54,17 @@ Future<void> loadMore() async {
   }
 
   state = state.copyWith(isLoading: true);
-  final remain = customerIdRange.end - (state.list.length + customerIdRange.start - 1);
 
-  final offset = state.list.isEmpty ? customerIdRange.start - 1 : state.list.last.id;
+  final offset = state.list.isEmpty ? customerIdRange.start - 1 :  state.list.last.id; // 0
 
-  final limit = remain > 20 ? 20 : remain;
+  final loadedList = await httpServer.fetchCustomerList(clinicId: clinicId, offset: offset);
 
-  final loadedList = await useCase.execute(offset, limit);
+  customerIdRange = customerIdRange.copyWith(end: loadedList.meta.pagination.total);
 
   state = state.copyWith(
-    list: [...state.list, ...loadedList],
+    list: [...state.list, ...loadedList.data],
     isLoading: false,
-    isEndOfList: loadedList.last.pokedexId == pokedexIdRange.end,
+    isEndOfList: loadedList.data.last.id == customerIdRange.end,
   );
 }
 }
