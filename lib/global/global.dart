@@ -11,6 +11,8 @@ String PHOTO_UPLOAD_PAGE = "https://www.blancbyme.com/ai-curation"; //사진업�
 String ADDRESS_SEARCH_PAGE = "https://blancbyme.com/assets/html/postcode.html"; //주소검색 페이지
 String DANAL_PAGE = "https://blancbyme.com/assets/html/identityVerification.html"; //본인인증
 
+
+
 bool isReview = false; //true : 심시가간
 String reviewDate = "2024-05-21"; //심사날짜
 List<CameraDescription> gCameras = [];

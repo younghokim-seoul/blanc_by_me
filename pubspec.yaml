@@ -60,6 +60,8 @@ dependencies:
   gap: ^3.0.1
   freezed_annotation: ^2.4.1
   youtube_player_flutter: ^9.0.3
+  flutter_riverpod: ^2.5.1
+  flutter_secure_storage: ^9.2.2
 
 
 dev_dependencies:
@@ -69,7 +71,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
-  freezed: ^2.4.5
+  freezed: ^2.5.2
   json_serializable: ^6.7.1
   build_runner:
 

@@ -32,7 +32,7 @@ public enum Net {
         var msg: String!
     }
     
-    // MARK: Helper functions
+    // MARK: Helper function
     
     /**
      *  HTTP request.

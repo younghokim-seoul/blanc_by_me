@@ -12,6 +12,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,7 +20,7 @@ import 'package:permission_handler/permission_handler.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class NoCheckCertificateHttpOverrides extends HttpOverrides {
@@ -165,8 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void goHome() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   void goLogin() {
@@ -195,6 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Network functions
   //////////////////////////////////
   void reqLogin() {
+    print("jwt 토큰 요청");
     setState(() {
       _isLoading = true;
     });

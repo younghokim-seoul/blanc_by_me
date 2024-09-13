@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:blanc_f/global/global.dart';
+import 'package:blanc_f/global/network/dto/clinic_onwer_dto.dart';
+import 'package:blanc_f/global/network/dto/customer_dto.dart';
 import 'package:blanc_f/models/app_update_model.dart';
 import 'package:blanc_f/models/customers%20_res_model.dart';
 import 'package:blanc_f/models/email_check_res_model.dart';
@@ -20,8 +22,7 @@ class HttpService {
   Future<String> fileUpload(XFile image) async {
     String _url = "$SERVER_URL/api/upload";
 
-    final mimeTypeData =
-        lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
+    final mimeTypeData = lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
     Map<String, String> headers = {
       'Authorization': API_TOKEN,
     };
@@ -104,8 +105,7 @@ class HttpService {
   }
 
   //회원가입
-  Future<UserResModel> user(
-      String username, String email, String password) async {
+  Future<UserResModel> user(String username, String email, String password) async {
     String _url = "$SERVER_URL/api/users";
 
     Map<String, String> headers = {
@@ -125,15 +125,8 @@ class HttpService {
   }
 
   //회원가입2
-  Future<CustomersResModel> customers(
-      String _id,
-      String phone,
-      String address,
-      String address2,
-      String gender,
-      String birth,
-      String postcode,
-      String identityVerificationId) async {
+  Future<CustomersResModel> customers(String _id, String phone, String address, String address2, String gender,
+      String birth, String postcode, String identityVerificationId) async {
     String _url = "$SERVER_URL/api/customers";
 
     Map<String, String> headers = {
@@ -161,8 +154,7 @@ class HttpService {
       'data': body,
     };
     Uri uri = Uri.parse(_url);
-    final response =
-        await http.post(uri, headers: headers, body: json.encode(data));
+    final response = await http.post(uri, headers: headers, body: json.encode(data));
 
     return CustomersResModel.fromJson(json.decode(response.body));
   }
@@ -182,5 +174,27 @@ class HttpService {
     final response = await http.post(uri, headers: headers, body: body);
 
     return PassResetResModel.fromJson(json.decode(response.body));
+  }
+
+  Future<ClinicInfoData> fetchClinicData() async {
+    String _url = "$SERVER_URL/api/users/me?populate[0]=clinic_onwer&populate[1]=clinic_onwer.clinic";
+    Map<String, String> headers = {
+      'Authorization': "Bearer $gJwt",
+    };
+    Uri uri = Uri.parse(_url);
+    final response = await http.get(uri, headers: headers);
+
+    return ClinicInfoData.fromJson(json.decode(response.body));
+  }
+
+  Future<CustomerRootData> fetchCustomerList({required int clinicId, required int offset, required int limit}) async {
+    String _url = "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=귀&pagination[start]=0&pagination[limit]=10";
+    Map<String, String> headers = {
+      'Authorization': "Bearer $gJwt",
+    };
+    Uri uri = Uri.parse(_url);
+    final response = await http.get(uri, headers: headers);
+
+    return CustomerRootData.fromJson(json.decode(response.body));
   }
 }

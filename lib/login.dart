@@ -37,9 +37,9 @@ class LoginPageState extends BaseState<LoginPage> {
   // String strEmail = "";
   // String strPass = "";
 
-  TextEditingController tecEmail = TextEditingController(text: "blancbyme3@ydencare.com"); //이메일
+  TextEditingController tecEmail = TextEditingController(text: "clinic.blancbyme@ydencare.com"); //이메일
   TextEditingController tecPwd = TextEditingController(text: "qmffkd88!@"); //패스워드
-  String strEmail = "blancbyme3@ydencare.com";
+  String strEmail = "clinic.blancbyme@ydencare.com";
   String strPass = "qmffkd88!@";
 
   final HttpService httpService = HttpService();

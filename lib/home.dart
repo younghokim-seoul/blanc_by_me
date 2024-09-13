@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:blanc_f/base.dart';
 import 'package:blanc_f/dialog/dlg_common.dart';
+import 'package:blanc_f/feature/customer/customer_scan_screen.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/local_service.dart';
@@ -277,14 +278,15 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () {
-                            CommonDialog().showTwoBtnPopup(context, "정말 로그아웃 하시겠습니까?", "네", "아니요").then((val) {
-                              if (val.toString() == "1") {
-                                LocalService.setUserEmail("");
-                                LocalService.setUserPwd("");
-                                Navigator.pushReplacement(
-                                    context, MaterialPageRoute(builder: (context) => LoginPage()));
-                              }
-                            });
+                            // CommonDialog().showTwoBtnPopup(context, "정말 로그아웃 하시겠습니까?", "네", "아니요").then((val) {
+                            //   if (val.toString() == "1") {
+                            //     LocalService.setUserEmail("");
+                            //     LocalService.setUserPwd("");
+                            //     Navigator.pushReplacement(
+                            //         context, MaterialPageRoute(builder: (context) => LoginPage()));
+                            //   }
+                            // });
+                            Navigator.push(context, SlideRightTransRoute(builder: (context) => CustomerScanScreen(), settings: RouteSettings()));
                           },
                           child: Align(
                             alignment: Alignment.centerLeft,
