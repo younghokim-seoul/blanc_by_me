@@ -9,5 +9,5 @@ class CustomerIdReange with _$CustomerIdReange {
     required int end,
   }) = _CustomerIdReange;
 
-  factory CustomerIdReange.empty() => const CustomerIdReange(start: -1, end: -1);
+  factory CustomerIdReange.empty() => const CustomerIdReange(start: 1, end: 10);
 }

@@ -23,6 +23,7 @@ class CustomerScanBar extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
+        const Gap(15),
         InkWell(
           onTap: () => onCancelTap(),
           child: SizedBox.square(

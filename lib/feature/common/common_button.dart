@@ -16,9 +16,9 @@ class CommonButton extends StatelessWidget {
   final String title;
   final void Function()? onPressed;
 
-  factory CommonButton.primary(String title, {Function()? onPressed}) {
+  factory CommonButton.primary(String title, {Function()? onPressed,double? height}) {
     return CommonButton._(
-      height: 56,
+      height: height ?? 56,
       width: double.infinity,
       color: PrimaryColor,
       title: title,
@@ -44,7 +44,7 @@ class CommonButton extends StatelessWidget {
         width: width,
         height: height,
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.all(Radius.circular(8))),
+        decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(8))),
         child:  Center(
           child: Text(
             title,

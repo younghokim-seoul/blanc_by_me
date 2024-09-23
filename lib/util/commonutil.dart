@@ -2,9 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 void showToast(String msg) {
-  Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM, timeInSecForIosWeb: 1, backgroundColor: Colors.black, textColor: Colors.white, fontSize: 14.0);
+  Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 14.0);
 }
 
 //숫자 포맷, 변환
@@ -19,7 +27,7 @@ String getDevType() {
   String target = "";
   if (Platform.isAndroid) {
     target = "aos";
-  } else if(Platform.isIOS) {
+  } else if (Platform.isIOS) {
     target = "ios";
   }
   return target;
@@ -33,4 +41,15 @@ bool validPwd(String pwd) {
   String pattern = r'^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,20}$';
   RegExp regExp = new RegExp(pattern);
   return regExp.hasMatch(pwd);
+}
+
+String formatDate(String date) {
+  DateTime parsedDate = DateTime.parse(date);
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
+  return formatter.format(parsedDate);
+}
+
+String formatDateTime(DateTime date) {
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
+  return formatter.format(date);
 }

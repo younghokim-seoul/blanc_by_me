@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/network/dto/clinic_onwer_dto.dart';
 import 'package:blanc_f/global/network/dto/customer_dto.dart';
+import 'package:blanc_f/global/network/dto/customer_save_request.dart';
 import 'package:blanc_f/models/app_update_model.dart';
 import 'package:blanc_f/models/customers%20_res_model.dart';
 import 'package:blanc_f/models/email_check_res_model.dart';
@@ -188,7 +189,8 @@ class HttpService {
   }
 
   Future<CustomerRootData> fetchCustomerList({required int clinicId, required int offset}) async {
-    String _url = "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=귀&pagination[start]=$offset&pagination[limit]=10";
+    String _url =
+        "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=귀&pagination[start]=$offset&pagination[limit]=10";
     Map<String, String> headers = {
       'Authorization': "Bearer $gJwt",
     };
@@ -196,5 +198,26 @@ class HttpService {
     final response = await http.get(uri, headers: headers);
 
     return CustomerRootData.fromJson(json.decode(response.body));
+  }
+
+  Future<bool> saveCustomer({required int clinicId, required String name, required String birthDay}) async {
+    String url = "$SERVER_URL/api/clinic-customers";
+    Map<String, String> headers = {
+      'Authorization': "Bearer $gJwt",
+    };
+    Uri uri = Uri.parse(url);
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: CustomerSaveRequest(
+        data: CustomerSaveData(
+          name: name,
+          birthDay: birthDay,
+          clinic: clinicId.toString(),
+        ),
+      ).toJson(),
+    );
+
+    return response.statusCode == 200;
   }
 }

@@ -29,7 +29,7 @@ class _YearSelectDialogState extends State<YearSelectDialog> {
         child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
           return Container(
             width: 328,
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+            decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,9 +38,9 @@ class _YearSelectDialogState extends State<YearSelectDialog> {
                   width: 300,
                   height: 300,
                   child: YearPicker(
-                    firstDate: DateTime(1900, 1),
-                    lastDate: DateTime(DateTime.now().year, 1),
                     initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100),
                     selectedDate: _selectedDate,
                     onChanged: (DateTime dateTime) {
                       _selectedDate = dateTime;
@@ -49,29 +49,6 @@ class _YearSelectDialogState extends State<YearSelectDialog> {
                     },
                   ),
                 ),
-
-                // Container(
-                //   height: 48,
-                //   margin: EdgeInsets.only(top: 32, bottom: 24, left: 24, right: 24),
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       String year = _selectedDate.year.toString();
-                //       Navigator.pop(context, year);
-                //     },
-                //     child: Container(
-                //       height: MediaQuery.of(context).size.height,
-                //       decoration: const BoxDecoration(
-                //           color: PrimaryColor,
-                //           borderRadius: BorderRadius.all(Radius.circular(10))),
-                //       child: Center(
-                //         child: Text(
-                //           "확인",
-                //           style: new TextStyle(fontFamily: "Pretendard", fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           );

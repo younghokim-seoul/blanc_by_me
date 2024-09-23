@@ -34,7 +34,7 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
 
   late int clinicId;
 
-  var customerIdRange = const CustomerIdReange(start: 1, end: 10);
+  var customerIdRange = CustomerIdReange.empty();
 
   Future<void> _init() async {
     final response = await httpServer.fetchClinicData();
