@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:blanc_f/global/colors.dart';
+import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/network/dto/customer_dto.dart';
+import 'package:blanc_f/shooting.dart';
 import 'package:blanc_f/util/commonutil.dart';
+import 'package:blanc_f/util/transition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
@@ -34,7 +40,17 @@ class CustomerCard extends ConsumerWidget {
                 description: attributesData.createdAt != null ? formatDate(attributesData.createdAt!) : '',
               ),
               const Gap(16),
-              TakePictureButton(onClickable: () {}),
+              TakePictureButton(onClickable: () async {
+                if (Platform.isAndroid) {
+                  await Navigator.push(
+                      context,
+                      SlideRightTransRoute(
+                          builder: (context) => ShootingPage(type: 2), settings: const RouteSettings()));
+                } else {
+                  const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
+                  await platformChannel.invokeMethod('lux', {"type": "2", "jwt": gJwt});
+                }
+              }),
               const Gap(24),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:blanc_f/feature/customer/customer_id_reange.dart';
 import 'package:blanc_f/global/http_service.dart';
 import 'package:blanc_f/global/network/dto/customer_dto.dart';
+import 'package:blanc_f/util/commonutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -36,40 +37,62 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
 
   var customerIdRange = CustomerIdReange.empty();
 
+  String query = '';
+
   Future<void> _init() async {
     final response = await httpServer.fetchClinicData();
     final clinicData = response.clinicOwner?.clinicData;
 
-
-
-    if(clinicData != null) {
+    if (clinicData != null) {
       clinicId = clinicData.id;
       state = state.copyWith(isClinicId: true);
     }
   }
 
-Future<void> loadMore() async {
-  if (state.isLoading || state.isEndOfList) {
-    return;
+  setQuery(String query) {
+    print("setQuery: $query");
+    this.query = query;
+    customerIdRange = CustomerIdReange.empty();
+    state = state.copyWith(
+      list: [],
+      isLoading: false,
+      isEndOfList: false,
+    );
   }
 
-  state = state.copyWith(isLoading: true);
+  Future<bool> saveCustomer(String name, DateTime birthDay) async {
+    final response = await httpServer.saveCustomer(clinicId: clinicId, name: name, birthDay: birthDay.toYyyyMmDd());
+    return response;
+  }
 
-  final offset = state.list.isEmpty ? customerIdRange.start - 1 :  state.list.last.id; // 0
+  Future<void> loadMore() async {
+    if (state.isLoading || state.isEndOfList || query.isEmpty) {
+      return;
+    }
 
-  final loadedList = await httpServer.fetchCustomerList(clinicId: clinicId, offset: offset);
+    state = state.copyWith(isLoading: true);
 
-  customerIdRange = customerIdRange.copyWith(end: loadedList.meta.pagination.total);
+    final offset = state.list.isEmpty ? customerIdRange.start - 1 : state.list.last.id; // 0
 
-  state = state.copyWith(
-    list: [...state.list, ...loadedList.data],
-    isLoading: false,
-    isEndOfList: loadedList.data.last.id == customerIdRange.end,
-  );
+    final loadedList = await httpServer.fetchCustomerList(clinicId: clinicId, query: query, offset: offset);
+
+
+    print("loadedList: $loadedList");
+
+    customerIdRange = customerIdRange.copyWith(end: loadedList.meta.pagination.total);
+
+    final isEndOfList = loadedList.data.isEmpty || loadedList.data.last.id == customerIdRange.end;
+
+    state = state.copyWith(
+      list: [...state.list, ...loadedList.data],
+      isLoading: false,
+      isEndOfList: isEndOfList,
+    );
+  }
 }
-}
 
-final customerListViewModelProvider = StateNotifierProvider.autoDispose<CustomerListViewModel, CustomerListViewModelState>((ref) {
+final customerListViewModelProvider =
+    StateNotifierProvider.autoDispose<CustomerListViewModel, CustomerListViewModelState>((ref) {
   final httpService = ref.watch(httpServiceProvider);
   return CustomerListViewModel(httpServer: httpService);
 });

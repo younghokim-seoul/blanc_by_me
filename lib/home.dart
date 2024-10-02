@@ -63,16 +63,7 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             height: MediaQuery.of(context).size.height,
             child: InkWell(
               onTap: () async {
-                //촬영 페이지로 이동
-                print('촬영 페이지로 이동');
-                if (Platform.isAndroid) {
-                  Navigator.push(context,
-                      SlideRightTransRoute(builder: (context) => ShootingPage(type: 2), settings: RouteSettings()));
-                } else {
-                  const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
-                  String res = await platformChannel.invokeMethod('lux', {"type": "2", "jwt": gJwt});
-                  showToast(res);
-                }
+                Navigator.push(context, SlideRightTransRoute(builder: (context) => const CustomerScanScreen(), settings: const RouteSettings()));
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +100,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                   InkWell(
                     onTap: () async {
                       //사진 촬영하는 방법 팝업 표시
-                      var result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => ImageGuide(), settings: RouteSettings()));
+                      var result = await Navigator.push(
+                          context, SlideRightTransRoute(builder: (context) => ImageGuide(), settings: RouteSettings()));
                       SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]);
@@ -156,7 +148,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                var result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => const VideoGuidePage(), settings: RouteSettings()));
+                var result = await Navigator.push(context,
+                    SlideRightTransRoute(builder: (context) => const VideoGuidePage(), settings: RouteSettings()));
                 SystemChrome.setPreferredOrientations([
                   DeviceOrientation.portraitUp,
                 ]);
@@ -278,15 +271,14 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () {
-                            // CommonDialog().showTwoBtnPopup(context, "정말 로그아웃 하시겠습니까?", "네", "아니요").then((val) {
-                            //   if (val.toString() == "1") {
-                            //     LocalService.setUserEmail("");
-                            //     LocalService.setUserPwd("");
-                            //     Navigator.pushReplacement(
-                            //         context, MaterialPageRoute(builder: (context) => LoginPage()));
-                            //   }
-                            // });
-                            Navigator.push(context, SlideRightTransRoute(builder: (context) => CustomerScanScreen(), settings: RouteSettings()));
+                            CommonDialog().showTwoBtnPopup(context, "정말 로그아웃 하시겠습니까?", "네", "아니요").then((val) {
+                              if (val.toString() == "1") {
+                                LocalService.setUserEmail("");
+                                LocalService.setUserPwd("");
+                                Navigator.pushReplacement(
+                                    context, MaterialPageRoute(builder: (context) => LoginPage()));
+                              }
+                            });
                           },
                           child: Align(
                             alignment: Alignment.centerLeft,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
+
 class CustomerScanBar extends ConsumerWidget {
   const CustomerScanBar({
     super.key,
@@ -17,8 +18,7 @@ class CustomerScanBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = TextEditingController();
-
+    final controller = TextEditingController(text: "귀");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -60,7 +60,10 @@ class CustomerScanBar extends ConsumerWidget {
             Expanded(
               child: CommonButton.primary(
                 '검색',
-                onPressed: () => onSearchTap(controller.text),
+                onPressed: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  onSearchTap(controller.text);
+                },
               ),
             ),
             Gap(8),

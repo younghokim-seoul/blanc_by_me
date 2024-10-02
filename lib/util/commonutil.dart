@@ -53,3 +53,10 @@ String formatDateTime(DateTime date) {
   DateFormat formatter = DateFormat('yyyy-MM-dd');
   return formatter.format(date);
 }
+
+
+extension DateTimeFormatting on DateTime {
+  String toYyyyMmDd() {
+    return DateFormat('yyyyMMdd').format(this);
+  }
+}

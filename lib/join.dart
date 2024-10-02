@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:blanc_f/base.dart';
-import 'package:blanc_f/dialog/dlg_danal_webview.dart';
 import 'package:blanc_f/dialog/dlg_find_addr.dart';
-import 'package:blanc_f/dialog/dlg_year_select.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
 import 'package:blanc_f/global/local_service.dart';
+import 'package:blanc_f/global/network/dto/clinic_user.dart';
 import 'package:blanc_f/home.dart';
 import 'package:blanc_f/models/customers%20_res_model.dart';
 import 'package:blanc_f/models/email_check_res_model.dart';
@@ -45,28 +44,27 @@ class JoinPageState extends BaseState<JoinPage> {
   TextEditingController tecPhone1 = TextEditingController();
   TextEditingController tecPhone2 = TextEditingController();
   TextEditingController tecPhone3 = TextEditingController();
-  TextEditingController tecCode = TextEditingController();
+  TextEditingController businessNumber = TextEditingController();
   TextEditingController tecAddress = TextEditingController();
   TextEditingController tecAddressDetail = TextEditingController();
+  TextEditingController healthcareFacilityNumber = TextEditingController();
 
-  String strEmail = "";
+  String strEmail = "a@naver.com";
   String strTempEmail = "";
   bool isCheckEmail = false; //중복여부
-  String strPass1 = "";
-  String strPass2 = "";
-  String strName = "";
-  String strPhone1 = "";
-  String strPhone2 = "";
-  String strPhone3 = "";
-  String strTempPhone = "";
-  bool isCheckAuth = false;
+  String strPass1 = "vkxmfhs135!";
+  String strPass2 = "vkxmfhs135!";
+  String strName = "a";
+  String strPhone1 = "010";
+  String strPhone2 = "1234";
+  String strPhone3 = "5678";
+  String strHealthcareFacilityNumber = "";
+  bool isCertificate = false;
 
   // String strCode = "";
   String strAddress = "";
   String strAddressDetail = "";
   String strPostCode = "";
-  bool isMale = true;
-  String strBirthdayYear = "-1";
   bool isAllSelect = false;
   bool isTerm1 = false;
   bool isTerm2 = false;
@@ -105,40 +103,6 @@ class JoinPageState extends BaseState<JoinPage> {
     launchUrl(_url);
   }
 
-  Future<void> onAuth() async {
-    if (strName == "") {
-      showToast("이름을 입력해주세요.");
-      return;
-    }
-
-    if (strPhone1 == "" || strPhone2 == "" || strPhone3 == "") {
-      showToast("연락처를 입력해주세요.");
-      return;
-    }
-
-    String phone = strPhone1 + strPhone2 + strPhone3;
-    if (phone.length < 11) {
-      showToast("연락처는 11자리 이어야 합니다.");
-      return;
-    }
-
-    var result = await showDialog(context: context, builder: (_) => DanalWebviewDialog(name: strName, phone: phone));
-    if (result != null) {
-      Map myData = result;
-      String status = myData["result"];
-      if (status == "success") {
-        impUid = myData["imp_uid"];
-        String merchant_uid = myData["merchant_uid"];
-        isCheckAuth = true;
-        setState(() {});
-      } else {
-        showToast("본인인증 실패했습니다.");
-      }
-    }
-  }
-
-  // Network functions
-  //////////////////////////////////
   void reqJoin() {
     if (strEmail == "") {
       showToast("이메일을 입력해주세요.");
@@ -186,18 +150,13 @@ class JoinPageState extends BaseState<JoinPage> {
       return;
     }
 
-    if (!isCheckAuth) {
-      showToast("연락처 인증 해주세요.");
+    if (!isCertificate) {
+      showToast("사업자 번호 인증해주세요.");
       return;
     }
 
     if (strAddress == "" || strAddressDetail == "") {
       showToast("주소를 입력해주세요.");
-      return;
-    }
-
-    if (strBirthdayYear == "-1") {
-      showToast("출생년도를 선택해주세요.");
       return;
     }
 
@@ -263,16 +222,24 @@ class JoinPageState extends BaseState<JoinPage> {
     setState(() {
       _isLoading = true;
     });
-    Future<UserResModel> info = httpService.user(strName, strEmail, strPass1);
+
+    final clinicUser = ClinicUser(
+        email: strEmail,
+        password: strPass1,
+        clinicName: strName,
+        phone: strPhone1 + strPhone2 + strPhone3,
+        address: strAddress,
+        address2: strAddressDetail,
+        privacyPolicy: true,
+        licenseNumber: strHealthcareFacilityNumber,
+        businessNumber: businessNumber.text);
+
+    Future<UserResModel> info = httpService.user(clinicUser);
+
     info.then((UserResModel value) {
       setState(() {
         _isLoading = false;
       });
-      if (value.id! > 0) {
-        reqPostCustomers(value.id!);
-      } else {
-        showToast("회원가입 실패했습니다.");
-      }
     }).catchError((onError) {
       setState(() {
         _isLoading = false;
@@ -286,25 +253,24 @@ class JoinPageState extends BaseState<JoinPage> {
       _isLoading = true;
     });
     String phone = strPhone1 + strPhone2 + strPhone3;
-    Future<CustomersResModel> info = httpService.customers(_id.toString(), phone, strAddress, strAddressDetail,
-        isMale ? "male" : "female", strBirthdayYear, strPostCode, impUid);
-    info.then((CustomersResModel value) {
-      setState(() {
-        _isLoading = false;
-      });
-      if (value.data!.id! > 0) {
-        showToast("회원가입 완료되었습니다.");
-        // _onBackPressed();
-        reqLogin();
-      } else {
-        showToast("회원가입 실패했습니다.");
-      }
-    }).catchError((onError) {
-      setState(() {
-        _isLoading = false;
-      });
-      showToast(onError);
-    });
+    // Future<CustomersResModel> info = httpService.customers(_id.toString(), phone, strAddress, strAddressDetail, strPostCode, impUid);
+    // info.then((CustomersResModel value) {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    //   if (value.data!.id! > 0) {
+    //     showToast("회원가입 완료되었습니다.");
+    //     // _onBackPressed();
+    //     reqLogin();
+    //   } else {
+    //     showToast("회원가입 실패했습니다.");
+    //   }
+    // }).catchError((onError) {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    //   showToast(onError);
+    // });
   }
 
   void reqLogin() {
@@ -579,7 +545,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                            color: isCheckAuth ? Color(0xFFefefef) : Colors.white,
+                                            color: Colors.white,
                                             border: Border.all(
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
@@ -590,7 +556,6 @@ class JoinPageState extends BaseState<JoinPage> {
                                           child: TextField(
                                             style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                             controller: tecName,
-                                            enabled: !isCheckAuth,
                                             decoration: InputDecoration(
                                                 hintText: '치과명을 입력해주세요',
                                                 border: InputBorder.none,
@@ -626,7 +591,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                               height: MediaQuery.of(context).size.height,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
-                                                  color: isCheckAuth ? Color(0xFFefefef) : Colors.white,
+                                                  color: Colors.white,
                                                   border: Border.all(
                                                     width: 1, //
                                                     color: Color(0xFFDDDDDD),
@@ -639,7 +604,6 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   controller: tecPhone1,
                                                   maxLength: 3,
                                                   textAlign: TextAlign.center,
-                                                  enabled: !isCheckAuth,
                                                   keyboardType: TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText: '010',
@@ -675,7 +639,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                               height: MediaQuery.of(context).size.height,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
-                                                  color: isCheckAuth ? Color(0xFFefefef) : Colors.white,
+                                                  color: Colors.white,
                                                   border: Border.all(
                                                     width: 1, //
                                                     color: Color(0xFFDDDDDD),
@@ -688,7 +652,6 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   controller: tecPhone2,
                                                   maxLength: 4,
                                                   textAlign: TextAlign.center,
-                                                  enabled: !isCheckAuth,
                                                   keyboardType: TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText: '0000',
@@ -724,7 +687,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                               height: MediaQuery.of(context).size.height,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
-                                                  color: isCheckAuth ? Color(0xFFefefef) : Colors.white,
+                                                  color: Colors.white,
                                                   border: Border.all(
                                                     width: 1, //
                                                     color: Color(0xFFDDDDDD),
@@ -737,7 +700,6 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   controller: tecPhone3,
                                                   maxLength: 4,
                                                   textAlign: TextAlign.center,
-                                                  enabled: !isCheckAuth,
                                                   keyboardType: TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText: '0000',
@@ -754,98 +716,6 @@ class JoinPageState extends BaseState<JoinPage> {
                                           ],
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          onAuth();
-                                        },
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 8),
-                                          width: MediaQuery.of(context).size.width - 32,
-                                          height: 56,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              color: (strPhone1 + strPhone2 + strPhone3).length == 11
-                                                  ? Color(0xFF5BD2C4)
-                                                  : Color(0xFFEFEFEF),
-                                              borderRadius: BorderRadius.all(Radius.circular(8))),
-                                          child: Center(
-                                            child: Text(
-                                              "인증하기",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Pretendard",
-                                                fontWeight: FontWeight.w600,
-                                                color: (strPhone1 + strPhone2 + strPhone3).length == 11
-                                                    ? Colors.white
-                                                    : Color(0xFFA9A9A9),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      // Visibility(
-                                      //   visible: isCheckAuth,
-                                      //   child: Container(
-                                      //     margin: const EdgeInsets.only(top: 8),
-                                      //     width: MediaQuery.of(context).size.width - 32,
-                                      //     height: 56,
-                                      //     alignment: Alignment.center,
-                                      //     child: Row(
-                                      //       children: [
-                                      //         Expanded(
-                                      //           child: Container(
-                                      //             height: MediaQuery.of(context).size.height,
-                                      //             alignment: Alignment.center,
-                                      //             decoration: BoxDecoration(
-                                      //                 border: Border.all(
-                                      //                   width: 1, //
-                                      //                   color: Color(0xFFDDDDDD),
-                                      //                 ),
-                                      //                 borderRadius: BorderRadius.all(Radius.circular(8))),
-                                      //             child: Container(
-                                      //               padding: const EdgeInsets.only(left: 15, right: 15),
-                                      //               child: TextField(
-                                      //                 keyboardType: TextInputType.number,
-                                      //                 style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                                      //                 controller: tecCode,
-                                      //                 decoration: InputDecoration(hintText: '인증번호를 입력해주세요.', border: InputBorder.none, contentPadding: EdgeInsets.only(bottom: 5)),
-                                      //                 onChanged: (text) {
-                                      //                   strCode = text;
-                                      //                   setState(() {});
-                                      //                 },
-                                      //               ),
-                                      //             ),
-                                      //           ),
-                                      //         ),
-                                      //         InkWell(
-                                      //           onTap: () {
-                                      //             //
-                                      //           },
-                                      //           child: Container(
-                                      //             margin: const EdgeInsets.only(left: 8),
-                                      //             width: 111,
-                                      //             height: MediaQuery.of(context).size.height,
-                                      //             alignment: Alignment.center,
-                                      //             decoration: BoxDecoration(color: strCode != "" ? Color(0xFF5BD2C4) : Color(0xFFEFEFEF), borderRadius: BorderRadius.all(Radius.circular(8))),
-                                      //             child: Center(
-                                      //               child: Text(
-                                      //                 "확인",
-                                      //                 textAlign: TextAlign.center,
-                                      //                 style: TextStyle(
-                                      //                   fontSize: 18,
-                                      //                   fontFamily: "Pretendard",
-                                      //                   fontWeight: FontWeight.w600,
-                                      //                   color: strCode != "" ? Colors.white : Color(0xFFA9A9A9),
-                                      //                 ),
-                                      //               ),
-                                      //             ),
-                                      //           ),
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //   ),
-                                      // ),
                                       const Padding(
                                         padding: EdgeInsets.only(top: 24),
                                       ),
@@ -994,14 +864,12 @@ class JoinPageState extends BaseState<JoinPage> {
                                                   padding: const EdgeInsets.only(left: 15, right: 15),
                                                   child: TextField(
                                                     style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                                                    controller: tecAddress,
-                                                    enabled: false,
+                                                    controller: businessNumber,
+                                                    enabled: !isCertificate,
+                                                    keyboardType: TextInputType.number,
                                                     decoration: const InputDecoration(
                                                         border: InputBorder.none,
                                                         contentPadding: EdgeInsets.only(bottom: 5)),
-                                                    onChanged: (text) {
-                                                      //
-                                                    },
                                                   ),
                                                 ),
                                               ),
@@ -1009,6 +877,17 @@ class JoinPageState extends BaseState<JoinPage> {
                                             InkWell(
                                               onTap: () async {
                                                 print('사업자번호 인증하기');
+
+                                                if (businessNumber.text.isEmpty) {
+                                                  showToast("사업자번호를 입력해주세요.");
+                                                  return;
+                                                }
+                                                final isCertificate = await httpService.checkBusinessNumber(businessNumber.text);
+
+                                                print("isCertificate : $isCertificate");
+                                                setState(() {
+                                                  this.isCertificate = isCertificate;
+                                                });
                                               },
                                               child: Container(
                                                 margin: const EdgeInsets.only(left: 8),
@@ -1063,7 +942,6 @@ class JoinPageState extends BaseState<JoinPage> {
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
-                                            color: isCheckAuth ? Color(0xFFefefef) : Colors.white,
                                             border: Border.all(
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
@@ -1074,13 +952,13 @@ class JoinPageState extends BaseState<JoinPage> {
                                           child: TextField(
                                             style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                                             controller: tecName,
-                                            enabled: !isCheckAuth,
                                             decoration: InputDecoration(
                                                 hintText: '요양기관번호를 입력해주세요.',
                                                 border: InputBorder.none,
                                                 contentPadding: EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
-                                              strName = text;
+                                              strHealthcareFacilityNumber = text;
+                                              setState(() {});
                                             },
                                           ),
                                         ),

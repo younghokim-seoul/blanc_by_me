@@ -599,16 +599,21 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
   Future<void> takeImage() async {
 
+
+    //todo 테스트
+    isCheckPhoto = true;
     if (isCheckPhoto == false) {
       showToast("촬영조건이 만족되지 않습니다.");
       return;
     }
     XFile file = await controller.takePicture();
     saveImageToGallery(file.path);
-    CommonDialog().showTwoBtnPopup(context, "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", "확인", "다시 촬영하기").then((val) {
+    CommonDialog().showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기").then((val) {
       if (val.toString() == "1") {
         uploadImage(file);
-        _launchUrl();
+
+        //todo 김영호 테스트
+        // _launchUrl();
       }
     });
   }
@@ -620,6 +625,8 @@ class ShootingPageState extends BaseState<ShootingPage> {
     // //   throw Exception('Could not launch $_url');
     // // }
     // launchUrl(_url);
+
+
     String result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => Webview1Page(), settings: RouteSettings()));
     if (result == "200"){
       SystemChrome.setPreferredOrientations([

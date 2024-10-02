@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:blanc_f/feature/common/common_button.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/util/commonutil.dart';
@@ -45,7 +47,7 @@ class CustomerRegisterDialog extends HookConsumerWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    FocusScope.of(context).unfocus();
+
                     Navigator.pop(context);
                   },
                   child: Image.asset(

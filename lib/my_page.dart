@@ -46,7 +46,7 @@ class MyPageWebViewState extends BaseState<MyPageWebView> {
     ]);
     // webUrl = "$PHOTO_UPLOAD_PAGE?auth=$gJwt";
     // webUrl = PHOTO_UPLOAD_PAGE;
-    webUrl = "https://www.blancbyme.com/webview?redirect=/mypage";
+    webUrl = "https://clinic.blancbyme.com/webview?redirect=/clinic-info/basic";
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
