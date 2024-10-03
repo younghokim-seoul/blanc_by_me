@@ -9,7 +9,6 @@ import 'package:blanc_f/dialog/dlg_method1.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
-import 'package:blanc_f/global/network/dto/customer_photo_dto.dart';
 import 'package:blanc_f/image_guide.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
@@ -21,7 +20,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:light/light.dart';
 import 'package:sized_context/sized_context.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /**
  * 촬영페이지
@@ -642,16 +640,16 @@ class ShootingPageState extends BaseState<ShootingPage> {
         .showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기")
         .then((val) async {
       if (val.toString() == "1") {
-        // uploadImage(file);
 
         try {
           await EasyLoading.show();
           final HttpService httpService = HttpService();
           final photoData = await httpService.fileUpload(file);
-          final isSuccess = await httpService.fetchAiCuration(
-              userId: widget.userId, toothId: photoData.data.first.id);
-          EasyLoading.dismiss();
-          print("ai 큐레이션 성공.. $isSuccess");
+          await httpService.fetchAiCuration(
+            userId: widget.userId,
+            toothId: photoData.data.first.id,
+          );
+
           _dismissLoadingAndShowMessage("AI 큐레이션이 완료되었습니다");
           _onBackPressed();
         } catch (e) {
@@ -685,31 +683,6 @@ class ShootingPageState extends BaseState<ShootingPage> {
         DeviceOrientation.landscapeLeft,
       ]);
     }
-  }
-
-  // Network functions
-  //////////////////////////////////
-  //사진 업로드
-  Future<void> uploadImage(XFile _file) async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
-
-    // final HttpService httpService = HttpService();
-    // final info = await httpService.fileUpload(_file);
-    //
-    // info.then((CustomerPhotoDto value) async {
-    //   // setState(() {
-    //   //   _isLoading = false;
-    //   // });
-    //   print(value);
-    // }).catchError((onError) {
-    //   // setState(() {
-    //   //   _isLoading = false;
-    //   // });
-    //   // showToast(onError);
-    //   print("upload failed : $onError");
-    // });
   }
 
   @override

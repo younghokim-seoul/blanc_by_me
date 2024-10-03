@@ -62,8 +62,8 @@ class JoinPageState extends BaseState<JoinPage> {
   bool isCertificate = false;
 
   // String strCode = "";
-  String strAddress = "";
-  String strAddressDetail = "";
+  String strAddress = "서울시";
+  String strAddressDetail = "성동구";
   String strPostCode = "";
   bool isAllSelect = false;
   bool isTerm1 = false;
@@ -92,7 +92,10 @@ class JoinPageState extends BaseState<JoinPage> {
   }
 
   void goHome() {
-    Navigator.push(context, SlideRightTransRoute(builder: (context) => HomePage(), settings: RouteSettings()));
+    Navigator.pushReplacement(
+        context,
+        SlideRightTransRoute(
+            builder: (context) => HomePage(), settings: RouteSettings()));
   }
 
   Future<void> _launchUrl(String type) async {
@@ -234,12 +237,21 @@ class JoinPageState extends BaseState<JoinPage> {
         licenseNumber: strHealthcareFacilityNumber,
         businessNumber: businessNumber.text);
 
-    Future<UserResModel> info = httpService.user(clinicUser);
+    Future<bool> info = httpService.joinClinic(clinicUser);
 
-    info.then((UserResModel value) {
+    info.then((bool value) {
       setState(() {
         _isLoading = false;
       });
+
+      if(value){
+        showToast("회원가입 완료되었습니다.");
+        reqLogin();
+      }else{
+        showToast("회원가입에 실패하였습니다.");
+      }
+
+
     }).catchError((onError) {
       setState(() {
         _isLoading = false;
@@ -351,7 +363,8 @@ class JoinPageState extends BaseState<JoinPage> {
                                   padding: EdgeInsets.only(left: 16, right: 16),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Padding(
                                         padding: EdgeInsets.only(top: 24),
@@ -378,31 +391,48 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         child: Row(
                                           children: [
                                             Expanded(
                                               child: Container(
-                                                height: MediaQuery.of(context).size.height,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
                                                       width: 1, //
                                                       color: Color(0xFFDDDDDD),
                                                     ),
-                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 child: Container(
-                                                  padding: const EdgeInsets.only(left: 15, right: 15),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15, right: 15),
                                                   child: TextField(
-                                                    keyboardType: TextInputType.emailAddress,
-                                                    style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                    keyboardType: TextInputType
+                                                        .emailAddress,
+                                                    style: new TextStyle(
+                                                        fontSize: 16.0,
+                                                        fontWeight:
+                                                            FontWeight.w400),
                                                     controller: tecEmail,
                                                     decoration: InputDecoration(
-                                                        hintText: '이메일을 입력해주세요.',
-                                                        border: InputBorder.none,
-                                                        contentPadding: EdgeInsets.only(bottom: 5)),
+                                                        hintText:
+                                                            '이메일을 입력해주세요.',
+                                                        border:
+                                                            InputBorder.none,
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                bottom: 5)),
                                                     onChanged: (text) {
                                                       strEmail = text;
                                                       setState(() {});
@@ -416,15 +446,22 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 getUsers();
                                               },
                                               child: Container(
-                                                margin: const EdgeInsets.only(left: 8),
+                                                margin: const EdgeInsets.only(
+                                                    left: 8),
                                                 width: 111,
-                                                height: MediaQuery.of(context).size.height,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
-                                                    color: isValidEmailFormat(strEmail)
+                                                    color: isValidEmailFormat(
+                                                            strEmail)
                                                         ? Color(0xFF5BD2C4)
                                                         : Color(0xFFEFEFEF),
-                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 child: Center(
                                                   child: Text(
                                                     "중복확인",
@@ -432,8 +469,10 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     style: TextStyle(
                                                       fontSize: 18,
                                                       fontFamily: "Pretendard",
-                                                      fontWeight: FontWeight.w600,
-                                                      color: isValidEmailFormat(strEmail)
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: isValidEmailFormat(
+                                                              strEmail)
                                                           ? Colors.white
                                                           : Color(0xFFA9A9A9),
                                                     ),
@@ -459,7 +498,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
@@ -467,18 +508,25 @@ class JoinPageState extends BaseState<JoinPage> {
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
                                             ),
-                                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
                                         child: Container(
-                                          padding: const EdgeInsets.only(left: 15, right: 15),
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 15),
                                           child: TextField(
-                                            keyboardType: TextInputType.emailAddress,
-                                            style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            style: new TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w400),
                                             controller: tecPwd1,
                                             obscureText: true,
                                             decoration: InputDecoration(
-                                                hintText: '8~16자리 영문,숫자,특수문자 포함',
+                                                hintText:
+                                                    '8~16자리 영문,숫자,특수문자 포함',
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(bottom: 5)),
+                                                contentPadding:
+                                                    EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strPass1 = text;
                                             },
@@ -500,7 +548,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
@@ -508,18 +558,24 @@ class JoinPageState extends BaseState<JoinPage> {
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
                                             ),
-                                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
                                         child: Container(
-                                          padding: const EdgeInsets.only(left: 15, right: 15),
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 15),
                                           child: TextField(
-                                            keyboardType: TextInputType.emailAddress,
-                                            style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            style: new TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w400),
                                             controller: tecPwd2,
                                             obscureText: true,
                                             decoration: InputDecoration(
                                                 hintText: '비밀번호를 다시 입력해주세요',
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(bottom: 5)),
+                                                contentPadding:
+                                                    EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strPass2 = text;
                                             },
@@ -541,7 +597,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
@@ -550,16 +608,21 @@ class JoinPageState extends BaseState<JoinPage> {
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
                                             ),
-                                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
                                         child: Container(
-                                          padding: const EdgeInsets.only(left: 15, right: 15),
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 15),
                                           child: TextField(
-                                            style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            style: new TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w400),
                                             controller: tecName,
                                             decoration: InputDecoration(
                                                 hintText: '치과명을 입력해주세요',
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(bottom: 5)),
+                                                contentPadding:
+                                                    EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strName = text;
                                             },
@@ -580,15 +643,25 @@ class JoinPageState extends BaseState<JoinPage> {
                                         ),
                                       ),
                                       Container(
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         margin: const EdgeInsets.only(top: 8),
                                         child: Row(
                                           children: [
                                             Container(
-                                              margin: const EdgeInsets.only(top: 8),
-                                              width: (MediaQuery.of(context).size.width - 32 - 46) / 3,
-                                              height: MediaQuery.of(context).size.height,
+                                              margin:
+                                                  const EdgeInsets.only(top: 8),
+                                              width: (MediaQuery.of(context)
+                                                          .size
+                                                          .width -
+                                                      32 -
+                                                      46) /
+                                                  3,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
@@ -596,20 +669,29 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     width: 1, //
                                                     color: Color(0xFFDDDDDD),
                                                   ),
-                                                  borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(8))),
                                               child: Container(
-                                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                                padding: const EdgeInsets.only(
+                                                    left: 15, right: 15),
                                                 child: TextField(
-                                                  style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                  style: new TextStyle(
+                                                      fontSize: 16.0,
+                                                      fontWeight:
+                                                          FontWeight.w400),
                                                   controller: tecPhone1,
                                                   maxLength: 3,
                                                   textAlign: TextAlign.center,
-                                                  keyboardType: TextInputType.number,
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText: '010',
                                                       border: InputBorder.none,
                                                       counterText: "",
-                                                      contentPadding: EdgeInsets.only(bottom: 5)),
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                              bottom: 5)),
                                                   onChanged: (text) {
                                                     strPhone1 = text;
                                                     setState(() {});
@@ -619,7 +701,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                             ),
                                             SizedBox(
                                               width: 23,
-                                              height: MediaQuery.of(context).size.height,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
                                               child: const Center(
                                                 child: Text(
                                                   "-",
@@ -634,9 +718,17 @@ class JoinPageState extends BaseState<JoinPage> {
                                               ),
                                             ),
                                             Container(
-                                              margin: const EdgeInsets.only(top: 8),
-                                              width: (MediaQuery.of(context).size.width - 32 - 46) / 3,
-                                              height: MediaQuery.of(context).size.height,
+                                              margin:
+                                                  const EdgeInsets.only(top: 8),
+                                              width: (MediaQuery.of(context)
+                                                          .size
+                                                          .width -
+                                                      32 -
+                                                      46) /
+                                                  3,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
@@ -644,20 +736,29 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     width: 1, //
                                                     color: Color(0xFFDDDDDD),
                                                   ),
-                                                  borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(8))),
                                               child: Container(
-                                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                                padding: const EdgeInsets.only(
+                                                    left: 15, right: 15),
                                                 child: TextField(
-                                                  style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                  style: new TextStyle(
+                                                      fontSize: 16.0,
+                                                      fontWeight:
+                                                          FontWeight.w400),
                                                   controller: tecPhone2,
                                                   maxLength: 4,
                                                   textAlign: TextAlign.center,
-                                                  keyboardType: TextInputType.number,
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText: '0000',
                                                       border: InputBorder.none,
                                                       counterText: "",
-                                                      contentPadding: EdgeInsets.only(bottom: 5)),
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                              bottom: 5)),
                                                   onChanged: (text) {
                                                     strPhone2 = text;
                                                     setState(() {});
@@ -667,7 +768,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                             ),
                                             SizedBox(
                                               width: 23,
-                                              height: MediaQuery.of(context).size.height,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
                                               child: const Center(
                                                 child: Text(
                                                   "-",
@@ -682,9 +785,17 @@ class JoinPageState extends BaseState<JoinPage> {
                                               ),
                                             ),
                                             Container(
-                                              margin: const EdgeInsets.only(top: 8),
-                                              width: (MediaQuery.of(context).size.width - 32 - 46) / 3,
-                                              height: MediaQuery.of(context).size.height,
+                                              margin:
+                                                  const EdgeInsets.only(top: 8),
+                                              width: (MediaQuery.of(context)
+                                                          .size
+                                                          .width -
+                                                      32 -
+                                                      46) /
+                                                  3,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
@@ -692,20 +803,29 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     width: 1, //
                                                     color: Color(0xFFDDDDDD),
                                                   ),
-                                                  borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(8))),
                                               child: Container(
-                                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                                padding: const EdgeInsets.only(
+                                                    left: 15, right: 15),
                                                 child: TextField(
-                                                  style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                  style: new TextStyle(
+                                                      fontSize: 16.0,
+                                                      fontWeight:
+                                                          FontWeight.w400),
                                                   controller: tecPhone3,
                                                   maxLength: 4,
                                                   textAlign: TextAlign.center,
-                                                  keyboardType: TextInputType.number,
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText: '0000',
                                                       border: InputBorder.none,
                                                       counterText: "",
-                                                      contentPadding: EdgeInsets.only(bottom: 5)),
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                              bottom: 5)),
                                                   onChanged: (text) {
                                                     strPhone3 = text;
                                                     setState(() {});
@@ -731,31 +851,46 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         child: Row(
                                           children: [
                                             Expanded(
                                               child: Container(
-                                                height: MediaQuery.of(context).size.height,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
                                                       width: 1, //
                                                       color: Color(0xFFDDDDDD),
                                                     ),
-                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 child: Container(
-                                                  padding: const EdgeInsets.only(left: 15, right: 15),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15, right: 15),
                                                   child: TextField(
-                                                    style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                    style: new TextStyle(
+                                                        fontSize: 16.0,
+                                                        fontWeight:
+                                                            FontWeight.w400),
                                                     controller: tecAddress,
                                                     enabled: false,
                                                     decoration: InputDecoration(
                                                         hintText: '.',
-                                                        border: InputBorder.none,
-                                                        contentPadding: EdgeInsets.only(bottom: 5)),
+                                                        border:
+                                                            InputBorder.none,
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                bottom: 5)),
                                                     onChanged: (text) {
                                                       //
                                                     },
@@ -766,26 +901,38 @@ class JoinPageState extends BaseState<JoinPage> {
                                             InkWell(
                                               onTap: () async {
                                                 var result = await showDialog(
-                                                    context: context, builder: (_) => FindAddrDialog());
+                                                    context: context,
+                                                    builder: (_) =>
+                                                        FindAddrDialog());
                                                 if (result != null) {
                                                   Map myData = result;
-                                                  String status = myData["result"];
+                                                  String status =
+                                                      myData["result"];
                                                   if (status == "success") {
-                                                    strAddress = myData["address"];
-                                                    strPostCode = myData["postcode"];
-                                                    tecAddress.text = strAddress;
+                                                    strAddress =
+                                                        myData["address"];
+                                                    strPostCode =
+                                                        myData["postcode"];
+                                                    tecAddress.text =
+                                                        strAddress;
                                                     setState(() {});
                                                   }
                                                 }
                                               },
                                               child: Container(
-                                                margin: const EdgeInsets.only(left: 8),
+                                                margin: const EdgeInsets.only(
+                                                    left: 8),
                                                 width: 111,
-                                                height: MediaQuery.of(context).size.height,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
                                                 alignment: Alignment.center,
                                                 decoration: const BoxDecoration(
                                                     color: Color(0xFF5BD2C4),
-                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 child: const Center(
                                                   child: Text(
                                                     "주소검색",
@@ -793,7 +940,8 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     style: TextStyle(
                                                       fontSize: 18,
                                                       fontFamily: "Pretendard",
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -805,7 +953,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
@@ -813,16 +963,21 @@ class JoinPageState extends BaseState<JoinPage> {
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
                                             ),
-                                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
                                         child: Container(
-                                          padding: const EdgeInsets.only(left: 15, right: 15),
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 15),
                                           child: TextField(
-                                            style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            style: const TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w400),
                                             controller: tecAddressDetail,
                                             decoration: const InputDecoration(
                                                 hintText: '상세주소를 입력해주세요',
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(bottom: 5)),
+                                                contentPadding:
+                                                    EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
                                               strAddressDetail = text;
                                             },
@@ -845,58 +1000,92 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         child: Row(
                                           children: [
                                             Expanded(
                                               child: Container(
-                                                height: MediaQuery.of(context).size.height,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
                                                       width: 1, //
                                                       color: Color(0xFFDDDDDD),
                                                     ),
-                                                    borderRadius: const BorderRadius.all(Radius.circular(8))),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 child: Container(
-                                                  padding: const EdgeInsets.only(left: 15, right: 15),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15, right: 15),
                                                   child: TextField(
-                                                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                                    style: const TextStyle(
+                                                        fontSize: 16.0,
+                                                        fontWeight:
+                                                            FontWeight.w400),
                                                     controller: businessNumber,
                                                     enabled: !isCertificate,
-                                                    keyboardType: TextInputType.number,
-                                                    decoration: const InputDecoration(
-                                                        border: InputBorder.none,
-                                                        contentPadding: EdgeInsets.only(bottom: 5)),
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            contentPadding:
+                                                                EdgeInsets.only(
+                                                                    bottom: 5)),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             InkWell(
                                               onTap: () async {
-                                                print('사업자번호 인증하기');
 
-                                                if (businessNumber.text.isEmpty) {
+                                                if (this.isCertificate) {
+                                                  return;
+                                                }
+
+                                                if (businessNumber
+                                                    .text.isEmpty) {
                                                   showToast("사업자번호를 입력해주세요.");
                                                   return;
                                                 }
-                                                final isCertificate = await httpService.checkBusinessNumber(businessNumber.text);
+                                                final isCertificate =
+                                                    await httpService
+                                                        .checkBusinessNumber(
+                                                            businessNumber
+                                                                .text);
 
-                                                print("isCertificate : $isCertificate");
+                                                showToast(isCertificate
+                                                    ? "사업자번호 인증에 성공하였습니다."
+                                                    : "사업자번호 인증에 실패하였습니다.");
                                                 setState(() {
-                                                  this.isCertificate = isCertificate;
+                                                  this.isCertificate =
+                                                      isCertificate;
                                                 });
                                               },
                                               child: Container(
-                                                margin: const EdgeInsets.only(left: 8),
+                                                margin: const EdgeInsets.only(
+                                                    left: 8),
                                                 width: 111,
-                                                height: MediaQuery.of(context).size.height,
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
                                                 alignment: Alignment.center,
                                                 decoration: const BoxDecoration(
                                                     color: Color(0xFF5BD2C4),
-                                                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
                                                 child: const Center(
                                                   child: Text(
                                                     "인증하기",
@@ -904,7 +1093,8 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     style: TextStyle(
                                                       fontSize: 18,
                                                       fontFamily: "Pretendard",
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -938,7 +1128,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 56,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
@@ -946,18 +1138,24 @@ class JoinPageState extends BaseState<JoinPage> {
                                               width: 1, //
                                               color: Color(0xFFDDDDDD),
                                             ),
-                                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
                                         child: Container(
-                                          padding: const EdgeInsets.only(left: 15, right: 15),
+                                          padding: const EdgeInsets.only(
+                                              left: 15, right: 15),
                                           child: TextField(
-                                            style: new TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                                            style: new TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w400),
                                             controller: tecName,
                                             decoration: InputDecoration(
                                                 hintText: '요양기관번호를 입력해주세요.',
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(bottom: 5)),
+                                                contentPadding:
+                                                    EdgeInsets.only(bottom: 5)),
                                             onChanged: (text) {
-                                              strHealthcareFacilityNumber = text;
+                                              strHealthcareFacilityNumber =
+                                                  text;
                                               setState(() {});
                                             },
                                           ),
@@ -988,8 +1186,12 @@ class JoinPageState extends BaseState<JoinPage> {
                                           setState(() {});
                                         },
                                         child: Container(
-                                          margin: const EdgeInsets.only(top: 40),
-                                          width: MediaQuery.of(context).size.width - 32,
+                                          margin:
+                                              const EdgeInsets.only(top: 40),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              32,
                                           height: 50,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
@@ -997,19 +1199,24 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 width: 1, //
                                                 color: Color(0xFFDDDDDD),
                                               ),
-                                              borderRadius: BorderRadius.all(Radius.circular(8))),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8))),
                                           child: Row(
                                             children: [
                                               const Padding(
-                                                padding: EdgeInsets.only(left: 16),
+                                                padding:
+                                                    EdgeInsets.only(left: 16),
                                               ),
                                               Image.asset(
-                                                isAllSelect ? "assets/ic_check_on.png" : "assets/ic_check_off.png",
+                                                isAllSelect
+                                                    ? "assets/ic_check_on.png"
+                                                    : "assets/ic_check_off.png",
                                                 width: 16,
                                                 fit: BoxFit.fitWidth,
                                               ),
                                               const Padding(
-                                                padding: EdgeInsets.only(left: 8),
+                                                padding:
+                                                    EdgeInsets.only(left: 8),
                                               ),
                                               const Text(
                                                 "전체 동의",
@@ -1026,18 +1233,23 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 48,
                                         alignment: Alignment.center,
                                         child: Row(
                                           children: [
                                             const Padding(
-                                              padding: EdgeInsets.only(left: 16),
+                                              padding:
+                                                  EdgeInsets.only(left: 16),
                                             ),
                                             InkWell(
                                               onTap: () {
                                                 isTerm1 = !isTerm1;
-                                                if (isTerm1 && isTerm2 && isTerm3) {
+                                                if (isTerm1 &&
+                                                    isTerm2 &&
+                                                    isTerm3) {
                                                   isAllSelect = true;
                                                 } else {
                                                   isAllSelect = false;
@@ -1045,7 +1257,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 setState(() {});
                                               },
                                               child: Image.asset(
-                                                isTerm1 ? "assets/ic_check_on.png" : "assets/ic_check_off.png",
+                                                isTerm1
+                                                    ? "assets/ic_check_on.png"
+                                                    : "assets/ic_check_off.png",
                                                 width: 16,
                                                 fit: BoxFit.fitWidth,
                                               ),
@@ -1086,18 +1300,23 @@ class JoinPageState extends BaseState<JoinPage> {
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(top: 8),
-                                        width: MediaQuery.of(context).size.width - 32,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                32,
                                         height: 48,
                                         alignment: Alignment.center,
                                         child: Row(
                                           children: [
                                             const Padding(
-                                              padding: EdgeInsets.only(left: 16),
+                                              padding:
+                                                  EdgeInsets.only(left: 16),
                                             ),
                                             InkWell(
                                               onTap: () {
                                                 isTerm2 = !isTerm2;
-                                                if (isTerm1 && isTerm2 && isTerm3) {
+                                                if (isTerm1 &&
+                                                    isTerm2 &&
+                                                    isTerm3) {
                                                   isAllSelect = true;
                                                 } else {
                                                   isAllSelect = false;
@@ -1105,7 +1324,9 @@ class JoinPageState extends BaseState<JoinPage> {
                                                 setState(() {});
                                               },
                                               child: Image.asset(
-                                                isTerm2 ? "assets/ic_check_on.png" : "assets/ic_check_off.png",
+                                                isTerm2
+                                                    ? "assets/ic_check_on.png"
+                                                    : "assets/ic_check_off.png",
                                                 width: 16,
                                                 fit: BoxFit.fitWidth,
                                               ),
@@ -1156,25 +1377,33 @@ class JoinPageState extends BaseState<JoinPage> {
                                         },
                                         child: Container(
                                           margin: const EdgeInsets.only(top: 8),
-                                          width: MediaQuery.of(context).size.width - 32,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              32,
                                           height: 48,
                                           alignment: Alignment.center,
                                           child: Row(
                                             children: [
                                               const Padding(
-                                                padding: EdgeInsets.only(left: 16),
+                                                padding:
+                                                    EdgeInsets.only(left: 16),
                                               ),
                                               Image.asset(
-                                                isTerm3 ? "assets/ic_check_on.png" : "assets/ic_check_off.png",
+                                                isTerm3
+                                                    ? "assets/ic_check_on.png"
+                                                    : "assets/ic_check_off.png",
                                                 width: 16,
                                                 fit: BoxFit.fitWidth,
                                               ),
                                               const Padding(
-                                                padding: EdgeInsets.only(left: 8),
+                                                padding:
+                                                    EdgeInsets.only(left: 8),
                                               ),
                                               const Column(
                                                 mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Row(
                                                     children: [
@@ -1182,18 +1411,24 @@ class JoinPageState extends BaseState<JoinPage> {
                                                         "만 14세 이상 확인 ",
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          fontFamily: "Pretendard",
-                                                          fontWeight: FontWeight.w400,
-                                                          color: Color(0xFF212529),
+                                                          fontFamily:
+                                                              "Pretendard",
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color:
+                                                              Color(0xFF212529),
                                                         ),
                                                       ),
                                                       Text(
                                                         "(필수)",
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          fontFamily: "Pretendard",
-                                                          fontWeight: FontWeight.w400,
-                                                          color: Color(0xFFA9A9A9),
+                                                          fontFamily:
+                                                              "Pretendard",
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color:
+                                                              Color(0xFFA9A9A9),
                                                         ),
                                                       ),
                                                     ],
@@ -1203,7 +1438,8 @@ class JoinPageState extends BaseState<JoinPage> {
                                                     style: TextStyle(
                                                       fontSize: 12,
                                                       fontFamily: "Pretendard",
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       color: Color(0xFFF45B5B),
                                                     ),
                                                   ),
@@ -1218,13 +1454,18 @@ class JoinPageState extends BaseState<JoinPage> {
                                           reqJoin();
                                         },
                                         child: Container(
-                                          margin: const EdgeInsets.only(top: 40, bottom: 50),
-                                          width: MediaQuery.of(context).size.width - 32,
+                                          margin: const EdgeInsets.only(
+                                              top: 40, bottom: 50),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              32,
                                           height: 56,
                                           alignment: Alignment.center,
                                           decoration: const BoxDecoration(
                                               color: Color(0xFF212D4E),
-                                              borderRadius: BorderRadius.all(Radius.circular(8))),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8))),
                                           child: const Center(
                                             child: Text(
                                               "블랑바이미 시작하기",

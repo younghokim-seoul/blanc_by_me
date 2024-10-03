@@ -115,17 +115,24 @@ class HttpService {
   }
 
   //회원가입
-  Future<UserResModel> user(ClinicUser user) async {
-    String _url = "$SERVER_URL/api/users";
+  Future<bool> joinClinic(ClinicUser user) async {
+    String _url = "$SERVER_URL/api/join-clinic";
 
     Map<String, String> headers = {
       'Authorization': API_TOKEN,
+      'Content-Type': "application/json",
     };
-    Uri uri = Uri.parse(_url);
-    final response =
-        await http.post(uri, headers: headers, body: user.toJson());
 
-    return UserResModel.fromJson(json.decode(response.body));
+    String bodyJson = json.encode(user.toJson());
+    print("joinClinic bodyJson <<  ${bodyJson}");
+    Uri uri = Uri.parse(_url);
+    final response = await http.post(uri, headers: headers, body: bodyJson);
+
+
+    print("joinClinic responseHeader <<  ${response.headers}");
+    print("joinClinic responseBody << ${utf8.decode(response.bodyBytes)}");
+
+    return response.statusCode == 200;
   }
 
   //회원가입2
