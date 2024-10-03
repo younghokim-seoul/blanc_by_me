@@ -9,6 +9,7 @@ import 'package:blanc_f/dialog/dlg_method1.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
+import 'package:blanc_f/global/network/dto/customer_photo_dto.dart';
 import 'package:blanc_f/image_guide.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
@@ -16,6 +17,7 @@ import 'package:blanc_f/webview.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:light/light.dart';
 import 'package:sized_context/sized_context.dart';
@@ -25,9 +27,9 @@ import 'package:url_launcher/url_launcher.dart';
  * 촬영페이지
  */
 class ShootingPage extends BasePage {
-  ShootingPage({Key? key, required this.type}) : super(key: key);
+  ShootingPage({Key? key, required this.userId}) : super(key: key);
 
-  final int type; // 1 : A4 용지로 촬영,  2 : 블랑바이미카드로 촬영
+  final int userId; // 1 : A4 용지로 촬영,  2 : 블랑바이미카드로 촬영
 
   @override
   ShootingPageState createState() {
@@ -80,10 +82,13 @@ class ShootingPageState extends BaseState<ShootingPage> {
     });
   }
 
-  void initCamera(){
-    CameraLensDirection direction = isCameraFront ? CameraLensDirection.front : CameraLensDirection.back;
-    final front = gCameras.firstWhere((camera) => camera.lensDirection == direction);
-    controller = CameraController(front, ResolutionPreset.max, enableAudio: false);
+  void initCamera() {
+    CameraLensDirection direction =
+        isCameraFront ? CameraLensDirection.front : CameraLensDirection.back;
+    final front =
+        gCameras.firstWhere((camera) => camera.lensDirection == direction);
+    controller =
+        CameraController(front, ResolutionPreset.max, enableAudio: false);
     controller.initialize().then((_) {
       controller.setZoomLevel(2.000000);
       if (Platform.isAndroid) {
@@ -157,7 +162,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
     }
   }
 
-  double getRulerWidth(int type){
+  double getRulerWidth(int type) {
     double result = 0.0;
 
     if (deviceWidth == 0.0) {
@@ -212,8 +217,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
                             width: 288,
                             height: 88,
                             decoration: const BoxDecoration(
-                              color: Colors.transparent, //Color(0xFF545454).withOpacity(0.2),
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                              color: Colors.transparent,
+                              //Color(0xFF545454).withOpacity(0.2),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16)),
                             ),
                           ),
                         ),
@@ -259,12 +267,15 @@ class ShootingPageState extends BaseState<ShootingPage> {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                var result = await showDialog(context: context, builder: (_) => Method1Dialog());
+                var result = await showDialog(
+                    context: context, builder: (_) => Method1Dialog());
               },
               child: Container(
                 width: 140,
                 height: 40,
-                decoration: BoxDecoration(color: Color(0xFF212529).withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(20))),
+                decoration: BoxDecoration(
+                    color: Color(0xFF212529).withOpacity(0.7),
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -407,7 +418,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
               children: [
                 Center(
                   child: Container(
-                    margin: EdgeInsets.only(top: 97.0, bottom: Platform.isAndroid ? 97.0 : 87.0, right: 180.0, left: 180.0),
+                    margin: EdgeInsets.only(
+                        top: 97.0,
+                        bottom: Platform.isAndroid ? 97.0 : 87.0,
+                        right: 180.0,
+                        left: 180.0),
                     decoration: const BoxDecoration(
                       //color: Color(0xFF545454).withOpacity(0.2),
                       color: Colors.transparent,
@@ -428,7 +443,13 @@ class ShootingPageState extends BaseState<ShootingPage> {
                 ),
                 Positioned(
                   bottom: Platform.isAndroid ? -110.0 : -120.0,
-                  left: Platform.isAndroid ? (MediaQuery.of(context).size.width - getRulerWidth(3)) / 2 : (MediaQuery.of(context).size.width - 100 - getRulerWidth(3)) / 2,
+                  left: Platform.isAndroid
+                      ? (MediaQuery.of(context).size.width - getRulerWidth(3)) /
+                          2
+                      : (MediaQuery.of(context).size.width -
+                              100 -
+                              getRulerWidth(3)) /
+                          2,
                   child: SizedBox(
                     width: getRulerWidth(3),
                     child: Column(
@@ -464,7 +485,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                await Navigator.push(context, SlideRightTransRoute(builder: (context) => const ImageGuide(), settings: RouteSettings()));
+                await Navigator.push(
+                    context,
+                    SlideRightTransRoute(
+                        builder: (context) => const ImageGuide(),
+                        settings: RouteSettings()));
               },
               child: Container(
                 width: 140,
@@ -552,7 +577,9 @@ class ShootingPageState extends BaseState<ShootingPage> {
               child: Container(
                 width: 350,
                 height: 36,
-                decoration: const BoxDecoration(color: PrimaryColor, borderRadius: BorderRadius.all(Radius.circular(18))),
+                decoration: const BoxDecoration(
+                    color: PrimaryColor,
+                    borderRadius: BorderRadius.all(Radius.circular(18))),
                 child: Center(
                   child: Text(
                     alertMsg,
@@ -592,30 +619,52 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
   //갤러리에 이미지 저장
   void saveImageToGallery(String file) {
-    GallerySaver.saveImage(file).then((value) => print('>>>> save value= $value')).catchError((err) {
+    GallerySaver.saveImage(file)
+        .then((value) => print('>>>> save value= $value'))
+        .catchError((err) {
       print('error :( $err');
     });
   }
 
   Future<void> takeImage() async {
-
-
-    //todo 테스트
-    isCheckPhoto = true;
     if (isCheckPhoto == false) {
       showToast("촬영조건이 만족되지 않습니다.");
       return;
     }
+
+    if (EasyLoading.isShow) {
+      return;
+    }
+
     XFile file = await controller.takePicture();
     saveImageToGallery(file.path);
-    CommonDialog().showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기").then((val) {
+    CommonDialog()
+        .showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기")
+        .then((val) async {
       if (val.toString() == "1") {
-        uploadImage(file);
+        // uploadImage(file);
 
-        //todo 김영호 테스트
-        // _launchUrl();
+        try {
+          await EasyLoading.show();
+          final HttpService httpService = HttpService();
+          final photoData = await httpService.fileUpload(file);
+          final isSuccess = await httpService.fetchAiCuration(
+              userId: widget.userId, toothId: photoData.data.first.id);
+          EasyLoading.dismiss();
+          print("ai 큐레이션 성공.. $isSuccess");
+          _dismissLoadingAndShowMessage("AI 큐레이션이 완료되었습니다");
+          _onBackPressed();
+        } catch (e) {
+          print("AI Curation Error");
+          _dismissLoadingAndShowMessage("AI 큐레이션에 실패하였습니다");
+        }
       }
     });
+  }
+
+  void _dismissLoadingAndShowMessage(String message) {
+    EasyLoading.dismiss();
+    showToast(message);
   }
 
   Future<void> _launchUrl() async {
@@ -626,9 +675,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
     // // }
     // launchUrl(_url);
 
-
-    String result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => Webview1Page(), settings: RouteSettings()));
-    if (result == "200"){
+    String result = await Navigator.push(
+        context,
+        SlideRightTransRoute(
+            builder: (context) => Webview1Page(), settings: RouteSettings()));
+    if (result == "200") {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeRight,
         DeviceOrientation.landscapeLeft,
@@ -639,24 +690,26 @@ class ShootingPageState extends BaseState<ShootingPage> {
   // Network functions
   //////////////////////////////////
   //사진 업로드
-  void uploadImage(XFile _file) {
+  Future<void> uploadImage(XFile _file) async {
     // setState(() {
     //   _isLoading = true;
     // });
-    final HttpService httpService = HttpService();
-    Future<String> info = httpService.fileUpload(_file);
-    info.then((String value) async {
-      // setState(() {
-      //   _isLoading = false;
-      // });
-      print(value);
-    }).catchError((onError) {
-      // setState(() {
-      //   _isLoading = false;
-      // });
-      // showToast(onError);
-      print("upload failed : $onError");
-    });
+
+    // final HttpService httpService = HttpService();
+    // final info = await httpService.fileUpload(_file);
+    //
+    // info.then((CustomerPhotoDto value) async {
+    //   // setState(() {
+    //   //   _isLoading = false;
+    //   // });
+    //   print(value);
+    // }).catchError((onError) {
+    //   // setState(() {
+    //   //   _isLoading = false;
+    //   // });
+    //   // showToast(onError);
+    //   print("upload failed : $onError");
+    // });
   }
 
   @override
@@ -676,21 +729,14 @@ class ShootingPageState extends BaseState<ShootingPage> {
                   controller,
                   child: Stack(
                     children: [
-                      //A4 용지로 촬영
-                      Visibility(
-                        visible: widget.type == 1,
-                        child: Tab1View(),
-                      ),
-
-                      //블랑바이미카드로 촬영
-                      Visibility(
-                        visible: widget.type == 2,
-                        child: Tab2View(),
-                      ),
+                      Tab2View(),
                     ],
                   ),
                 )
-              : Container(width: double.infinity, height: double.infinity, color: const Color(0xFF313131)),
+              : Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: const Color(0xFF313131)),
         ),
       ),
     );

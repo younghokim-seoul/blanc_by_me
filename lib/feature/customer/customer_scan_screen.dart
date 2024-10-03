@@ -17,7 +17,8 @@ class CustomerScanScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useScrollController();
 
-    final isHasClinicData = ref.watch(customerListViewModelProvider.select((state) => state.isClinicId));
+    final isHasClinicData = ref.watch(
+        customerListViewModelProvider.select((state) => state.isClinicId));
     // final list = ref.watch(customerListViewModelProvider.select((state) => state.list));
     //
     // final needLoadMore = ref.watch(customerListViewModelProvider.select((state) {
@@ -26,7 +27,8 @@ class CustomerScanScreen extends HookConsumerWidget {
 
     useEffect(() {
       controller.addListener(() {
-        if (controller.position.pixels >= controller.position.maxScrollExtent - 100) {
+        if (controller.position.pixels >=
+            controller.position.maxScrollExtent - 100) {
           ref.read(customerListViewModelProvider.notifier).loadMore();
         }
       });
@@ -58,7 +60,8 @@ class CustomerScanScreen extends HookConsumerWidget {
                           },
                           onRegisterTap: () {
                             FocusManager.instance.primaryFocus?.unfocus();
-                            showCustomerRegisterDialog(context, (name, birthDay) {
+                            showCustomerRegisterDialog(context,
+                                (name, birthDay) {
                               print("name: $name, birthDay: $birthDay");
                               ref
                                   .read(customerListViewModelProvider.notifier)
@@ -68,7 +71,9 @@ class CustomerScanScreen extends HookConsumerWidget {
                                   Navigator.pop(context);
                                 }
                                 FocusManager.instance.primaryFocus?.unfocus();
-                                showToast(response ? "등록에 성공 하였습니다." : "등록에 실패 하였습니다.");
+                                showToast(response
+                                    ? "등록에 성공 하였습니다."
+                                    : "등록에 실패 하였습니다.");
                               });
                             });
                           },
@@ -109,12 +114,13 @@ class _SearchListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final list = ref.watch(customerListViewModelProvider.select((state) => state.list));
+    final list =
+        ref.watch(customerListViewModelProvider.select((state) => state.list));
 
-    final needLoadMore = ref.watch(customerListViewModelProvider.select((state) {
+    final needLoadMore =
+        ref.watch(customerListViewModelProvider.select((state) {
       return state.isEndOfList == false && state.list.isNotEmpty;
     }));
-
 
     return SliverList.builder(
       key: const ValueKey("loaded"),
@@ -129,7 +135,10 @@ class _SearchListView extends ConsumerWidget {
           // );
           return const SizedBox.shrink();
         } else {
-          return CustomerCard(attributesData: list[index].attributes);
+          return CustomerCard(
+            attributesData: list[index].attributes,
+            userId: list[index].id,
+          );
         }
       },
     );

@@ -7,6 +7,7 @@ import 'package:blanc_f/global/network/dto/clinic_user.dart';
 import 'package:blanc_f/global/network/dto/customer_dto.dart';
 import 'package:blanc_f/global/network/dto/customer_photo_dto.dart';
 import 'package:blanc_f/global/network/dto/customer_save_request.dart';
+import 'package:blanc_f/global/network/dto/photo_ai_request.dart';
 import 'package:blanc_f/models/app_update_model.dart';
 import 'package:blanc_f/models/customers%20_res_model.dart';
 import 'package:blanc_f/models/email_check_res_model.dart';
@@ -25,7 +26,8 @@ class HttpService {
   Future<CustomerPhotoDto> fileUpload(XFile image) async {
     String _url = "$SERVER_URL/api/upload";
 
-    final mimeTypeData = lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
+    final mimeTypeData =
+        lookupMimeType(image.path, headerBytes: [0xFF, 0xD8])?.split('/');
     Map<String, String> headers = {
       'Authorization': API_TOKEN,
     };
@@ -46,12 +48,10 @@ class HttpService {
     request.files.add(multipartFile);
     http.StreamedResponse response = await request.send();
 
-
-
-
     if (response.statusCode == 200) {
       List<int> bodyBytes = await response.stream.toBytes();
-      final responseModel = CustomerPhotoDto.fromJson(json.decode(utf8.decode(bodyBytes)));
+      final responseModel =
+          CustomerPhotoDto.fromJson(json.decode(utf8.decode(bodyBytes)));
       print('Response body: $responseModel');
       return responseModel;
     } else {
@@ -68,7 +68,8 @@ class HttpService {
 
     print("checkAppUpdate localVersion : $localVersion" " os : $os");
 
-    String _url = "$SERVER_URL/api/app-version?device=$os&version=${localVersion.version}";
+    String _url =
+        "$SERVER_URL/api/partners-app-version?device=$os&version=${localVersion.version}";
 
     Map<String, String> headers = {
       'Authorization': API_TOKEN,
@@ -117,19 +118,26 @@ class HttpService {
   Future<UserResModel> user(ClinicUser user) async {
     String _url = "$SERVER_URL/api/users";
 
-
     Map<String, String> headers = {
       'Authorization': API_TOKEN,
     };
     Uri uri = Uri.parse(_url);
-    final response = await http.post(uri, headers: headers, body: user.toJson());
+    final response =
+        await http.post(uri, headers: headers, body: user.toJson());
 
     return UserResModel.fromJson(json.decode(response.body));
   }
 
   //회원가입2
-  Future<CustomersResModel> customers(String _id, String phone, String address, String address2, String gender,
-      String birth, String postcode, String identityVerificationId) async {
+  Future<CustomersResModel> customers(
+      String _id,
+      String phone,
+      String address,
+      String address2,
+      String gender,
+      String birth,
+      String postcode,
+      String identityVerificationId) async {
     String _url = "$SERVER_URL/api/customers";
 
     Map<String, String> headers = {
@@ -157,7 +165,8 @@ class HttpService {
       'data': body,
     };
     Uri uri = Uri.parse(_url);
-    final response = await http.post(uri, headers: headers, body: json.encode(data));
+    final response =
+        await http.post(uri, headers: headers, body: json.encode(data));
 
     return CustomersResModel.fromJson(json.decode(response.body));
   }
@@ -181,8 +190,8 @@ class HttpService {
 
   //앱 업데이트 확인
   Future<bool> checkBusinessNumber(String business) async {
-
-    String _url = "https://clinic.blancbyme.com/api/verify-business?businessNumber=$business";
+    String _url =
+        "https://clinic.blancbyme.com/api/verify-business?businessNumber=$business";
 
     Uri uri = Uri.parse(_url);
     print("checkBusinessNumber uri : $uri");
@@ -192,7 +201,8 @@ class HttpService {
   }
 
   Future<ClinicInfoData> fetchClinicData() async {
-    String _url = "$SERVER_URL/api/users/me?populate[0]=clinic_onwer&populate[1]=clinic_onwer.clinic";
+    String _url =
+        "$SERVER_URL/api/users/me?populate[0]=clinic_onwer&populate[1]=clinic_onwer.clinic";
     Map<String, String> headers = {
       'Authorization': "Bearer $gJwt",
     };
@@ -202,7 +212,10 @@ class HttpService {
     return ClinicInfoData.fromJson(json.decode(response.body));
   }
 
-  Future<CustomerRootData> fetchCustomerList({required int clinicId,required String query,required int offset}) async {
+  Future<CustomerRootData> fetchCustomerList(
+      {required int clinicId,
+      required String query,
+      required int offset}) async {
     String _url =
         "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=$query&pagination[start]=$offset&pagination[limit]=10";
     Map<String, String> headers = {
@@ -214,7 +227,10 @@ class HttpService {
     return CustomerRootData.fromJson(json.decode(response.body));
   }
 
-  Future<bool> saveCustomer({required int clinicId, required String name, required String birthDay}) async {
+  Future<bool> saveCustomer(
+      {required int clinicId,
+      required String name,
+      required String birthDay}) async {
     String url = "$SERVER_URL/api/clinic-customers";
 
     print("gJwt... $gJwt");
@@ -222,7 +238,6 @@ class HttpService {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': "Bearer $gJwt",
     };
-
 
     final param = CustomerSaveRequest(
       data: CustomerSaveData(
@@ -237,6 +252,42 @@ class HttpService {
     String bodyJson = json.encode(param.toJson());
 
     print("saveCustomer bodyJson $bodyJson");
+
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: bodyJson,
+    );
+
+    print("http_log responseHeader <<  ${response.headers}");
+    print("http_log responseBody << ${utf8.decode(response.bodyBytes)}");
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> fetchAiCuration(
+      {required int userId, required int toothId}) async {
+    String url = "$SERVER_URL/api/clinic-customer-ai-curations";
+
+    print("gJwt... $gJwt");
+    Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': "Bearer $gJwt",
+    };
+
+    final param = PhotoAiRequest(
+      data: AiRequestData(
+        clinicCustomer: userId,
+        device: getDevType(),
+        toothImage: toothId,
+      ),
+    );
+
+    Uri uri = Uri.parse(url);
+
+    String bodyJson = json.encode(param.toJson());
+
+    print("fetchAiCuration bodyJson $bodyJson");
 
     final response = await http.post(
       uri,

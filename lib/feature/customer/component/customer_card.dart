@@ -12,9 +12,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 class CustomerCard extends ConsumerWidget {
-  const CustomerCard({super.key, required this.attributesData});
+  const CustomerCard(
+      {super.key, required this.attributesData, required this.userId});
 
   final AttributesData attributesData;
+  final int userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,18 +39,27 @@ class CustomerCard extends ConsumerWidget {
               const Gap(4),
               CustomerMeta(
                 title: "생년월일",
-                description: attributesData.createdAt != null ? formatDate(attributesData.createdAt!) : '',
+                description: attributesData.createdAt != null
+                    ? formatDate(attributesData.createdAt!)
+                    : '',
               ),
               const Gap(16),
               TakePictureButton(onClickable: () async {
                 if (Platform.isAndroid) {
                   await Navigator.push(
-                      context,
-                      SlideRightTransRoute(
-                          builder: (context) => ShootingPage(type: 2), settings: const RouteSettings()));
+                    context,
+                    SlideRightTransRoute(
+                      builder: (context) => ShootingPage(userId: userId),
+                      settings: const RouteSettings(),
+                    ),
+                  );
                 } else {
-                  const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
-                  await platformChannel.invokeMethod('lux', {"type": "2", "jwt": gJwt});
+                  const platformChannel =
+                      MethodChannel('blanc.flutter.methodchannel/iOS');
+                  await platformChannel.invokeMethod(
+                    'lux',
+                    {"type": "2", "jwt": gJwt, "userId": userId},
+                  );
                 }
               }),
               const Gap(24),

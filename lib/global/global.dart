@@ -3,7 +3,7 @@
 import 'package:blanc_f/models/login_res_model.dart';
 import 'package:camera/camera.dart';
 String SERVER_URL = "https://api.blancbyme.com"; //real server
-String API_TOKEN = "Bearer 3da1ac61828ed59821e307bcabb09372877ae0cfec1c0d96e7cdc4352a7f538c155264bb2da2cd3bf122f33f72e61d98fce65dfe2e17769dc42830f81cd6fa24f46489eb76f9f8f4153e4e1c55063a7b3285e69194fc257651a04c058e02e3b1425471bc02ddfd9f63e822771d606d87ad148e82c085328e7438664a108cc566";
+String API_TOKEN = "Bearer ef5bbdaf841b4d976a9a810e06ab4625cb942b8f91391990f990210bc62b8f90344b9560f80cf1e4a5de66e0ef5b7fd5a4f2e51900dcd75167140bdc18150a05bd7a3b9a6c023fed1e0a83e71532f584fb017997065a96e441d90a84d648cc7ac8ae6804e0f681b95de45f1d63487305a1a4ad0ffc2cdd7872be429bc8feaa76";
 String SERVICE_PAGE = "https://blancbyme.com/auth/login";
 String TERMS_URL = "https://blancbyme.com/terms-polices?id=serviceTerms"; //이용약관
 String POLICY_URL = "https://blancbyme.com/terms-polices?id=informationAgreement"; //개인정보 처리방침

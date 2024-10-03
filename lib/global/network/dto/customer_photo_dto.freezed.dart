@@ -14,15 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-CustomerPhotoDto _$CustomerPhotoDtoFromJson(Map<String, dynamic> json) {
-  return _CustomerPhotoDto.fromJson(json);
-}
-
 /// @nodoc
 mixin _$CustomerPhotoDto {
   List<PhotoData> get data => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $CustomerPhotoDtoCopyWith<CustomerPhotoDto> get copyWith =>
       throw _privateConstructorUsedError;
@@ -95,13 +90,10 @@ class __$$CustomerPhotoDtoImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$CustomerPhotoDtoImpl implements _CustomerPhotoDto {
   const _$CustomerPhotoDtoImpl({required final List<PhotoData> data})
       : _data = data;
-
-  factory _$CustomerPhotoDtoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CustomerPhotoDtoImplFromJson(json);
 
   final List<PhotoData> _data;
   @override
@@ -124,7 +116,6 @@ class _$CustomerPhotoDtoImpl implements _CustomerPhotoDto {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
@@ -135,21 +126,11 @@ class _$CustomerPhotoDtoImpl implements _CustomerPhotoDto {
   _$$CustomerPhotoDtoImplCopyWith<_$CustomerPhotoDtoImpl> get copyWith =>
       __$$CustomerPhotoDtoImplCopyWithImpl<_$CustomerPhotoDtoImpl>(
           this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CustomerPhotoDtoImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _CustomerPhotoDto implements CustomerPhotoDto {
   const factory _CustomerPhotoDto({required final List<PhotoData> data}) =
       _$CustomerPhotoDtoImpl;
-
-  factory _CustomerPhotoDto.fromJson(Map<String, dynamic> json) =
-      _$CustomerPhotoDtoImpl.fromJson;
 
   @override
   List<PhotoData> get data;
