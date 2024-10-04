@@ -16,7 +16,7 @@ _$ClinicInfoDataImpl _$$ClinicInfoDataImplFromJson(Map<String, dynamic> json) =>
       blocked: json['blocked'] as bool,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
-      deleted: json['deleted'] as String?,
+      deleted: json['deleted'] as bool?,
       clinicOwner: json['clinic_onwer'] == null
           ? null
           : ClinicOnwerData.fromJson(

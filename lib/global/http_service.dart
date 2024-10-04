@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/network/dto/clinic_onwer_dto.dart';
 import 'package:blanc_f/global/network/dto/clinic_user.dart';
+import 'package:blanc_f/global/network/dto/clinic_user_info.dart';
 import 'package:blanc_f/global/network/dto/customer_dto.dart';
 import 'package:blanc_f/global/network/dto/customer_photo_dto.dart';
 import 'package:blanc_f/global/network/dto/customer_save_request.dart';
@@ -115,7 +116,7 @@ class HttpService {
   }
 
   //회원가입
-  Future<bool> joinClinic(ClinicUser user) async {
+  Future<ClinicUserInfo> joinClinic(ClinicUser user) async {
     String _url = "$SERVER_URL/api/join-clinic";
 
     Map<String, String> headers = {
@@ -132,7 +133,7 @@ class HttpService {
     print("joinClinic responseHeader <<  ${response.headers}");
     print("joinClinic responseBody << ${utf8.decode(response.bodyBytes)}");
 
-    return response.statusCode == 200;
+    return ClinicUserInfo.fromJson(json.decode(response.body));
   }
 
   //회원가입2

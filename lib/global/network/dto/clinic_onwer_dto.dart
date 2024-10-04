@@ -14,7 +14,7 @@ class ClinicInfoData with _$ClinicInfoData {
     required bool blocked,
     required String? createdAt,
     required String? updatedAt,
-    required String? deleted,
+    required bool? deleted,
     @JsonKey(name: 'clinic_onwer')
     required ClinicOnwerData? clinicOwner,
   }) = _ClinicInfoData;

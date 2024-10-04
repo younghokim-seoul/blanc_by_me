@@ -28,7 +28,7 @@ mixin _$ClinicInfoData {
   bool get blocked => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
-  String? get deleted => throw _privateConstructorUsedError;
+  bool? get deleted => throw _privateConstructorUsedError;
   @JsonKey(name: 'clinic_onwer')
   ClinicOnwerData? get clinicOwner => throw _privateConstructorUsedError;
 
@@ -53,7 +53,7 @@ abstract class $ClinicInfoDataCopyWith<$Res> {
       bool blocked,
       String? createdAt,
       String? updatedAt,
-      String? deleted,
+      bool? deleted,
       @JsonKey(name: 'clinic_onwer') ClinicOnwerData? clinicOwner});
 
   $ClinicOnwerDataCopyWith<$Res>? get clinicOwner;
@@ -119,7 +119,7 @@ class _$ClinicInfoDataCopyWithImpl<$Res, $Val extends ClinicInfoData>
       deleted: freezed == deleted
           ? _value.deleted
           : deleted // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
       clinicOwner: freezed == clinicOwner
           ? _value.clinicOwner
           : clinicOwner // ignore: cast_nullable_to_non_nullable
@@ -157,7 +157,7 @@ abstract class _$$ClinicInfoDataImplCopyWith<$Res>
       bool blocked,
       String? createdAt,
       String? updatedAt,
-      String? deleted,
+      bool? deleted,
       @JsonKey(name: 'clinic_onwer') ClinicOnwerData? clinicOwner});
 
   @override
@@ -222,7 +222,7 @@ class __$$ClinicInfoDataImplCopyWithImpl<$Res>
       deleted: freezed == deleted
           ? _value.deleted
           : deleted // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
       clinicOwner: freezed == clinicOwner
           ? _value.clinicOwner
           : clinicOwner // ignore: cast_nullable_to_non_nullable
@@ -266,7 +266,7 @@ class _$ClinicInfoDataImpl implements _ClinicInfoData {
   @override
   final String? updatedAt;
   @override
-  final String? deleted;
+  final bool? deleted;
   @override
   @JsonKey(name: 'clinic_onwer')
   final ClinicOnwerData? clinicOwner;
@@ -328,7 +328,7 @@ abstract class _ClinicInfoData implements ClinicInfoData {
       required final bool blocked,
       required final String? createdAt,
       required final String? updatedAt,
-      required final String? deleted,
+      required final bool? deleted,
       @JsonKey(name: 'clinic_onwer')
       required final ClinicOnwerData? clinicOwner}) = _$ClinicInfoDataImpl;
 
@@ -352,7 +352,7 @@ abstract class _ClinicInfoData implements ClinicInfoData {
   @override
   String? get updatedAt;
   @override
-  String? get deleted;
+  bool? get deleted;
   @override
   @JsonKey(name: 'clinic_onwer')
   ClinicOnwerData? get clinicOwner;

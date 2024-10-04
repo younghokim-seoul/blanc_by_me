@@ -18,7 +18,7 @@ class CustomerScanBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = TextEditingController(text: "귀");
+    final controller = TextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,

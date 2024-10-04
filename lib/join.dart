@@ -7,6 +7,7 @@ import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
 import 'package:blanc_f/global/local_service.dart';
 import 'package:blanc_f/global/network/dto/clinic_user.dart';
+import 'package:blanc_f/global/network/dto/clinic_user_info.dart';
 import 'package:blanc_f/home.dart';
 import 'package:blanc_f/models/customers%20_res_model.dart';
 import 'package:blanc_f/models/email_check_res_model.dart';
@@ -49,21 +50,21 @@ class JoinPageState extends BaseState<JoinPage> {
   TextEditingController tecAddressDetail = TextEditingController();
   TextEditingController healthcareFacilityNumber = TextEditingController();
 
-  String strEmail = "a@naver.com";
+  String strEmail = "";
   String strTempEmail = "";
   bool isCheckEmail = false; //중복여부
-  String strPass1 = "vkxmfhs135!";
-  String strPass2 = "vkxmfhs135!";
-  String strName = "a";
-  String strPhone1 = "010";
-  String strPhone2 = "1234";
-  String strPhone3 = "5678";
+  String strPass1 = "";
+  String strPass2 = "";
+  String strName = "";
+  String strPhone1 = "";
+  String strPhone2 = "";
+  String strPhone3 = "";
   String strHealthcareFacilityNumber = "";
   bool isCertificate = false;
 
   // String strCode = "";
-  String strAddress = "서울시";
-  String strAddressDetail = "성동구";
+  String strAddress = "";
+  String strAddressDetail = "";
   String strPostCode = "";
   bool isAllSelect = false;
   bool isTerm1 = false;
@@ -107,6 +108,7 @@ class JoinPageState extends BaseState<JoinPage> {
   }
 
   void reqJoin() {
+
     if (strEmail == "") {
       showToast("이메일을 입력해주세요.");
       return;
@@ -237,14 +239,14 @@ class JoinPageState extends BaseState<JoinPage> {
         licenseNumber: strHealthcareFacilityNumber,
         businessNumber: businessNumber.text);
 
-    Future<bool> info = httpService.joinClinic(clinicUser);
+    Future<ClinicUserInfo> info = httpService.joinClinic(clinicUser);
 
-    info.then((bool value) {
+    info.then((ClinicUserInfo value) {
       setState(() {
         _isLoading = false;
       });
 
-      if(value){
+      if(value.id > 0){
         showToast("회원가입 완료되었습니다.");
         reqLogin();
       }else{
@@ -1147,7 +1149,7 @@ class JoinPageState extends BaseState<JoinPage> {
                                             style: new TextStyle(
                                                 fontSize: 16.0,
                                                 fontWeight: FontWeight.w400),
-                                            controller: tecName,
+                                            controller: healthcareFacilityNumber,
                                             decoration: InputDecoration(
                                                 hintText: '요양기관번호를 입력해주세요.',
                                                 border: InputBorder.none,
