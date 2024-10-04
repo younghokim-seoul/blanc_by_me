@@ -29,8 +29,12 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
     @IBOutlet var lblLuxValue: UILabel!
     @IBOutlet var lblZoomValue: UILabel!
 
+    // UIActivityIndicatorView
+    var backgroundView : UIView?
+
     var pageType = "1" // "1" : A4 용지로 촬영, "2" : 블랑바이미카드로 촬영
     var jwt = ""
+    var userId = 0
 
     var isFront = true
     var captureImg: UIImage?
@@ -144,6 +148,11 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 
+    func dismiss(){
+        hideActivityIndicator()
+        self.dismiss(animated: false)
+    }
+
     @objc func rotated() {
         DispatchQueue.main.async {
             if self.cameraManager! != nil {
@@ -240,27 +249,46 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         present(vc, animated: false)
     }
 
-    func uploadImage() {
-        let data = captureImg?.jpegData(compressionQuality: 0.8)
-        if data != nil {
-            Net.uploadImage(
-                uploadfile: data!,
-                success: { _ -> Void in
+    func uploadImage() async {
+        guard let data = captureImg?.jpegData(compressionQuality: 0.8) else {
+            print("캡쳐 가져오기 실패")
+            return
+        }
+        showActivityIndicator()
 
-                }, failure: { _, _ -> Void in
-                    //                CommonUtil.showToast(err)
-
-                })
+        do {
+            let response: [PhotoData] = try await Net.uploadImage(uploadfile: data)
+            if let id = response.first?.id {
+                try await fetchAiCuration(toothId: id)
+                CommonUtil.showToast("AI 큐레이션이 완료되었습니다")
+                dismiss()
+            }
+        } catch {
+            CommonUtil.showToast("AI 큐레이션에 실패하였습니다: \(error.localizedDescription)")
+            dismiss()
         }
     }
 
-    func saveImageToGallery() {
-        cameraManager!.capturePictureWithCompletion { result in
-            switch result {
-                case .failure:
+    func fetchAiCuration(toothId:Int) async throws {
+        let response: AiResponseData = try await Net.fetchAiCuration(jwt: self.jwt, userId: self.userId, toothId: toothId)
+
+         if let error = response.error {
+             // 에러가 있으면 throw로 에러를 던짐
+             throw NSError(domain: "AI Curation Error", code: 1, userInfo: [NSLocalizedDescriptionKey: "AI 큐레이션에 실패하였습니다."])
+         }
+    }
+
+    func saveImageToGallery() async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            cameraManager!.capturePictureWithCompletion { result in
+                switch result {
+                case .failure(let error):
                     print("failed capture image")
+                    continuation.resume(throwing: error)
                 case .success(let content):
                     self.saveImage(img: content.asImage!)
+                    continuation.resume()
+                }
             }
         }
     }
@@ -342,11 +370,18 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
             CommonUtil.showToast("촬영조건이 만족되지 않습니다.")
             return
         }
-        saveImageToGallery()
-        TwoBtnContentPopup.show(self, content: "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", btn1: "다시 촬영하기", btn2: "확인") { value in
-            if value == 2 {
-                self._launchUrl()
-                self.uploadImage()
+        Task {
+            do {
+                try await saveImageToGallery()
+                TwoBtnContentPopup.show(self, content: "AI 치아미백 분석하기", btn1: "다시 촬영하기", btn2: "확인") { value in
+                    print("선택 : \(value)")
+                    if value == 2 {
+                        //                self._launchUrl()
+                        Task{
+                            await self.uploadImage()
+                        }
+                    }
+                }
             }
         }
     }
@@ -358,3 +393,46 @@ extension ShootingVC: WebviewVCDelegate {
     }
 }
 
+extension ShootingVC {
+    func showActivityIndicator() {
+
+        if backgroundView == nil {
+            backgroundView = UIView()
+        }
+        guard let backgroundView = backgroundView else { return }
+
+        let loadingIndicator = UIActivityIndicatorView(style: .large)
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        loadingIndicator.startAnimating()
+        loadingIndicator.color = .white
+
+        backgroundView.layer.cornerRadius = 05
+        backgroundView.clipsToBounds = true
+        backgroundView.isOpaque = false
+        backgroundView.backgroundColor = UIColor(white: 0.0, alpha: 0.6)
+
+        backgroundView.frame = CGRectMake(0, 0, 70, 70)
+        backgroundView.center = self.view.center
+
+        DispatchQueue.main.async {
+            self.view.addSubview(backgroundView)
+            backgroundView.addSubview(loadingIndicator)
+
+            NSLayoutConstraint.activate([
+                loadingIndicator.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+                loadingIndicator.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+                loadingIndicator.widthAnchor.constraint(equalToConstant: 50),
+                loadingIndicator.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        }
+    }
+
+    func hideActivityIndicator(){
+        DispatchQueue.main.async {
+            if let backgroundView = self.backgroundView {
+                backgroundView.removeFromSuperview()
+                self.backgroundView = nil
+            }
+        }
+    }
+}

@@ -28,11 +28,13 @@ import UIKit
                 let res = JSON(call.arguments as Any)
                 let type = res["type"].stringValue
                 let jwt = res["jwt"].stringValue
-                
+                let userId = res["userId"].int
+
                 let mainStoryboardIpad = UIStoryboard(name: "Main", bundle: nil)
                 let cameraVC: ShootingVC = mainStoryboardIpad.instantiateViewController(withIdentifier: "ShootingVC") as! ShootingVC
                 cameraVC.pageType = type
                 cameraVC.jwt = jwt
+                cameraVC.userId = userId ?? 0
                 cameraVC.modalPresentationStyle = .fullScreen
                 self.window?.rootViewController?.present(cameraVC, animated: false)
             } else {

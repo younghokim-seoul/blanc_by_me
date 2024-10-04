@@ -34,6 +34,9 @@
 		7EF815A95185EA5403A6EC75 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0305212F2E89B7040F1F557C /* Pods_Runner.framework */; };
 		84B2CEACDAB6F4380E850D08 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A31D5001E6A7104BB2DF43F9 /* Pods_RunnerTests.framework */; };
 		858E7F7A2C3CBCEE00284FC5 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858E7F792C3CBCEE00284FC5 /* CameraManager.swift */; };
+		85A4997A2CAF887B003B4EDA /* AiResponseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A499792CAF887A003B4EDA /* AiResponseData.swift */; };
+		85FEC9452CAF72F70068E01D /* AiRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FEC9442CAF72F00068E01D /* AiRequestData.swift */; };
+		85FEC9472CAF73660068E01D /* PhotoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FEC9462CAF73470068E01D /* PhotoData.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -102,6 +105,9 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		848597E4F629AC8BC49D8922 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		858E7F792C3CBCEE00284FC5 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		85A499792CAF887A003B4EDA /* AiResponseData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiResponseData.swift; sourceTree = "<group>"; };
+		85FEC9442CAF72F00068E01D /* AiRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiRequestData.swift; sourceTree = "<group>"; };
+		85FEC9462CAF73470068E01D /* PhotoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoData.swift; sourceTree = "<group>"; };
 		90E05027D6AE3FF70FE03E37 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -249,6 +255,9 @@
 			isa = PBXGroup;
 			children = (
 				7974939C2BD8EC1A00918E61 /* Net.swift */,
+				85FEC9462CAF73470068E01D /* PhotoData.swift */,
+				85FEC9442CAF72F00068E01D /* AiRequestData.swift */,
+				85A499792CAF887A003B4EDA /* AiResponseData.swift */,
 				79A0F0542BD8AFE000388CBA /* Dialog */,
 				79A0F04E2BD8A98F00388CBA /* Font */,
 				79CF30B12BD8063D002F5938 /* Utils */,
@@ -520,7 +529,10 @@
 				79CF30BB2BD8063D002F5938 /* TestKoreanTextField.swift in Sources */,
 				79A0F0552BD8AFE000388CBA /* MethodPopup.swift in Sources */,
 				79CF30B72BD8063D002F5938 /* UIView+MDExtension.m in Sources */,
+				85FEC9472CAF73660068E01D /* PhotoData.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				85FEC9452CAF72F70068E01D /* AiRequestData.swift in Sources */,
+				85A4997A2CAF887B003B4EDA /* AiResponseData.swift in Sources */,
 				79CF30B92BD8063D002F5938 /* Jamo.swift in Sources */,
 				79CF30B42BD8063D002F5938 /* MDToast.m in Sources */,
 				79CF30B32BD8063D002F5938 /* MDDeviceHelper.m in Sources */,
