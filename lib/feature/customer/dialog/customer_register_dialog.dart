@@ -116,7 +116,7 @@ class CustomerRegisterDialog extends HookConsumerWidget {
                     final selectedDate = await showDatePicker(
                       context: context,
                       initialDate: temp,
-                      firstDate: DateTime(2000),
+                      firstDate: DateTime(1900),
                       lastDate: DateTime.now(),
                     );
 

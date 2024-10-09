@@ -65,7 +65,7 @@ dependencies:
   hooks_riverpod: 2.5.1
   flutter_hooks: 0.20.5
   flutter_easyloading: ^3.0.5
-
+  icons_launcher: ^2.1.7
 
 dev_dependencies:
   flutter_test:
