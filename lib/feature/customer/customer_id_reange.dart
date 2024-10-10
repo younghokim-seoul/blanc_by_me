@@ -5,9 +5,9 @@ part 'customer_id_reange.freezed.dart';
 @freezed
 class CustomerIdReange with _$CustomerIdReange {
   const factory CustomerIdReange({
-    required int start,
-    required int end,
+    required int pageKey,
+    required int pageSize,
   }) = _CustomerIdReange;
 
-  factory CustomerIdReange.empty() => const CustomerIdReange(start: 1, end: 10);
+  factory CustomerIdReange.empty() => const CustomerIdReange(pageKey: 0, pageSize: 10);
 }

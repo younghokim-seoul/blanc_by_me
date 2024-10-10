@@ -39,9 +39,7 @@ class CustomerCard extends ConsumerWidget {
               const Gap(4),
               CustomerMeta(
                 title: "생년월일",
-                description: attributesData.createdAt != null
-                    ? formatDate(attributesData.createdAt!)
-                    : '',
+                description: formatDate(attributesData.birthDay)
               ),
               const Gap(16),
               TakePictureButton(onClickable: () async {

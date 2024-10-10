@@ -46,6 +46,7 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
     if (clinicData != null) {
       clinicId = clinicData.id;
       state = state.copyWith(isClinicId: true);
+      loadMore();
     }
   }
 
@@ -66,22 +67,17 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
   }
 
   Future<void> loadMore() async {
-    if (state.isLoading || state.isEndOfList || query.isEmpty) {
+    if (state.isLoading || state.isEndOfList) {
       return;
     }
 
     state = state.copyWith(isLoading: true);
-
-    final offset = state.list.isEmpty ? customerIdRange.start - 1 : state.list.last.id; // 0
+    
+    final offset = state.list.isEmpty ? customerIdRange.pageKey : state.list.length; // 0
 
     final loadedList = await httpServer.fetchCustomerList(clinicId: clinicId, query: query, offset: offset);
 
-
-    print("loadedList: $loadedList");
-
-    customerIdRange = customerIdRange.copyWith(end: loadedList.meta.pagination.total);
-
-    final isEndOfList = loadedList.data.isEmpty || loadedList.data.last.id == customerIdRange.end;
+    final isEndOfList = loadedList.data.isEmpty || loadedList.data.length < customerIdRange.pageSize;
 
     state = state.copyWith(
       list: [...state.list, ...loadedList.data],

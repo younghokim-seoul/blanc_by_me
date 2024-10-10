@@ -16,8 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CustomerIdReange {
-  int get start => throw _privateConstructorUsedError;
-  int get end => throw _privateConstructorUsedError;
+  int get pageKey => throw _privateConstructorUsedError;
+  int get pageSize => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CustomerIdReangeCopyWith<CustomerIdReange> get copyWith =>
@@ -30,7 +30,7 @@ abstract class $CustomerIdReangeCopyWith<$Res> {
           CustomerIdReange value, $Res Function(CustomerIdReange) then) =
       _$CustomerIdReangeCopyWithImpl<$Res, CustomerIdReange>;
   @useResult
-  $Res call({int start, int end});
+  $Res call({int pageKey, int pageSize});
 }
 
 /// @nodoc
@@ -46,17 +46,17 @@ class _$CustomerIdReangeCopyWithImpl<$Res, $Val extends CustomerIdReange>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? start = null,
-    Object? end = null,
+    Object? pageKey = null,
+    Object? pageSize = null,
   }) {
     return _then(_value.copyWith(
-      start: null == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
+      pageKey: null == pageKey
+          ? _value.pageKey
+          : pageKey // ignore: cast_nullable_to_non_nullable
               as int,
-      end: null == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
+      pageSize: null == pageSize
+          ? _value.pageSize
+          : pageSize // ignore: cast_nullable_to_non_nullable
               as int,
     ) as $Val);
   }
@@ -70,7 +70,7 @@ abstract class _$$CustomerIdReangeImplCopyWith<$Res>
       __$$CustomerIdReangeImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int start, int end});
+  $Res call({int pageKey, int pageSize});
 }
 
 /// @nodoc
@@ -84,17 +84,17 @@ class __$$CustomerIdReangeImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? start = null,
-    Object? end = null,
+    Object? pageKey = null,
+    Object? pageSize = null,
   }) {
     return _then(_$CustomerIdReangeImpl(
-      start: null == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
+      pageKey: null == pageKey
+          ? _value.pageKey
+          : pageKey // ignore: cast_nullable_to_non_nullable
               as int,
-      end: null == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
+      pageSize: null == pageSize
+          ? _value.pageSize
+          : pageSize // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -103,16 +103,16 @@ class __$$CustomerIdReangeImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$CustomerIdReangeImpl implements _CustomerIdReange {
-  const _$CustomerIdReangeImpl({required this.start, required this.end});
+  const _$CustomerIdReangeImpl({required this.pageKey, required this.pageSize});
 
   @override
-  final int start;
+  final int pageKey;
   @override
-  final int end;
+  final int pageSize;
 
   @override
   String toString() {
-    return 'CustomerIdReange(start: $start, end: $end)';
+    return 'CustomerIdReange(pageKey: $pageKey, pageSize: $pageSize)';
   }
 
   @override
@@ -120,12 +120,13 @@ class _$CustomerIdReangeImpl implements _CustomerIdReange {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CustomerIdReangeImpl &&
-            (identical(other.start, start) || other.start == start) &&
-            (identical(other.end, end) || other.end == end));
+            (identical(other.pageKey, pageKey) || other.pageKey == pageKey) &&
+            (identical(other.pageSize, pageSize) ||
+                other.pageSize == pageSize));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, start, end);
+  int get hashCode => Object.hash(runtimeType, pageKey, pageSize);
 
   @JsonKey(ignore: true)
   @override
@@ -137,13 +138,13 @@ class _$CustomerIdReangeImpl implements _CustomerIdReange {
 
 abstract class _CustomerIdReange implements CustomerIdReange {
   const factory _CustomerIdReange(
-      {required final int start,
-      required final int end}) = _$CustomerIdReangeImpl;
+      {required final int pageKey,
+      required final int pageSize}) = _$CustomerIdReangeImpl;
 
   @override
-  int get start;
+  int get pageKey;
   @override
-  int get end;
+  int get pageSize;
   @override
   @JsonKey(ignore: true)
   _$$CustomerIdReangeImplCopyWith<_$CustomerIdReangeImpl> get copyWith =>
