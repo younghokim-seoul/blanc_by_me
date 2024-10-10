@@ -81,12 +81,9 @@ class ShootingPageState extends BaseState<ShootingPage> {
   }
 
   void initCamera() {
-    CameraLensDirection direction =
-        isCameraFront ? CameraLensDirection.front : CameraLensDirection.back;
-    final front =
-        gCameras.firstWhere((camera) => camera.lensDirection == direction);
-    controller =
-        CameraController(front, ResolutionPreset.max, enableAudio: false);
+    CameraLensDirection direction = isCameraFront ? CameraLensDirection.front : CameraLensDirection.back;
+    final front = gCameras.firstWhere((camera) => camera.lensDirection == direction);
+    controller = CameraController(front, ResolutionPreset.max, enableAudio: false);
     controller.initialize().then((_) {
       controller.setZoomLevel(2.000000);
       if (Platform.isAndroid) {
@@ -217,9 +214,8 @@ class ShootingPageState extends BaseState<ShootingPage> {
                             decoration: const BoxDecoration(
                               color: Colors.transparent,
                               //Color(0xFF545454).withOpacity(0.2),
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16),
-                                  topRight: Radius.circular(16)),
+                              borderRadius:
+                                  BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
                             ),
                           ),
                         ),
@@ -265,15 +261,13 @@ class ShootingPageState extends BaseState<ShootingPage> {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                var result = await showDialog(
-                    context: context, builder: (_) => Method1Dialog());
+                var result = await showDialog(context: context, builder: (_) => Method1Dialog());
               },
               child: Container(
                 width: 140,
                 height: 40,
                 decoration: BoxDecoration(
-                    color: Color(0xFF212529).withOpacity(0.7),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: Color(0xFF212529).withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(20))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -416,11 +410,8 @@ class ShootingPageState extends BaseState<ShootingPage> {
               children: [
                 Center(
                   child: Container(
-                    margin: EdgeInsets.only(
-                        top: 97.0,
-                        bottom: Platform.isAndroid ? 97.0 : 87.0,
-                        right: 180.0,
-                        left: 180.0),
+                    margin:
+                        EdgeInsets.only(top: 97.0, bottom: Platform.isAndroid ? 97.0 : 87.0, right: 180.0, left: 180.0),
                     decoration: const BoxDecoration(
                       //color: Color(0xFF545454).withOpacity(0.2),
                       color: Colors.transparent,
@@ -442,12 +433,8 @@ class ShootingPageState extends BaseState<ShootingPage> {
                 Positioned(
                   bottom: Platform.isAndroid ? -110.0 : -120.0,
                   left: Platform.isAndroid
-                      ? (MediaQuery.of(context).size.width - getRulerWidth(3)) /
-                          2
-                      : (MediaQuery.of(context).size.width -
-                              100 -
-                              getRulerWidth(3)) /
-                          2,
+                      ? (MediaQuery.of(context).size.width - getRulerWidth(3)) / 2
+                      : (MediaQuery.of(context).size.width - 100 - getRulerWidth(3)) / 2,
                   child: SizedBox(
                     width: getRulerWidth(3),
                     child: Column(
@@ -484,10 +471,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
                 await Navigator.push(
-                    context,
-                    SlideRightTransRoute(
-                        builder: (context) => const ImageGuide(),
-                        settings: RouteSettings()));
+                    context, SlideRightTransRoute(builder: (context) => const ImageGuide(), settings: RouteSettings()));
               },
               child: Container(
                 width: 140,
@@ -575,9 +559,8 @@ class ShootingPageState extends BaseState<ShootingPage> {
               child: Container(
                 width: 350,
                 height: 36,
-                decoration: const BoxDecoration(
-                    color: PrimaryColor,
-                    borderRadius: BorderRadius.all(Radius.circular(18))),
+                decoration:
+                    const BoxDecoration(color: PrimaryColor, borderRadius: BorderRadius.all(Radius.circular(18))),
                 child: Center(
                   child: Text(
                     alertMsg,
@@ -617,14 +600,13 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
   //갤러리에 이미지 저장
   void saveImageToGallery(String file) {
-    GallerySaver.saveImage(file)
-        .then((value) => print('>>>> save value= $value'))
-        .catchError((err) {
+    GallerySaver.saveImage(file).then((value) => print('>>>> save value= $value')).catchError((err) {
       print('error :( $err');
     });
   }
 
   Future<void> takeImage() async {
+
     if (isCheckPhoto == false) {
       showToast("촬영조건이 만족되지 않습니다.");
       return;
@@ -636,11 +618,8 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
     XFile file = await controller.takePicture();
     saveImageToGallery(file.path);
-    CommonDialog()
-        .showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기")
-        .then((val) async {
+    CommonDialog().showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기").then((val) async {
       if (val.toString() == "1") {
-
         try {
           await EasyLoading.show();
           final HttpService httpService = HttpService();
@@ -650,39 +629,20 @@ class ShootingPageState extends BaseState<ShootingPage> {
             toothId: photoData.data.first.id,
           );
 
-          _dismissLoadingAndShowMessage("AI 큐레이션이 완료되었습니다");
-          _onBackPressed();
+          _dismissLoadingAndShowMessage(true);
         } catch (e) {
           print("AI Curation Error");
-          _dismissLoadingAndShowMessage("AI 큐레이션에 실패하였습니다");
+          _dismissLoadingAndShowMessage(false);
         }
       }
     });
   }
 
-  void _dismissLoadingAndShowMessage(String message) {
+  void _dismissLoadingAndShowMessage(bool isCurationSuccess) {
     EasyLoading.dismiss();
-    showToast(message);
-  }
-
-  Future<void> _launchUrl() async {
-    // String tempUrl = "$PHOTO_UPLOAD_PAGE?auth=$gJwt";
-    // var _url = Uri.parse(tempUrl);
-    // // if (!await launchUrl(_url)) {
-    // //   throw Exception('Could not launch $_url');
-    // // }
-    // launchUrl(_url);
-
-    String result = await Navigator.push(
-        context,
-        SlideRightTransRoute(
-            builder: (context) => Webview1Page(), settings: RouteSettings()));
-    if (result == "200") {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeRight,
-        DeviceOrientation.landscapeLeft,
-      ]);
-    }
+    CommonDialog.showCurationResultPop(context, isCurationSuccess: isCurationSuccess, onConfirm: () {
+      _onBackPressed();
+    });
   }
 
   @override
@@ -706,10 +666,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
                     ],
                   ),
                 )
-              : Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: const Color(0xFF313131)),
+              : Container(width: double.infinity, height: double.infinity, color: const Color(0xFF313131)),
         ),
       ),
     );

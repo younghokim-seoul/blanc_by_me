@@ -44,9 +44,11 @@ bool validPwd(String pwd) {
 }
 
 String formatDate(String date) {
-  DateTime parsedDate = DateTime.parse(date);
-  DateFormat formatter = DateFormat('yyyy-MM-dd');
-  return formatter.format(parsedDate);
+  try{
+    return '${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}';
+  }catch(e){
+    return date;
+  }
 }
 
 String formatDateTime(DateTime date) {

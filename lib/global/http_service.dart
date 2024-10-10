@@ -225,7 +225,7 @@ class HttpService {
       required String query,
       required int offset}) async {
     String _url =
-        "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=$query&pagination[start]=$offset&pagination[limit]=10";
+        "$SERVER_URL/api/clinic-customers?filters[clinic][id][\$clinicId]=$clinicId&filters[name][\$startsWith]=$query&pagination[start]=$offset&pagination[limit]=10&sort[0]=identifier:desc";
     Map<String, String> headers = {
       'Authorization': "Bearer $gJwt",
     };
