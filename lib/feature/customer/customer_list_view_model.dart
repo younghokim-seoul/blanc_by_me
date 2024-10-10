@@ -46,6 +46,7 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
     if (clinicData != null) {
       clinicId = clinicData.id;
       state = state.copyWith(isClinicId: true);
+      loadMore();
     }
   }
 
@@ -66,7 +67,7 @@ class CustomerListViewModel extends StateNotifier<CustomerListViewModelState> {
   }
 
   Future<void> loadMore() async {
-    if (state.isLoading || state.isEndOfList || query.isEmpty) {
+    if (state.isLoading || state.isEndOfList) {
       return;
     }
 
