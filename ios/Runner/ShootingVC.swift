@@ -260,12 +260,14 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
             let response: [PhotoData] = try await Net.uploadImage(uploadfile: data)
             if let id = response.first?.id {
                 try await fetchAiCuration(toothId: id)
-                CommonUtil.showToast("AI 큐레이션이 완료되었습니다")
-                dismiss()
+                TwoBtnContentPopup.show(self, content: "큐레이션이 완료되었습다.\n웹 페이지에서 결과 확인하실 수 있습니다.", btn1: "", btn2: "확인", okCallback: { [weak self] value in
+                    self?.dismiss()
+                })
             }
         } catch {
-            CommonUtil.showToast("AI 큐레이션에 실패하였습니다: \(error.localizedDescription)")
-            dismiss()
+            TwoBtnContentPopup.show(self, content: "촬영 가이드에 맞게 다시 촬영해주세요.", btn1: "다시 촬영하기", btn2: "", okCallback: { [weak self] value in
+                self?.hideActivityIndicator()
+            })
         }
     }
 

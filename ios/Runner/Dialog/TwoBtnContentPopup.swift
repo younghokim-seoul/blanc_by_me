@@ -9,9 +9,16 @@ class TwoBtnContentPopup: BaseDialog {
     @IBOutlet var lblContent: UILabel!
     @IBOutlet var lblButton1: UILabel!
     @IBOutlet var lblButton2: UILabel!
+    
+    @IBOutlet weak var vwButtonParent: UIView!
     @IBOutlet var vwButton1: UIView!
     @IBOutlet var vwButton2: UIView!
-
+    
+    var widthConstraintView1: NSLayoutConstraint!
+    var centerConstraintView1: NSLayoutConstraint!
+    var widthConstraintView2: NSLayoutConstraint!
+    var centerConstraintView2: NSLayoutConstraint!
+        
     public typealias callback = (_ value: Int) -> Void
     var cbOk: callback!
 
@@ -55,6 +62,61 @@ class TwoBtnContentPopup: BaseDialog {
         lblContent.text = mContent
         lblButton1.text = mButton1
         lblButton2.text = mButton2
+        
+        setupConstraints()
+        
+        if mButton2 == "" {
+            showView1Only()
+        } else if mButton1 == "" {
+            showView2Only()
+        }else{
+            showBothViews()
+        }
+    }
+    
+    private func setupConstraints() {
+        if widthConstraintView1 != nil {
+            vwButton1.removeConstraint(widthConstraintView1)
+        }
+        if centerConstraintView1 != nil {
+            vwButton1.removeConstraint(centerConstraintView1)
+        }
+        if widthConstraintView2 != nil {
+            vwButton2.removeConstraint(widthConstraintView2)
+        }
+        if centerConstraintView2 != nil {
+            vwButton2.removeConstraint(centerConstraintView2)
+        }
+        
+        // Set new constraints for each view when only one is shown
+        widthConstraintView1 = vwButton1.widthAnchor.constraint(equalTo: vwButtonParent.widthAnchor, multiplier: 0.42)
+        centerConstraintView1 = vwButton1.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        widthConstraintView2 = vwButton2.widthAnchor.constraint(equalTo: vwButtonParent.widthAnchor, multiplier: 0.42)
+        centerConstraintView2 = vwButton2.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+    }
+    
+    func showView1Only() {
+        vwButton2.isHidden = true
+        vwButton1.isHidden = false
+        
+        // Activate the single-view constraints for View1
+        NSLayoutConstraint.activate([widthConstraintView1, centerConstraintView1])
+    }
+    
+    func showView2Only() {
+        vwButton1.isHidden = true
+        vwButton2.isHidden = false
+        
+        // Activate the single-view constraints for View2
+        NSLayoutConstraint.activate([widthConstraintView2, centerConstraintView2])
+    }
+    
+    func showBothViews() {
+        vwButton1.isHidden = false
+        vwButton2.isHidden = false
+        
+        // Deactivate single-view constraints
+        NSLayoutConstraint.deactivate([widthConstraintView1, centerConstraintView1, widthConstraintView2, centerConstraintView2])
     }
 
     //////////////////////////////////////////
