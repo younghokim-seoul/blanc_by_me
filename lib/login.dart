@@ -32,15 +32,15 @@ class LoginPage extends BasePage {
 class LoginPageState extends BaseState<LoginPage> {
   bool _isLoading = false;
 
-  // TextEditingController tecEmail = TextEditingController(); //이메일
-  // TextEditingController tecPwd = TextEditingController(); //패스워드
-  // String strEmail = "";
-  // String strPass = "";
+  TextEditingController tecEmail = TextEditingController(); //이메일
+  TextEditingController tecPwd = TextEditingController(); //패스워드
+  String strEmail = "";
+  String strPass = "";
 
-  TextEditingController tecEmail = TextEditingController(text: "clinic.blancbyme@ydencare.com"); //이메일
-  TextEditingController tecPwd = TextEditingController(text: "qmffkd88!@"); //패스워드
-  String strEmail = "clinic.blancbyme@ydencare.com";
-  String strPass = "qmffkd88!@";
+  // TextEditingController tecEmail = TextEditingController(text: "clinic.blancbyme@ydencare.com"); //이메일
+  // TextEditingController tecPwd = TextEditingController(text: "qmffkd88!@"); //패스워드
+  // String strEmail = "clinic.blancbyme@ydencare.com";
+  // String strPass = "qmffkd88!@";
 
   final HttpService httpService = HttpService();
 
