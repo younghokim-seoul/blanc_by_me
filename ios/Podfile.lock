@@ -2,8 +2,6 @@ PODS:
   - Alamofire (4.9.1)
   - camera (0.0.1):
     - Flutter
-  - device_info (0.0.1):
-    - Flutter
   - DKImagePickerController/Core (4.3.9):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -70,6 +68,8 @@ PODS:
     - Motion/Core (= 3.1.3)
   - Motion/Core (3.1.3)
   - OrderedSet (5.0.0)
+  - os_info_plugin (0.0.1):
+    - Flutter
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -101,7 +101,6 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.9.0)
   - camera (from `.symlinks/plugins/camera/ios`)
-  - device_info (from `.symlinks/plugins/device_info/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - fk_user_agent (from `.symlinks/plugins/fk_user_agent/ios`)
   - Flutter (from `Flutter`)
@@ -113,6 +112,7 @@ DEPENDENCIES:
   - light (from `.symlinks/plugins/light/ios`)
   - Material
   - modal_progress_hud_nsn (from `.symlinks/plugins/modal_progress_hud_nsn/ios`)
+  - os_info_plugin (from `.symlinks/plugins/os_info_plugin/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
@@ -143,8 +143,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   camera:
     :path: ".symlinks/plugins/camera/ios"
-  device_info:
-    :path: ".symlinks/plugins/device_info/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   fk_user_agent:
@@ -165,6 +163,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/light/ios"
   modal_progress_hud_nsn:
     :path: ".symlinks/plugins/modal_progress_hud_nsn/ios"
+  os_info_plugin:
+    :path: ".symlinks/plugins/os_info_plugin/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -183,7 +183,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   camera: fe33292aff715a981eb34d7ce7b35b54337ff34c
-  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: 15fd9539e4eb735dc54bae8c0534a7a9511a03de
@@ -199,6 +198,7 @@ SPEC CHECKSUMS:
   modal_progress_hud_nsn: b66f99f02da7de83484e50dfe1fe2d71ac406e67
   Motion: cf1e060e489f6661126374d5c60dbd2ed991605c
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
+  os_info_plugin: d89ddf87e910a0d598fc4fc69d2b8f0f8239314f
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
@@ -212,7 +212,7 @@ SPEC CHECKSUMS:
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   tosspayments_webview_flutter: ceae304825a077de594d01ee39dd0ce2307adb4e
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
+  webview_flutter_wkwebview: 2a23822e9039b7b1bc52e5add778e5d89ad488d1
 
 PODFILE CHECKSUM: aa0bac78efc4f59efb2c27c8d98443a5d9ceecfc
 

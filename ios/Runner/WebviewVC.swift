@@ -41,6 +41,9 @@ class WebviewVC: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptM
         webView.backgroundColor = .white
         webView.scrollView.backgroundColor = .white
         webView.scrollView.bounces = false
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
         webView.evaluateJavaScript("navigator.userAgent") { [weak webView] result, _ in
             if let webView = webView, let userAgent = result as? String {
                 webView.customUserAgent = userAgent
