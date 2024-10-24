@@ -96,7 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<bool> isCanUpdate() async {
     try {
       final response = await httpService.checkAppUpdate();
-      print("resposne... " + response.toString());
       return response.shoudAppUpdate;
     } catch (e) {
       return false;
