@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:blanc_f/dialog/dlg_app_update.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/http_service.dart';
 import 'package:blanc_f/global/local_service.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,36 +106,34 @@ class _MyHomePageState extends State<MyHomePage> {
   void startApp() async {
     gCameras = await availableCameras();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(const Duration(seconds: 1), () async {
       final newVersion = NewVersionPlus();
-      getPermission();
-      // final status = await newVersion.getVersionStatus();
-      //
-      // final appStoreLink = status?.appStoreLink;
-      // final storeVersion = status?.storeVersion;
-      // final canUpdate = await isCanUpdate();
-      //
-      // print('appStoreLink : $appStoreLink');
-      // print('storeVersion : $storeVersion');
-      // if (canUpdate == true) {
-      //   if (!mounted) return;
-      //   showDialog(
-      //       context: context,
-      //       barrierDismissible: false,
-      //       builder: (_) => WillPopScope(
-      //           child: AppUpdateDialog(
-      //             onConfirm: () async {
-      //               await launchUrlString(appStoreLink!);
-      //             },
-      //             onCancel: () {
-      //               print("캔슬클릭");
-      //               getPermission();
-      //             },
-      //           ),
-      //           onWillPop: () async => false));
-      // }else{
-      //   getPermission();
-      // }
+      final status = await newVersion.getVersionStatus();
+
+      final appStoreLink = status?.appStoreLink;
+      final storeVersion = status?.storeVersion;
+      final canUpdate = await isCanUpdate();
+
+      print('appStoreLink : $appStoreLink');
+      print('storeVersion : $storeVersion');
+      if (canUpdate == true) {
+        if (!mounted) return;
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+                child: AppUpdateDialog(
+                  onConfirm: () async {
+                    await launchUrlString(appStoreLink!);
+                  },
+                  onCancel: () {
+                    getPermission();
+                  },
+                ),
+                onWillPop: () async => false));
+      } else {
+        getPermission();
+      }
     });
   }
 
@@ -148,11 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void checkPermission() async {
-    Map<Permission, PermissionStatus> permissions = await [
-      Permission.camera,
-      Permission.photos,
-      Permission.storage
-    ].request();
+    Map<Permission, PermissionStatus> permissions =
+        await [Permission.camera, Permission.photos, Permission.storage].request();
     print('per1 : $permissions');
 
     savePermission();
@@ -165,13 +162,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void goHome() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   void goLogin() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   void goNext() {
