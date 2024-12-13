@@ -169,7 +169,7 @@ class HttpService {
 
   //비밀번호 재설정 에미일 보내기
   Future<PassResetResModel> passReset(String email) async {
-    String _url = "$SERVER_URL/api/auth/forgot-passowrd";
+    String _url = "$SERVER_URL/api/auth/forgot-password";
 
     Map<String, String> headers = {
       'Authorization': API_TOKEN,

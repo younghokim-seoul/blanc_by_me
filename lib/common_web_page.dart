@@ -16,14 +16,17 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
-class MyPageWebView extends BasePage {
-  MyPageWebView({Key? key}) : super(key: key);
+class CommonWebPage extends BasePage {
+  CommonWebPage({Key? key,required this.webUrl}) : super(key: key);
+
+
+  final String webUrl;
 
   @override
-  MyPageWebViewState createState() => MyPageWebViewState();
+  CommonWebPageState createState() => CommonWebPageState();
 }
 
-class MyPageWebViewState extends BaseState<MyPageWebView> {
+class CommonWebPageState extends BaseState<CommonWebPage> {
   bool _isLoading = false;
 
   String webUrl = "";
@@ -46,7 +49,7 @@ class MyPageWebViewState extends BaseState<MyPageWebView> {
     ]);
     // webUrl = "$PHOTO_UPLOAD_PAGE?auth=$gJwt";
     // webUrl = PHOTO_UPLOAD_PAGE;
-    webUrl = "https://www.blancbyme.com/webview?redirect=/mypage";
+    webUrl = widget.webUrl;
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {

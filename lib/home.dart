@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:blanc_f/base.dart';
+import 'package:blanc_f/common_web_page.dart';
 import 'package:blanc_f/dialog/dlg_common.dart';
 import 'package:blanc_f/global/colors.dart';
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/local_service.dart';
 import 'package:blanc_f/image_guide.dart';
 import 'package:blanc_f/login.dart';
-import 'package:blanc_f/my_page.dart';
 import 'package:blanc_f/shooting.dart';
 import 'package:blanc_f/util/bounce.dart';
 import 'package:blanc_f/util/commonutil.dart';
@@ -41,7 +41,9 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
   }
 
   Future<bool> _onBackPressed() async {
-    CommonDialog().showTwoBtnPopup(context, "앱을 종료하시겠습니까?", "네", "아니요").then((val) {
+    CommonDialog()
+        .showTwoBtnPopup(context, "앱을 종료하시겠습니까?", "네", "아니요")
+        .then((val) {
       if (val.toString() == "1") {
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       }
@@ -65,11 +67,16 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                 //촬영 페이지로 이동
                 print('촬영 페이지로 이동');
                 if (Platform.isAndroid) {
-                  Navigator.push(context,
-                      SlideRightTransRoute(builder: (context) => ShootingPage(type: 2), settings: RouteSettings()));
+                  Navigator.push(
+                      context,
+                      SlideRightTransRoute(
+                          builder: (context) => ShootingPage(type: 2),
+                          settings: RouteSettings()));
                 } else {
-                  const platformChannel = MethodChannel('blanc.flutter.methodchannel/iOS');
-                  String res = await platformChannel.invokeMethod('lux', {"type": "2", "jwt": gJwt});
+                  const platformChannel =
+                      MethodChannel('blanc.flutter.methodchannel/iOS');
+                  String res = await platformChannel
+                      .invokeMethod('lux', {"type": "2", "jwt": gJwt});
                   showToast(res);
                 }
               },
@@ -108,20 +115,26 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                   InkWell(
                     onTap: () async {
                       //사진 촬영하는 방법 팝업 표시
-                      var result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => ImageGuide(), settings: RouteSettings()));
+                      var result = await Navigator.push(
+                          context,
+                          SlideRightTransRoute(
+                              builder: (context) => ImageGuide(),
+                              settings: RouteSettings()));
                       SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]);
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 20),
                       decoration: BoxDecoration(
                           border: Border.all(
                             width: 1, //
                             color: const Color(0xFFDDDDDD),
                           ),
                           color: Colors.white,
-                          borderRadius: const BorderRadius.all(Radius.circular(999))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(999))),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -155,13 +168,18 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                var result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => const VideoGuidePage(), settings: RouteSettings()));
+                var result = await Navigator.push(
+                    context,
+                    SlideRightTransRoute(
+                        builder: (context) => const VideoGuidePage(),
+                        settings: RouteSettings()));
                 SystemChrome.setPreferredOrientations([
                   DeviceOrientation.portraitUp,
                 ]);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
                     border: Border.all(
@@ -244,7 +262,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: 24,
-                          margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
+                          margin: const EdgeInsets.only(
+                              top: 24, left: 16, right: 16),
                           child: Row(
                             children: [
                               Flexible(
@@ -264,7 +283,14 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyPageWebView()));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CommonWebPage(
+                                          webUrl:
+                                              "https://www.blancbyme.com/webview?redirect=/mypage"),
+                                    ),
+                                  );
                                 },
                                 child: Image.asset(
                                   "assets/arrow_right.png",
@@ -277,12 +303,17 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () {
-                            CommonDialog().showTwoBtnPopup(context, "정말 로그아웃 하시겠습니까?", "네", "아니요").then((val) {
+                            CommonDialog()
+                                .showTwoBtnPopup(
+                                    context, "정말 로그아웃 하시겠습니까?", "네", "아니요")
+                                .then((val) {
                               if (val.toString() == "1") {
                                 LocalService.setUserEmail("");
                                 LocalService.setUserPwd("");
                                 Navigator.pushReplacement(
-                                    context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
                               }
                             });
                           },
@@ -297,7 +328,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                     width: 1, //
                                     color: Color(0xFF5BD2C4),
                                   ),
-                                  borderRadius: BorderRadius.all(Radius.circular(4))),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4))),
                               child: const Center(
                                 child: Text(
                                   "로그아웃",
@@ -315,12 +347,17 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () {
-                            CommonDialog().showTwoBtnPopup(context, "정말 회원탈퇴 하시겠습니까?", "네", "아니요").then((val) {
+                            CommonDialog()
+                                .showTwoBtnPopup(
+                                    context, "정말 회원탈퇴 하시겠습니까?", "네", "아니요")
+                                .then((val) {
                               if (val.toString() == "1") {
                                 LocalService.setUserEmail("");
                                 LocalService.setUserPwd("");
                                 Navigator.pushReplacement(
-                                    context, MaterialPageRoute(builder: (context) => LoginPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
                               }
                             });
                           },
@@ -329,7 +366,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                margin: const EdgeInsets.only(top: 12, left: 16),
+                                margin:
+                                    const EdgeInsets.only(top: 12, left: 16),
                                 width: 73,
                                 height: 34,
                                 decoration: BoxDecoration(
@@ -337,7 +375,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                       width: 1, //
                                       color: Color(0xFF5BD2C4),
                                     ),
-                                    borderRadius: BorderRadius.all(Radius.circular(4))),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4))),
                                 child: const Center(
                                   child: Text(
                                     "회원탈퇴",
@@ -394,7 +433,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                       Expanded(child: Container()),
                                       InkWell(
                                         onTap: () {
-                                          _scaffoldKey.currentState!.openEndDrawer();
+                                          _scaffoldKey.currentState!
+                                              .openEndDrawer();
                                         },
                                         child: Image.asset(
                                           "assets/ic_menu.png",
@@ -409,7 +449,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 48, left: 16),
+                                  margin:
+                                      const EdgeInsets.only(top: 48, left: 16),
                                   child: const Text(
                                     'AI 치아미백뷰티플랫폼',
                                     style: TextStyle(
@@ -421,7 +462,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                 ),
                                 const Gap(8),
                                 Container(
-                                  margin: const EdgeInsets.only(left: 16, right: 16),
+                                  margin: const EdgeInsets.only(
+                                      left: 16, right: 16),
                                   child: const Text(
                                     '블랑바이미\n전용 촬영앱입니다.',
                                     style: TextStyle(
@@ -432,7 +474,8 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 Container(
-                                  margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                                  margin: const EdgeInsets.only(
+                                      top: 16, left: 16, right: 16),
                                   child: const Text(
                                     '사진을 촬영하면 스마트폰 갤러리에 저장됩니다.\n저장된 사진을 블랑바이미 사이트에 업로드해주세요.',
                                     style: TextStyle(
@@ -443,6 +486,59 @@ class HomePageState extends BaseState<HomePage> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 const Gap(32),
+                                InkWell(
+                                  onTap: () async {
+                                    //촬영 페이지로 이동
+                                    print('블랑바이미 구매하기 페이지로 이동');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CommonWebPage(
+                                            webUrl:
+                                            "https://www.blancbyme.com/webview?redirect=/solution/life-time"),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                      width: double.infinity,
+                                      color: const Color(0xFFD8EDEA),
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            right: 29,
+                                            bottom: 0,
+                                            child: Image.asset(
+                                              "assets/ic_buy_card.png",
+                                              width: 46,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 16),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  '블랑바이미 카드 구매하러 가기',
+                                                  style: TextStyle(
+                                                      fontFamily: "Pretendard",
+                                                      color: Color(0xFF545454),
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                const Gap(4),
+                                                Image.asset(
+                                                  "assets/arrow_right.png",
+                                                  width: 14,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                ),
                                 Expanded(child: Tab2View()),
                                 //bottom bar
                               ],
