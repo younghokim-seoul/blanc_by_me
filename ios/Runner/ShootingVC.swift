@@ -277,7 +277,7 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
 //            self.lblZoomValue.text = "zoom value : " + value
 //        }
 
-        if luxValue < 45 {
+        if luxValue < 100 {
             isCheckPhoto = false
             if alertMsg != "" {
                 return
