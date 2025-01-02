@@ -17,6 +17,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gap/gap.dart';
 import 'package:light/light.dart';
 import 'package:sized_context/sized_context.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -80,10 +81,13 @@ class ShootingPageState extends BaseState<ShootingPage> {
     });
   }
 
-  void initCamera(){
-    CameraLensDirection direction = isCameraFront ? CameraLensDirection.front : CameraLensDirection.back;
-    final front = gCameras.firstWhere((camera) => camera.lensDirection == direction);
-    controller = CameraController(front, ResolutionPreset.max, enableAudio: false);
+  void initCamera() {
+    CameraLensDirection direction =
+        isCameraFront ? CameraLensDirection.front : CameraLensDirection.back;
+    final front =
+        gCameras.firstWhere((camera) => camera.lensDirection == direction);
+    controller =
+        CameraController(front, ResolutionPreset.max, enableAudio: false);
     controller.initialize().then((_) {
       controller.setZoomLevel(2.000000);
       if (Platform.isAndroid) {
@@ -157,7 +161,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
     }
   }
 
-  double getRulerWidth(int type){
+  double getRulerWidth(int type) {
     double result = 0.0;
 
     if (deviceWidth == 0.0) {
@@ -182,209 +186,6 @@ class ShootingPageState extends BaseState<ShootingPage> {
     return result;
   }
 
-  //A4 용지로 촬영
-  Widget Tab1View() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
-        children: [
-          Image.asset(
-            "assets/Exclude.png",
-            width: double.infinity,
-            height: double.infinity,
-          ),
-
-          //ready view
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    color: Colors.transparent,
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            width: 288,
-                            height: 88,
-                            decoration: const BoxDecoration(
-                              color: Colors.transparent, //Color(0xFF545454).withOpacity(0.2),
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 8.0),
-                            child: Image.asset(
-                              "assets/Frame 816255.png",
-                              width: getRulerWidth(1),
-                              fit: BoxFit.fitWidth,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    color: Color(0xFFefefef),
-                    child: const Center(
-                      child: Text(
-                        "A4용지와 함께 촬영해주세요!",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: "Pretendard",
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF545454),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          //촬영 방법 안내
-          Positioned(
-            left: 16.0,
-            bottom: 24.0,
-            child: InkWell(
-              onTap: () async {
-                //사진 촬영하는 방법 팝업 표시
-                var result = await showDialog(context: context, builder: (_) => Method1Dialog());
-              },
-              child: Container(
-                width: 140,
-                height: 40,
-                decoration: BoxDecoration(color: Color(0xFF212529).withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/Icon (Stroke).png",
-                      width: 15,
-                      fit: BoxFit.fitWidth,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                    ),
-                    const Text(
-                      "촬영 방법 안내",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "Pretendard",
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          //카메라 전환 버튼
-          Positioned(
-            right: 16.0,
-            bottom: 24.0,
-            child: InkWell(
-              onTap: () {
-                isCameraFront = !isCameraFront;
-                initCamera();
-              },
-              child: Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: Color(0xFF212529).withOpacity(0.7),
-                  borderRadius: BorderRadius.all(Radius.circular(19)),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    "assets/refresh.png",
-                    width: 16,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          //close
-          Positioned(
-            top: 8,
-            right: 16,
-            child: InkWell(
-              onTap: () {
-                _onBackPressed();
-              },
-              child: Image.asset(
-                "assets/Frame 816256.png",
-                width: 40,
-                height: 40,
-              ),
-            ),
-          ),
-
-          //toast
-          Positioned(
-            top: 30,
-            left: (MediaQuery.of(context).size.width - 350) / 2,
-            child: Visibility(
-              visible: alertMsg.isNotEmpty,
-              child: Container(
-                width: 350,
-                height: 36,
-                decoration: const BoxDecoration(
-                  color: PrimaryColor,
-                  borderRadius: BorderRadius.all(Radius.circular(18)),
-                ),
-                child: Center(
-                  child: Text(
-                    alertMsg,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontFamily: "Pretendard",
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          //show test value
-          Visibility(
-            visible: IS_TEST,
-            child: Positioned(
-              top: 100,
-              left: 30,
-              child: Text(
-                mLuxValue.toString(),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontFamily: "Pretendard",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   //블랑바이미카드로 촬영
   Widget Tab2View() {
     return Container(
@@ -397,7 +198,6 @@ class ShootingPageState extends BaseState<ShootingPage> {
             width: double.infinity,
             height: double.infinity,
           ),
-
           //Ready view
           Container(
             width: double.infinity,
@@ -407,7 +207,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
               children: [
                 Center(
                   child: Container(
-                    margin: EdgeInsets.only(top: 97.0, bottom: Platform.isAndroid ? 97.0 : 87.0, right: 180.0, left: 180.0),
+                    margin: EdgeInsets.only(
+                        top: 97.0,
+                        bottom: Platform.isAndroid ? 97.0 : 87.0,
+                        right: 180.0,
+                        left: 180.0),
                     decoration: const BoxDecoration(
                       //color: Color(0xFF545454).withOpacity(0.2),
                       color: Colors.transparent,
@@ -416,10 +220,14 @@ class ShootingPageState extends BaseState<ShootingPage> {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                        ),
                         margin: const EdgeInsets.only(bottom: 20.0),
                         child: Image.asset(
                           "assets/Frame 816258.png",
-                          width: getRulerWidth(2),
+                          width: getRulerWidth(2) - 30,
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -428,7 +236,13 @@ class ShootingPageState extends BaseState<ShootingPage> {
                 ),
                 Positioned(
                   bottom: Platform.isAndroid ? -110.0 : -120.0,
-                  left: Platform.isAndroid ? (MediaQuery.of(context).size.width - getRulerWidth(3)) / 2 : (MediaQuery.of(context).size.width - 100 - getRulerWidth(3)) / 2,
+                  left: Platform.isAndroid
+                      ? (MediaQuery.of(context).size.width - getRulerWidth(3)) /
+                          2
+                      : (MediaQuery.of(context).size.width -
+                              100 -
+                              getRulerWidth(3)) /
+                          2,
                   child: SizedBox(
                     width: getRulerWidth(3),
                     child: Column(
@@ -441,9 +255,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
                             fit: BoxFit.fitWidth,
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                        ),
+                        const Gap(4),
                         Image.asset(
                           "assets/Rectangle 4.png",
                           width: getRulerWidth(3),
@@ -464,7 +276,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
             child: InkWell(
               onTap: () async {
                 //사진 촬영하는 방법 팝업 표시
-                await Navigator.push(context, SlideRightTransRoute(builder: (context) => const ImageGuide(), settings: RouteSettings()));
+                await Navigator.push(
+                    context,
+                    SlideRightTransRoute(
+                        builder: (context) => const ImageGuide(),
+                        settings: RouteSettings()));
               },
               child: Container(
                 width: 140,
@@ -545,14 +361,16 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
           //toast
           Positioned(
-            top: 30,
+            top: 15,
             left: (MediaQuery.of(context).size.width - 350) / 2,
             child: Visibility(
               visible: alertMsg.isNotEmpty,
               child: Container(
                 width: 350,
                 height: 36,
-                decoration: const BoxDecoration(color: PrimaryColor, borderRadius: BorderRadius.all(Radius.circular(18))),
+                decoration: const BoxDecoration(
+                    color: PrimaryColor,
+                    borderRadius: BorderRadius.all(Radius.circular(18))),
                 child: Center(
                   child: Text(
                     alertMsg,
@@ -562,6 +380,46 @@ class ShootingPageState extends BaseState<ShootingPage> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 60,
+            left: (MediaQuery.of(context).size.width - 400) / 2,
+            child: Container(
+              width: 400,
+              child: const Center(
+                child: Text(
+                  "촬영 시 앞니 6개를 맞추고, 치아 윗부분의 잇몸이 보이도록 해주세요.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontFamily: "Pretendard",
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            bottom: 28,
+            left: (MediaQuery.of(context).size.width - 400) / 2,
+            child: Container(
+              width: 400,
+              child: const Center(
+                child: Text(
+                  "블랑바이미 카드를 아랫입술 위에 놓고 가이드에 맞춰 촬영해주세요.\n※ ‘촬영 방법 안내’를 클릭하시면 사진으로 확인하실 수 있어요!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontFamily: "Pretendard",
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -592,20 +450,24 @@ class ShootingPageState extends BaseState<ShootingPage> {
 
   //갤러리에 이미지 저장
   void saveImageToGallery(String file) {
-    GallerySaver.saveImage(file).then((value) => print('>>>> save value= $value')).catchError((err) {
+    GallerySaver.saveImage(file)
+        .then((value) => print('>>>> save value= $value'))
+        .catchError((err) {
       print('error :( $err');
     });
   }
 
   Future<void> takeImage() async {
-
     if (isCheckPhoto == false) {
       showToast("촬영조건이 만족되지 않습니다.");
       return;
     }
     XFile file = await controller.takePicture();
     saveImageToGallery(file.path);
-    CommonDialog().showTwoBtnPopup(context, "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", "확인", "다시 촬영하기").then((val) {
+    CommonDialog()
+        .showTwoBtnPopup(
+            context, "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", "확인", "다시 촬영하기")
+        .then((val) {
       if (val.toString() == "1") {
         uploadImage(file);
         _launchUrl();
@@ -620,8 +482,11 @@ class ShootingPageState extends BaseState<ShootingPage> {
     // //   throw Exception('Could not launch $_url');
     // // }
     // launchUrl(_url);
-    String result = await Navigator.push(context, SlideRightTransRoute(builder: (context) => Webview1Page(), settings: RouteSettings()));
-    if (result == "200"){
+    String result = await Navigator.push(
+        context,
+        SlideRightTransRoute(
+            builder: (context) => Webview1Page(), settings: RouteSettings()));
+    if (result == "200") {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeRight,
         DeviceOrientation.landscapeLeft,
@@ -669,12 +534,6 @@ class ShootingPageState extends BaseState<ShootingPage> {
                   controller,
                   child: Stack(
                     children: [
-                      //A4 용지로 촬영
-                      Visibility(
-                        visible: widget.type == 1,
-                        child: Tab1View(),
-                      ),
-
                       //블랑바이미카드로 촬영
                       Visibility(
                         visible: widget.type == 2,
@@ -683,7 +542,10 @@ class ShootingPageState extends BaseState<ShootingPage> {
                     ],
                   ),
                 )
-              : Container(width: double.infinity, height: double.infinity, color: const Color(0xFF313131)),
+              : Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: const Color(0xFF313131)),
         ),
       ),
     );
