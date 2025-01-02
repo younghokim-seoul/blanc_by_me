@@ -220,14 +220,10 @@ class ShootingPageState extends BaseState<ShootingPage> {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                        ),
                         margin: const EdgeInsets.only(bottom: 20.0),
                         child: Image.asset(
                           "assets/Frame 816258.png",
-                          width: getRulerWidth(2) - 30,
+                          width: getRulerWidth(2),
                           fit: BoxFit.fitWidth,
                         ),
                       ),
