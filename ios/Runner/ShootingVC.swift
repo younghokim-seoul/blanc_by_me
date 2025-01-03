@@ -18,7 +18,7 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
     @IBOutlet var vwTab2: UIView!
     @IBOutlet var lciv2Cell2Width: NSLayoutConstraint!
     @IBOutlet var lciv3Cell2Width: NSLayoutConstraint!
-//    @IBOutlet var lcivCard2Leading: NSLayoutConstraint!
+    @IBOutlet var lcivCard2Leading: NSLayoutConstraint!
     @IBOutlet var lcivCard2Width: NSLayoutConstraint!
 
     // alert view
@@ -103,12 +103,12 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         let statusBarHeight = getStatusBarHeight()
         let width = mediaQuery.width - statusBarHeight
         if type == 1 {
-            result = (width * 4) / deviceWidth
-        } else if type == 2 {
-            result = (width * 2.5) / deviceWidth
-        } else if type == 3 {
-            result = ((width - 100) * 4) / deviceWidth
-        }
+             result = (width * 4) / deviceWidth
+         } else if type == 2 {
+             result = (width * 3.6) / deviceWidth
+         } else if type == 3 {
+             result = ((width - 100) * 6) / deviceWidth
+         }
 
         return result
     }
@@ -134,8 +134,8 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         // Frame 816258.png cell 3
         lciv3Cell2Width.constant = getRulerWidth(type: 2)
         // Rectangle 4.png  card
-        lcivCard2Width.constant = getRulerWidth(type: 1)
-//        lcivCard2Leading.constant = (UIScreen.main.bounds.size.width - 100 - getRulerWidth(type: 3)) / 2
+        lcivCard2Width.constant = getRulerWidth(type: 3)
+        lcivCard2Leading.constant = (UIScreen.main.bounds.size.width - 100 - getRulerWidth(type: 3)) / 2
 
         NotificationCenter.default.addObserver(self, selector: #selector(ShootingVC.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
