@@ -12,11 +12,11 @@ import 'package:blanc_f/global/http_service.dart';
 import 'package:blanc_f/image_guide.dart';
 import 'package:blanc_f/util/commonutil.dart';
 import 'package:blanc_f/util/transition.dart';
-import 'package:blanc_f/webview.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:light/light.dart';
 import 'package:sized_context/sized_context.dart';
@@ -617,13 +617,16 @@ class ShootingPageState extends BaseState<ShootingPage> {
     }
 
     XFile file = await controller.takePicture();
-    saveImageToGallery(file.path);
+    final rotateFile = await FlutterExifRotation.rotateAndSaveImage(path: file.path);
+
+    saveImageToGallery(rotateFile.path);
     CommonDialog().showTwoBtnPopup(context, "AI 치아미백 분석하기", "확인", "다시 촬영하기").then((val) async {
       if (val.toString() == "1") {
         try {
           await EasyLoading.show();
           final HttpService httpService = HttpService();
           final photoData = await httpService.fileUpload(file);
+
           await httpService.fetchAiCuration(
             userId: widget.userId,
             toothId: photoData.data.first.id,
