@@ -606,7 +606,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
   }
 
   Future<void> takeImage() async {
-
+    isCheckPhoto = true;
     if (isCheckPhoto == false) {
       showToast("촬영조건이 만족되지 않습니다.");
       return;
@@ -625,7 +625,7 @@ class ShootingPageState extends BaseState<ShootingPage> {
         try {
           await EasyLoading.show();
           final HttpService httpService = HttpService();
-          final photoData = await httpService.fileUpload(file);
+          final photoData = await httpService.fileUpload(rotateFile);
 
           await httpService.fetchAiCuration(
             userId: widget.userId,

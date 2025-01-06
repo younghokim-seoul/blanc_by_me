@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:blanc_f/global/global.dart';
 import 'package:blanc_f/global/network/dto/clinic_onwer_dto.dart';
@@ -14,9 +15,7 @@ import 'package:blanc_f/models/customers%20_res_model.dart';
 import 'package:blanc_f/models/email_check_res_model.dart';
 import 'package:blanc_f/models/login_res_model.dart';
 import 'package:blanc_f/models/pass_reset%20_res_model.dart';
-import 'package:blanc_f/models/user_res_model.dart';
 import 'package:blanc_f/util/commonutil.dart';
-import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
@@ -24,7 +23,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class HttpService {
   //파일 업로드
-  Future<CustomerPhotoDto> fileUpload(XFile image) async {
+  Future<CustomerPhotoDto> fileUpload(File image) async {
     String _url = "$SERVER_URL/api/upload";
 
     final mimeTypeData =
