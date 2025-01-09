@@ -377,7 +377,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     fileprivate var coreMotionManager: CMMotionManager!
 
     /// Real device orientation from DeviceMotion
-    fileprivate var deviceOrientation: UIDeviceOrientation = .portrait
+    fileprivate var deviceOrientation: UIDeviceOrientation = .landscapeRight
 
     // MARK: - CameraManager
 
@@ -558,8 +558,8 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
             return
         }
 
-        let image = fixOrientation(withImage: img)
-        let newImageData = _imageDataWithEXIF(forImage: image, imageData)! as Data
+//        let image = fixOrientation(withImage: img)
+        let newImageData = _imageDataWithEXIF(forImage: img, imageData)! as Data
 
         if writeFilesToPhoneLibrary {
             let filePath = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("tempImg\(Int(Date().timeIntervalSince1970)).jpg")
@@ -596,7 +596,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         _getMovieOutput().metadata = [metadata]
     }
 
-    fileprivate func _imageDataWithEXIF(forImage _: UIImage, _ data: Data) -> NSData? {
+    fileprivate func _imageDataWithEXIF(forImage image: UIImage, _ data: Data) -> NSData? {
         let cfdata: CFData = data as CFData
         let source = CGImageSourceCreateWithData(cfdata, nil)!
         let UTI: CFString = CGImageSourceGetType(source)!
@@ -608,12 +608,21 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
 
         var mutableMetadata = CGImageMetadataCreateMutableCopy(imageProperties)!
 
+        let orientationValue = image.imageOrientation.rawValue
+        CGImageMetadataSetValueMatchingImageProperty(mutableMetadata,
+                                                     kCGImagePropertyTIFFDictionary,
+                                                     kCGImagePropertyTIFFOrientation,
+                                                     orientationValue as CFNumber)
+
         if let location = locationManager?.latestLocation {
             mutableMetadata = _gpsMetadata(mutableMetadata, withLocation: location)
         }
 
+        // 이미지 회전 처리
+        let rotatedImage = fixOrientation(withImage: image)
+
         let finalMetadata: CGImageMetadata = mutableMetadata
-        CGImageDestinationAddImageAndMetadata(destination, UIImage(data: data)!.cgImage!, finalMetadata, nil)
+        CGImageDestinationAddImageAndMetadata(destination, rotatedImage.cgImage!, finalMetadata, nil)
         CGImageDestinationFinalize(destination)
         return mutableData
     }
@@ -1454,24 +1463,34 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     }
 
     fileprivate func fixOrientation(withImage image: UIImage) -> UIImage {
-        guard let cgImage = image.cgImage else { return image }
-
-        var isMirrored = false
-        let orientation = image.imageOrientation
-        if orientation == .rightMirrored
-            || orientation == .leftMirrored
-            || orientation == .upMirrored
-            || orientation == .downMirrored {
-            isMirrored = true
+        if image.imageOrientation == .up {
+            return image
         }
 
-        let newOrientation = _imageOrientation(forDeviceOrientation: deviceOrientation, isMirrored: isMirrored)
+        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
+        image.draw(in: CGRect(origin: .zero, size: image.size))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
 
-        if image.imageOrientation != newOrientation {
-            return UIImage(cgImage: cgImage, scale: image.scale, orientation: newOrientation)
-        }
-
-        return image
+        return normalizedImage ?? image
+//        guard let cgImage = image.cgImage else { return image }
+//
+//        var isMirrored = false
+//        let orientation = image.imageOrientation
+//        if orientation == .rightMirrored
+//            || orientation == .leftMirrored
+//            || orientation == .upMirrored
+//            || orientation == .downMirrored {
+//            isMirrored = true
+//        }
+//
+//        let newOrientation = _imageOrientation(forDeviceOrientation: deviceOrientation, isMirrored: isMirrored)
+//
+//        if image.imageOrientation != newOrientation {
+//            return UIImage(cgImage: cgImage, scale: image.scale, orientation: newOrientation)
+//        }
+//
+//        return image
     }
 
     fileprivate func _canLoadCamera() -> Bool {
@@ -1530,7 +1549,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
                         self._orientationChanged()
                     }
                 }
-
+                
                 cameraIsObservingDeviceOrientation = true
             } else {
                 cameraIsObservingDeviceOrientation = false

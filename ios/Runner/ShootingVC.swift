@@ -282,7 +282,7 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
 
     func saveImageToGallery() async throws {
         return try await withCheckedThrowingContinuation { continuation in
-            cameraManager!.capturePictureWithCompletion { result in
+            cameraManager?.capturePictureWithCompletion { result in
                 switch result {
                 case .failure(let error):
                     print("failed capture image")
