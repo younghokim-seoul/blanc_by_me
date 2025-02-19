@@ -158,14 +158,18 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
 
     func start() {
         cameraManager = CameraManager()
-        cameraManager!.shouldEnableExposure = true
-        cameraManager!.writeFilesToPhoneLibrary = false
-        cameraManager!.shouldFlipFrontCameraImage = false
-        cameraManager!.showAccessPermissionPopupAutomatically = true
-        cameraManager!.shouldKeepViewAtOrientationChanges = false
-        cameraManager!.shouldRespondToOrientationChanges = false
+        cameraManager?.shouldEnableExposure = true
+        cameraManager?.writeFilesToPhoneLibrary = false
+        cameraManager?.shouldFlipFrontCameraImage = false
+        cameraManager?.showAccessPermissionPopupAutomatically = true
+        cameraManager?.shouldKeepViewAtOrientationChanges = false
+        cameraManager?.shouldRespondToOrientationChanges = false
 
-        cameraManager!.cameraDevice = CameraDevice.front
+        // 화이트밸런스 설정 추가
+        cameraManager?.whiteBalanceMode = .locked
+        cameraManager?.colorTemperature = 5500
+
+        cameraManager?.cameraDevice = CameraDevice.front
         cameraManager?.currentInterfaceOrientation = view.window?.windowScene?.interfaceOrientation ?? .landscapeRight
 
 //        cameraManager!.addPreviewLayerToView(vwBackground)
@@ -174,6 +178,8 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
             guard let this = self, let cameraManager = this.cameraManager else{
                 return
             }
+            // RAW 캡처 설정
+            cameraManager._setupRawCapture()
 
             let output = AVCaptureVideoDataOutput()
             if (cameraManager.captureSession?.canAddOutput(output)) != nil {
