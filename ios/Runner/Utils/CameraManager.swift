@@ -262,6 +262,8 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
                 _setupMaxZoomScale()
                 _zoom(0)
                 _orientationChanged()
+                
+                _updateWhiteBalanceMode(.locked)
             }
         }
     }
@@ -336,6 +338,9 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         return .off
     }
 
+    // 색온도 값 (켈빈)
+    open var colorTemperature: Float = 5500
+
     // MARK: - Private properties
 
     fileprivate var locationManager: CameraLocationManager?
@@ -378,6 +383,8 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
 
     /// Real device orientation from DeviceMotion
     fileprivate var deviceOrientation: UIDeviceOrientation = .portrait
+
+    private var photoOutput: AVCapturePhotoOutput?
 
     // MARK: - CameraManager
 
@@ -1970,6 +1977,105 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     deinit {
         _stopFollowingDeviceOrientation()
         stopAndRemoveCaptureSession()
+    }
+}
+
+extension CameraManager: AVCapturePhotoCaptureDelegate{
+
+    open func adjustWhiteBalance(temperature: Float) {
+        colorTemperature = temperature
+        _updateWhiteBalanceMode(.locked)
+    }
+    
+    fileprivate func _updateWhiteBalanceMode(_ mode: AVCaptureDevice.WhiteBalanceMode) {
+        let device: AVCaptureDevice?
+        
+        switch cameraDevice {
+        case .back:
+            device = backCameraDevice
+        case .front:
+            device = frontCameraDevice
+        }
+        
+        do {
+            guard let device = device else { return }
+            
+            try device.lockForConfiguration()
+            
+            if device.isWhiteBalanceModeSupported(mode) == true {
+                // 1. 먼저 자동 화이트밸런스를 비활성화
+                device.whiteBalanceMode = .locked
+                
+                let currentGains = device.deviceWhiteBalanceGains
+                
+                // 3. 색온도에 따른 RGB gains 계산
+                let normalizedTemp = colorTemperature / 5500.0
+                var wbGains = AVCaptureDevice.WhiteBalanceGains()
+                wbGains.redGain = currentGains.redGain * Float(2.0 - normalizedTemp)
+                wbGains.greenGain = currentGains.greenGain
+                wbGains.blueGain = currentGains.blueGain * Float(normalizedTemp)
+                
+                // 4. gains 값이 유효한 범위 내에 있는지 확인하고 조정
+                wbGains.redGain = min(max(wbGains.redGain, 1.0), device.maxWhiteBalanceGain)
+                wbGains.greenGain = min(max(wbGains.greenGain, 1.0), device.maxWhiteBalanceGain)
+                wbGains.blueGain = min(max(wbGains.blueGain, 1.0), device.maxWhiteBalanceGain)
+                
+                try device.setWhiteBalanceModeLocked(with: wbGains)
+                print("화이트밸런스 설정됨 - 온도: \(colorTemperature)K, R:\(wbGains.redGain) G:\(wbGains.greenGain) B:\(wbGains.blueGain)")
+            }
+            
+            device.unlockForConfiguration()
+        } catch {
+            print("화이트밸런스 설정 에러: \(error)")
+        }
+    }
+
+    func _setupRawCapture() {
+        guard let captureSession = captureSession else { return }
+
+        let photoOutput = AVCapturePhotoOutput()
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
+
+            // RAW 포맷 설정
+            let rawFormat = photoOutput.availableRawPhotoPixelFormatTypes.first ?? 0
+            let settings = AVCapturePhotoSettings(rawPixelFormatType: rawFormat)
+            photoOutput.capturePhoto(with: settings, delegate: self)
+        }
+    }
+
+    // RAW 사진 촬영을 위한 메서드
+    func captureRAWPhoto(completion: @escaping (CaptureResult) -> Void) {
+        guard let photoOutput = photoOutput else {
+            completion(.failure(CaptureError.noImageData))
+            return
+        }
+
+        guard let rawFormat = photoOutput.availableRawPhotoPixelFormatTypes.first else {
+            completion(.failure(CaptureError.noImageData))
+            return
+        }
+
+        // RAW + JPEG 설정
+        let settings = AVCapturePhotoSettings(rawPixelFormatType: rawFormat)
+        settings.isHighResolutionPhotoEnabled = true
+
+        photoOutput.capturePhoto(with: settings, delegate: self)
+    }
+
+    public func photoOutput(_ output: AVCapturePhotoOutput,
+                            didFinishProcessingPhoto photo: AVCapturePhoto,
+                            error: Error?) {
+        if let error = error {
+            _show("Error capturing photo", message: error.localizedDescription)
+            return
+        }
+
+        // RAW 데이터 처리
+        if let rawFileData = photo.fileDataRepresentation() {
+            print("RAW photo captured: \(rawFileData.count) bytes")
+            // 여기서 RAW 데이터 처리 가능
+        }
     }
 }
 
