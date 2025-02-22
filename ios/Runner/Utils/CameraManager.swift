@@ -385,7 +385,8 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     fileprivate var deviceOrientation: UIDeviceOrientation = .portrait
 
     private var photoOutput: AVCapturePhotoOutput?
-
+    private var completionHandler: ((Bool, CaptureResult) -> Void)?
+    
     // MARK: - CameraManager
 
     /**
@@ -537,7 +538,7 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
      :param: imageCompletion Completion block containing the captured UIImage
      */
     open func capturePictureWithCompletion(_ imageCompletion: @escaping (CaptureResult) -> Void) {
-        capturePictureDataWithCompletion { result in
+        capturePictureDataWithCompletion { (isRawMode, result) in
 
             guard let imageData = result.imageData else {
                 if case let .failure(error) = result {
@@ -668,25 +669,25 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
 
      :param: imageCompletion Completion block containing the captured imageData
      */
-    @available(*, deprecated)
-    open func capturePictureDataWithCompletion(_ imageCompletion: @escaping (Data?, NSError?) -> Void) {
-        func completion(_ result: CaptureResult) {
-            switch result {
-                case let .success(content):
-                    imageCompletion(content.asData, nil)
-                case .failure:
-                    imageCompletion(nil, NSError())
-            }
-        }
-        capturePictureDataWithCompletion(completion)
-    }
+//    @available(*, deprecated)
+//    open func capturePictureDataWithCompletion(_ imageCompletion: @escaping (Data?, NSError?) -> Void) {
+//        func completion(_ result: CaptureResult) {
+//            switch result {
+//                case let .success(content):
+//                    imageCompletion(content.asData, nil)
+//                case .failure:
+//                    imageCompletion(nil, NSError())
+//            }
+//        }
+//        capturePictureDataWithCompletion(completion)
+//    }
 
     /**
      Captures still image from currently running capture session.
 
      :param: imageCompletion Completion block containing the captured imageData
      */
-    open func capturePictureDataWithCompletion(_ imageCompletion: @escaping (CaptureResult) -> Void) {
+    open func capturePictureDataWithCompletion(_ imageCompletion: @escaping (Bool,CaptureResult) -> Void) {
         guard cameraIsSetup else {
             _show(NSLocalizedString("No capture session setup", comment: ""), message: NSLocalizedString("I can't take any picture", comment: ""))
             return
@@ -715,20 +716,20 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
 
                         if let error = error {
                             self?._show(NSLocalizedString("Error", comment: ""), message: error.localizedDescription)
-                            imageCompletion(.failure(error))
+                            imageCompletion(false,.failure(error))
                             return
                         }
 
-                        guard let sample = sample else { imageCompletion(.failure(CaptureError.noSampleBuffer)); return }
+                        guard let sample = sample else { imageCompletion(false,.failure(CaptureError.noSampleBuffer)); return }
                         if let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sample) {
-                            imageCompletion(CaptureResult(imageData))
+                            imageCompletion(false,CaptureResult(imageData))
                         } else {
-                            imageCompletion(.failure(CaptureError.noImageData))
+                            imageCompletion(false,.failure(CaptureError.noImageData))
                         }
                     })
                 }
             }else {
-                imageCompletion(.failure(CaptureError.noVideoConnection))
+                imageCompletion(false,.failure(CaptureError.noVideoConnection))
             }
         }
     }
@@ -1608,10 +1609,13 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         if let cameraOutputToRemove = oldCameraOutputMode {
             // remove current setting
             switch cameraOutputToRemove {
-                case .stillImage:
+            case .stillImage:
                     if let validStillImageOutput = stillImageOutput {
                         captureSession?.removeOutput(validStillImageOutput)
-                }
+                    }
+                    if let validPhotoOutput = photoOutput {
+                        captureSession?.removeOutput(validPhotoOutput)
+                    }
                 case .videoOnly, .videoWithMic:
                     if let validMovieOutput = movieOutput {
                         captureSession?.removeOutput(validMovieOutput)
@@ -1627,11 +1631,25 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         // configure new devices
         switch newCameraOutputMode {
             case .stillImage:
-                let validStillImageOutput = _getStillImageOutput()
-                if let captureSession = captureSession,
-                    captureSession.canAddOutput(validStillImageOutput) {
-                    captureSession.addOutput(validStillImageOutput)
-            }
+                if #available(iOS 14.3, *) {
+                    if let photoOutput = _getPhotoOutput() {
+                        self.photoOutput = photoOutput
+                    } else {
+                        // RAW 미지원시 StillImageOutput 사용
+                        let validStillImageOutput = _getStillImageOutput()
+                        if let captureSession = captureSession,
+                           captureSession.canAddOutput(validStillImageOutput) {
+                            captureSession.addOutput(validStillImageOutput)
+                        }
+                    }
+                } else {
+                    // iOS 14.3 미만에서는 StillImageOutput 사용
+                    let validStillImageOutput = _getStillImageOutput()
+                    if let captureSession = captureSession,
+                       captureSession.canAddOutput(validStillImageOutput) {
+                        captureSession.addOutput(validStillImageOutput)
+                    }
+                }
             case .videoOnly, .videoWithMic:
                 let videoMovieOutput = _getMovieOutput()
                 if let captureSession = captureSession,
@@ -1658,6 +1676,9 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
         }
         if library == nil {
             library = PHPhotoLibrary.shared()
+        }
+        if photoOutput == nil {
+            photoOutput = AVCapturePhotoOutput()
         }
     }
 
@@ -1980,7 +2001,240 @@ open class CameraManager: NSObject, AVCaptureFileOutputRecordingDelegate, UIGest
     }
 }
 
-extension CameraManager: AVCapturePhotoCaptureDelegate{
+//MARK: - AVCapturePhotoCaptureDelegate
+extension CameraManager:AVCapturePhotoCaptureDelegate {
+    
+    @available(iOS 14.3, *)
+    private func supportsProRAWCapture() -> Bool {
+        // captureSession의 outputs 중 AVCapturePhotoOutput이 있는지 확인
+        let hasPhotoOutput = captureSession?.outputs.contains(where: { $0 is AVCapturePhotoOutput }) ?? false
+        
+        return hasPhotoOutput
+    }
+    
+    @available(iOS 14.3, *)
+    private func _getPhotoOutput() -> AVCapturePhotoOutput? {
+        let newPhotoOutput = AVCapturePhotoOutput()
+        
+        // captureSession에 추가해야 정확한 RAW 지원 여부를 확인할 수 있음
+        guard let captureSession = captureSession else { return nil }
+        
+        if let validPhotoOutput = photoOutput {
+            captureSession.removeOutput(validPhotoOutput)
+        }
+        captureSession.sessionPreset = .photo
+        captureSession.beginConfiguration()
+        
+        if captureSession.canAddOutput(newPhotoOutput) {
+            captureSession.addOutput(newPhotoOutput)
+            // RAW 지원 여부 확인
+            print("ℹ️ 1 Available RAW formats: \(newPhotoOutput.availableRawPhotoPixelFormatTypes)")
+            print("ℹ️ 1 isAppleProRAWSupported: \(newPhotoOutput.isAppleProRAWSupported)")
+            
+            if newPhotoOutput.isAppleProRAWSupported {
+                captureSession.sessionPreset = .photo
+                newPhotoOutput.isAppleProRAWEnabled = true
+                newPhotoOutput.isHighResolutionCaptureEnabled = true
+                print("ℹ️ isAppleProRAWEnabled: \(newPhotoOutput.isAppleProRAWEnabled)")
+                captureSession.commitConfiguration()
+                return newPhotoOutput
+            }
+        }
+        
+        // RAW를 지원하지 않으면 출력 제거하고 nil 반환
+        captureSession.removeOutput(newPhotoOutput)
+        captureSession.commitConfiguration()
+        return nil
+    }
+    
+    @available(iOS 14.3, *)
+    public func captureRawPictureWithCompletion(_ imageCompletion: @escaping (CaptureResult) -> Void) {
+        captureRawPictureDataWithCompletion { (isRawMode, result) in
+            guard let imageData = result.imageData else {
+                if case let .failure(error) = result {
+                    imageCompletion(.failure(error))
+                } else {
+                    imageCompletion(.failure(CaptureError.noImageData))
+                }
+                return
+            }
+            if isRawMode {
+                if self.animateShutter {
+                    self._performShutterAnimation {
+                        self._captureRawPicture(imageData, imageCompletion)
+                    }
+                } else {
+                    self._captureRawPicture(imageData, imageCompletion)
+                }
+            }else{
+                if self.animateShutter {
+                    self._performShutterAnimation {
+                        self._capturePicture(imageData, imageCompletion)
+                    }
+                } else {
+                    self._capturePicture(imageData, imageCompletion)
+                }
+            }
+        }
+    }
+
+    @available(iOS 14.3, *)
+    private func captureRawPictureDataWithCompletion(_ imageCompletion: @escaping (Bool,CaptureResult) -> Void) {
+        guard cameraIsSetup else {
+            _show("No capture session setup", message: "Cannot take picture")
+            return
+        }
+        
+        guard let photoOutput = self.photoOutput else {
+            imageCompletion(false,.failure(CaptureError.noImageData))
+            return
+        }
+        
+        if supportsProRAWCapture() {
+            var photoSettings: AVCapturePhotoSettings
+            if let rawFormat = photoOutput.availableRawPhotoPixelFormatTypes.first {
+                photoSettings = AVCapturePhotoSettings(rawPixelFormatType: rawFormat)
+            } else {
+                photoSettings = AVCapturePhotoSettings()
+            }
+            
+            if photoOutput.isHighResolutionCaptureEnabled {
+                photoSettings.isHighResolutionPhotoEnabled = true
+            }
+            
+            if cameraDevice == .front && shouldFlipFrontCameraImage {
+                photoSettings.isAutoStillImageStabilizationEnabled = true
+            }
+            
+            if let deviceInput = captureSession?.inputs.first as? AVCaptureDeviceInput,
+               deviceInput.device.isFlashAvailable {
+                photoSettings.flashMode = AVCaptureDevice.FlashMode(rawValue: flashMode.rawValue) ?? .off
+            }
+            
+            completionHandler = imageCompletion
+            photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        } else {
+            guard let captureSession = self.captureSession else {
+                imageCompletion(false,.failure(CaptureError.noImageData))
+                return
+            }
+            captureSession.removeOutput(photoOutput)
+            capturePictureDataWithCompletion(imageCompletion)
+        }
+    }
+    
+    // Updated photo output delegate method to handle RAW capture
+    public func photoOutput(_ output: AVCapturePhotoOutput,
+                          didFinishProcessingPhoto photo: AVCapturePhoto,
+                          error: Error?) {
+        
+        if let error = error {
+            completionHandler?(false,.failure(error))
+            completionHandler = nil
+            return
+        }
+        
+        guard let imageData = photo.fileDataRepresentation() else {
+            completionHandler?(false,.failure(CaptureError.noImageData))
+            completionHandler = nil
+            return
+        }
+
+        completionHandler?(true,CaptureResult(imageData))
+        completionHandler = nil
+    }
+    
+    
+    fileprivate func _rawImageDataWithEXIF(forImage: UIImage, _ data: Data) -> NSData? {
+        let cfdata: CFData = data as CFData
+        let source = CGImageSourceCreateWithData(cfdata, nil)!
+        
+        // DNG 파일 타입 설정
+        let UTI = "com.adobe.raw-image" as CFString
+        let mutableData: CFMutableData = NSMutableData(data: data) as CFMutableData
+        
+        guard let destination = CGImageDestinationCreateWithData(mutableData, UTI, 1, nil) else {
+            print("Failed to create destination for RAW data")
+            return nil
+        }
+        
+        // RAW 메타데이터 설정
+        let rawMetadata: [String: Any] = [
+            kCGImagePropertyDNGVersion as String: [1, 4, 0, 0],
+            kCGImagePropertyDNGBackwardVersion as String: [1, 3, 0, 0]
+        ]
+        
+        // GPS 메타데이터 추가
+        var metadata: [String: Any] = rawMetadata
+        if let location = locationManager?.latestLocation {
+            let gpsData: [String: Any] = [
+                kCGImagePropertyGPSLatitude as String: abs(location.coordinate.latitude),
+                kCGImagePropertyGPSLatitudeRef as String: location.coordinate.latitude >= 0 ? "N" : "S",
+                kCGImagePropertyGPSLongitude as String: abs(location.coordinate.longitude),
+                kCGImagePropertyGPSLongitudeRef as String: location.coordinate.longitude >= 0 ? "E" : "W",
+                kCGImagePropertyGPSAltitude as String: abs(location.altitude),
+                kCGImagePropertyGPSAltitudeRef as String: location.altitude >= 0 ? 0 : 1,
+                kCGImagePropertyGPSTimeStamp as String: ISO8601DateFormatter().string(from: location.timestamp)
+            ]
+            metadata[kCGImagePropertyGPSDictionary as String] = gpsData
+        }
+        
+        // RAW 이미지와 메타데이터 추가
+        CGImageDestinationAddImage(destination, forImage.cgImage!, nil)
+        CGImageDestinationSetProperties(destination, metadata as CFDictionary)
+        
+        if !CGImageDestinationFinalize(destination) {
+            print("Failed to finalize RAW image destination")
+            return nil
+        }
+        
+        return mutableData
+    }
+    
+    fileprivate func _captureRawPicture(_ rawData: Data, _ imageCompletion: @escaping (CaptureResult) -> Void) {
+        
+        guard let img = UIImage(data: rawData) else {
+            imageCompletion(.failure(NSError()))
+            return
+        }
+        
+        let image = fixOrientation(withImage: img)
+//        guard let newImageData = _rawImageDataWithEXIF(forImage: image, rawData) as? Data else {
+//            imageCompletion(.failure(NSError()))
+//            return
+//        }
+        
+        
+        let filePath = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("RawImg_\(Int(Date().timeIntervalSince1970)).dng")
+        
+        do {
+            // RAW 데이터 직접 저장
+            try rawData.write(to: filePath)
+            
+            if PHPhotoLibrary.authorizationStatus() != .authorized {
+                PHPhotoLibrary.requestAuthorization { status in
+                    if status == PHAuthorizationStatus.authorized {
+                        self._saveImageToLibrary(atFileURL: filePath, imageCompletion)
+                    }
+                }
+            } else {
+                _saveImageToLibrary(atFileURL: filePath, imageCompletion)
+            }
+        } catch {
+            print("Failed to save RAW image: \(error)")
+            imageCompletion(.failure(error))
+            return
+        }
+        
+        
+        // RAW 데이터 직접 전달
+        imageCompletion(CaptureResult(rawData))
+    }
+}
+
+
+//MARK: - Set WhiteBalance
+extension CameraManager{
 
     open func adjustWhiteBalance(temperature: Float) {
         colorTemperature = temperature
@@ -2027,54 +2281,6 @@ extension CameraManager: AVCapturePhotoCaptureDelegate{
             device.unlockForConfiguration()
         } catch {
             print("화이트밸런스 설정 에러: \(error)")
-        }
-    }
-
-    func _setupRawCapture() {
-        guard let captureSession = captureSession else { return }
-
-        let photoOutput = AVCapturePhotoOutput()
-        if captureSession.canAddOutput(photoOutput) {
-            captureSession.addOutput(photoOutput)
-
-            // RAW 포맷 설정
-            let rawFormat = photoOutput.availableRawPhotoPixelFormatTypes.first ?? 0
-            let settings = AVCapturePhotoSettings(rawPixelFormatType: rawFormat)
-            photoOutput.capturePhoto(with: settings, delegate: self)
-        }
-    }
-
-    // RAW 사진 촬영을 위한 메서드
-    func captureRAWPhoto(completion: @escaping (CaptureResult) -> Void) {
-        guard let photoOutput = photoOutput else {
-            completion(.failure(CaptureError.noImageData))
-            return
-        }
-
-        guard let rawFormat = photoOutput.availableRawPhotoPixelFormatTypes.first else {
-            completion(.failure(CaptureError.noImageData))
-            return
-        }
-
-        // RAW + JPEG 설정
-        let settings = AVCapturePhotoSettings(rawPixelFormatType: rawFormat)
-        settings.isHighResolutionPhotoEnabled = true
-
-        photoOutput.capturePhoto(with: settings, delegate: self)
-    }
-
-    public func photoOutput(_ output: AVCapturePhotoOutput,
-                            didFinishProcessingPhoto photo: AVCapturePhoto,
-                            error: Error?) {
-        if let error = error {
-            _show("Error capturing photo", message: error.localizedDescription)
-            return
-        }
-
-        // RAW 데이터 처리
-        if let rawFileData = photo.fileDataRepresentation() {
-            print("RAW photo captured: \(rawFileData.count) bytes")
-            // 여기서 RAW 데이터 처리 가능
         }
     }
 }
