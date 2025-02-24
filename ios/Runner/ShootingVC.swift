@@ -165,9 +165,6 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         cameraManager?.shouldKeepViewAtOrientationChanges = false
         cameraManager?.shouldRespondToOrientationChanges = false
 
-        // 화이트밸런스 설정 추가
-        cameraManager?.whiteBalanceMode = .locked
-        cameraManager?.colorTemperature = 5500
 
         cameraManager?.cameraDevice = CameraDevice.front
         cameraManager?.currentInterfaceOrientation = view.window?.windowScene?.interfaceOrientation ?? .landscapeRight
@@ -179,8 +176,8 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
                 return
             }
             // RAW 캡처 설정
-            cameraManager._setupRawCapture()
-
+            // 화이트밸런스 설정 추가
+            cameraManager.adjustWhiteBalance(temperature: 5500)
             let output = AVCaptureVideoDataOutput()
             if (cameraManager.captureSession?.canAddOutput(output)) != nil {
                 cameraManager.captureSession?.sessionPreset = .high
@@ -246,11 +243,11 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         present(vc, animated: false)
     }
 
-    func uploadImage() {
-        let data = captureImg?.jpegData(compressionQuality: 0.8)
+    func uploadImage(data : Data) {
+        
         if data != nil {
             Net.uploadImage(
-                uploadfile: data!,
+                uploadfile: data,
                 success: { _ -> Void in
 
                 }, failure: { _, _ -> Void in
@@ -259,14 +256,34 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
                 })
         }
     }
-
-    func saveImageToGallery() {
-        cameraManager?.capturePictureWithCompletion { result in
-            switch result {
-                case .failure:
+    
+    func saveImageToGallery(completion:  @escaping (Result<Data?, Error>) -> Void) {
+        if #available(iOS 14.3, *) {
+            cameraManager?.captureRawPictureWithCompletion { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        CommonUtil.showToast("이미지 저장에 실패 하였습니다.")
+                        completion(.failure(error))
+                    }
                     print("failed capture image")
                 case .success(let content):
+                    completion(.success(content.asData))
+                }
+            }
+        } else{
+            cameraManager?.capturePictureWithCompletion { result in
+                switch result {
+                case .failure(let error):
+                    print("failed capture image")
+                    CommonUtil.showToast("이미지 저장에 실패 하였습니다.")
+                    completion(.failure(error))
+                case .success(let content):
                     self.saveImage(img: content.asImage!)
+                    completion(.success(content.asData))
+                }
             }
         }
     }
@@ -348,13 +365,22 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
             CommonUtil.showToast("촬영조건이 만족되지 않습니다.")
             return
         }
-        saveImageToGallery()
-        TwoBtnContentPopup.show(self, content: "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", btn1: "다시 촬영하기", btn2: "확인") { value in
-            if value == 2 {
-                self._launchUrl()
-                self.uploadImage()
-            }
-        }
+        saveImageToGallery(completion:{[weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    TwoBtnContentPopup.show(self, content: "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", btn1: "다시 촬영하기", btn2: "확인") { value in
+                        if value == 2 {
+                            self._launchUrl()
+                            self.uploadImage(data: image ?? Data())
+                        }
+                    }
+                }
+            case .failure:
+                break
+            }})
     }
 }
 
