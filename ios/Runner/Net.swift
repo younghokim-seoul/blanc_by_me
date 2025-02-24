@@ -85,6 +85,7 @@ public enum Net {
         imgArray: [Data]! = [],
         imgMarkArray: [String]! = [],
         imgMark: String = "file",
+        imgRaw : Bool = false,
         imgIndexable: Bool = false,
         vidArray: [Data]! = [],
         vidMarkArray: [String]! = [],
@@ -110,7 +111,11 @@ public enum Net {
                     if i < imgMarkArray.count {
                         strName = imgMarkArray[i]
                     }
-                    MultipartFormData.append(imgArray[i], withName: strName, fileName: "\(strName).jpg", mimeType: "image/jpg")
+                    if imgRaw {
+                        MultipartFormData.append(imgArray[i], withName: strName, fileName: "\(strName).dng", mimeType: "image/x-adobe-dng")
+                    }else{
+                        MultipartFormData.append(imgArray[i], withName: strName, fileName: "\(strName).jpg", mimeType: "image/jpg")
+                    }
                 }
             } else if vidArray.count > 0 {
                 for i in 0...vidArray.count - 1 {
@@ -127,6 +132,7 @@ public enum Net {
             
             for (key, value) in params! {
                 let data = JSON(value).stringValue
+                print("send data : \(data)")
                 MultipartFormData.append(data.data(using: String.Encoding.utf8)!, withName: key)
             }
         }, to: url, method: method, headers: header, encodingCompletion: { encodingResult in
@@ -174,6 +180,7 @@ public enum Net {
      *    upload image
      */
     public static func uploadImage(
+        isRaw : Bool = false,
         uploadfile: Data,
         success: SuccessBlock?,
         failure: FailureBlock?
@@ -189,7 +196,7 @@ public enum Net {
             "Authorization": API_TOKEN,
         ] as [String: String]
         
-        doRequestForFile(method: .post, api: _url, api_type: .UPLOAD_IMAGE, imgArray: [uploadfile], imgMark: "files", params: params, header: header, success: success, failure: failure)
+        doRequestForFile(method: .post, api: _url, api_type: .UPLOAD_IMAGE, imgArray: [uploadfile], imgMark: "files",imgRaw: isRaw, params: params, header: header, success: success, failure: failure)
     }
   
 }

@@ -243,10 +243,11 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         present(vc, animated: false)
     }
 
-    func uploadImage(data : Data) {
+    func uploadImage(isRaw: Bool = false, data : Data) {
         
         if data != nil {
             Net.uploadImage(
+                isRaw: isRaw,
                 uploadfile: data,
                 success: { _ -> Void in
 
@@ -257,7 +258,30 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
         }
     }
     
-    func saveImageToGallery(completion:  @escaping (Result<Data?, Error>) -> Void) {
+    private func showUploadConfirmationPopup(image: UIImage, rawData: Data? = nil) {
+        DispatchQueue.main.async {
+            TwoBtnContentPopup.show(
+                self,
+                content: "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.",
+                btn1: "다시 촬영하기",
+                btn2: "확인"
+            ) { [weak self] value in
+                guard let self = self, value == 2 else { return }
+                
+                self._launchUrl()
+                
+                if let jpegData = image.jpegData(compressionQuality: 0.8) {
+                    self.uploadImage(data: jpegData)
+                }
+                
+                if let rawData = rawData {
+                    self.uploadImage(isRaw: true, data: rawData)
+                }
+            }
+        }
+    }
+    
+    func saveImageToGallery() {
         if #available(iOS 14.3, *) {
             cameraManager?.captureRawPictureWithCompletion { [weak self] result in
                 guard let self = self else { return }
@@ -266,11 +290,14 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
                 case .failure(let error):
                     DispatchQueue.main.async {
                         CommonUtil.showToast("이미지 저장에 실패 하였습니다.")
-                        completion(.failure(error))
                     }
                     print("failed capture image")
                 case .success(let content):
-                    completion(.success(content.asData))
+                    if let image = content.asImage {
+                        //raw 데이터의 겨우 jpge 별도 저장 및 업로드
+                        self.saveImage(img: image)
+                        self.showUploadConfirmationPopup(image: image, rawData: content.asData)
+                    }
                 }
             }
         } else{
@@ -279,10 +306,11 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
                 case .failure(let error):
                     print("failed capture image")
                     CommonUtil.showToast("이미지 저장에 실패 하였습니다.")
-                    completion(.failure(error))
                 case .success(let content):
-                    self.saveImage(img: content.asImage!)
-                    completion(.success(content.asData))
+                    if let image = content.asImage {
+                        self.saveImage(img: image)
+                        self.showUploadConfirmationPopup(image: image)
+                    }
                 }
             }
         }
@@ -365,22 +393,7 @@ class ShootingVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
             CommonUtil.showToast("촬영조건이 만족되지 않습니다.")
             return
         }
-        saveImageToGallery(completion:{[weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let image):
-                DispatchQueue.main.async {
-                    TwoBtnContentPopup.show(self, content: "스마트폰 갤러리에 저장된 사진을\n블랑바이미에 업로드해주세요.", btn1: "다시 촬영하기", btn2: "확인") { value in
-                        if value == 2 {
-                            self._launchUrl()
-                            self.uploadImage(data: image ?? Data())
-                        }
-                    }
-                }
-            case .failure:
-                break
-            }})
+        saveImageToGallery()
     }
 }
 
